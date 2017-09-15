@@ -16,4 +16,10 @@ script:
   - docker-compose pull
   - docker-compose build
   - docker-compose up --abort-on-container-exit
+  #- docker-compose up -d db
+  #- docker ps
+  #- docker-compose run -v "$PWD/coverage:/app/coverage" $ci_env web sh test-cover-enviar-en-docker.sh
+  #- docker ps
+  #- docker-compose down
+  #- docker ps
   - bash <(curl -s https://codecov.io/bash) -f coverage/coverage.json -t 12e9be3a-0f98-417e-b477-d94f6d07b25e
