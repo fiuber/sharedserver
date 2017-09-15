@@ -1,0 +1,28 @@
+version: '2'
+services:
+  db:
+    image: "postgres:9.4"
+    ports:
+      - "8081:5432"
+    environment:
+     POSTGRES_PASSWORD: postgres
+     POSTGRES_USER: postgres
+    #volumes:
+    # - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    #command: ["find", "-name", "init.sql"]
+    #command: ["cat", "/docker-entrypoint-initdb.d/init.sql"]
+    #command: ["postgres"]
+    #command: ["psql", "postgres", "postgres", "-f", "/docker-entrypoint-initdb.d/init.sql"]
+
+  web:
+    build: .
+    depends_on:
+      - db
+    #volumes:
+    #  - ./:/app/
+    ports:
+      - "8080:8080"
+    command: ["./wait-for-it.sh", "db:5432", "--", "sh", "test-cover-enviar-en-docker.sh"]
+    #command: ["sh &&", "npm", "start"]
+    #command: ["./wait-for-it.sh", "postgres:5432", "--", "npm", "start"]
+    #command: ["ls", "postgres:5432", "--", "npm", "start"]

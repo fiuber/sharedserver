@@ -1,0 +1,36 @@
+{
+  "name": "docker_web_app",
+  "version": "1.0.0",
+  "description": "Node.js on Docker",
+  "author": "First Last <first.last@example.com>",
+  "main": "server.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --reporter spec $(find src -name *-test.js ) $(find integration-test -name *-test.js)",
+    "start": "echo 'Abrir http://localhost:8080/, aunque la idea es que esto no ande' \n node server.js ",
+    "bdock": "docker build -t fiuber-node .",
+    "rdock": " echo 'Abrir http://localhost:55555/ Si no anda esto, seguramente hay que eliminar todas las imagenes basura de docker corriendo docker image y docker rmi' \n docker run -d -p 55555:8080 fiuber-node",
+    "tdock": "echo 'ESTO NO VA A BUILDEAR' \n docker run -p 55555:8080 fiuber-node npm test",
+    "sdock": "docker stop $(docker ps | grep fiuber-node | head -1 | sed 's/\\([0-9]*\\) .*/\\1/g')",
+    "mdock": " npm run bdock && npm run rdock",
+    "init-heroku": "npm install -g heroku-cli \n heroku login \n git init \n heroku git:remote -a fiuber-shared \n heroku container:login",
+    "push-heroku-viejo": "echo 'HAY QUE HACER GIT ADD . Y GIT COMMIT -M, LUEGO LLAMAR ESTO.' && git push heroku master",
+    "push-heroku": " heroku container:push web",
+    "cover": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha --reporter lcovonly -- -R spec $(find src -name *-test.js )",
+    "enviar": "./node_modules/.bin/codecov -t 9b56dd78-a3ab-4a7d-a7ea-bd326e5348ad",
+    "tcdock": "npm run cover && npm run enviar",
+    "tcompose": "docker-compose build && docker-compose up --abort-on-container-exit"
+  },
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "cookie-parser": "^1.4.3",
+    "express": "^4.13.3",
+    "pg-promise": "^6.5.1"
+  },
+  "devDependencies": {
+    "chai": "^4.1.1",
+    "codecov": "^2.3.0",
+    "istanbul": "^0.4.5",
+    "mocha": "^3.5.0",
+    "supertest": "^3.0.0"
+  }
+}
