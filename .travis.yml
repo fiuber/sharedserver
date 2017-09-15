@@ -16,5 +16,4 @@ script:
   - docker-compose pull
   - docker-compose build
   - docker-compose up --abort-on-container-exit
-  - docker run $ci_env -v "$PWD/shared:/app/shared" -p 5000:5000 app-server sh test-cover-enviar-en-docker-appserver.sh
   - bash <(curl -s https://codecov.io/bash) -f coverage/coverage.json -t 12e9be3a-0f98-417e-b477-d94f6d07b25e
