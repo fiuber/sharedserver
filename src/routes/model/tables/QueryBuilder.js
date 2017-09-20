@@ -17,17 +17,15 @@ QueryBuilder.prototype.drop=function(){
 }
 
 QueryBuilder.prototype.create=function(){
-    let withTypes=this.fileds.map((t)=>t+" "+this.types[t]);
-
-    let withPrimary=this.fields.map((wt)=>{
-        if(this.primaryKeys.includes(wt)){
-            return wt + " primary key"
+    let prepared=this.fields.map((t)=>{
+        if(this.primaryKeys.includes(t)){
+            return t+" "+this.types[t]+" primary key";
         }else{
-            return wt;
+            return t+" "+this.types[t];
         }
-    });
+    })
 
-    let joined=withPrimary.join(",");
+    let joined=prepared.join(",");
 
     return "create table "+this.name+"("+joined+");";
 }
@@ -57,7 +55,7 @@ QueryBuilder.prototype.insert=function(){
 }
 
 QueryBuilder.prototype.select=function(){
-    let ret="select * from "+this.name
+    let ret=new String("select * from "+this.name);
     ret.where=(partialRow)=>{
         return ret+" "+this.where(partialRow);
     }
@@ -74,15 +72,19 @@ QueryBuilder.prototype.numberedFields=function(partialRow,offset){
     });
 
     let equalities=[]
-    for(let i; i<presentFields.length;i++){
+    for(let i=0; i<presentFields.length;i++){
+        
         let equality=presentFields[i]+"=$"+(i+1+offset);
+
         equalities.push(equality);
     }
-    let condition = equalities.join(", ");
+
+    
+
+    let condition = new String(equalities.join(", "));
     condition.fields=presentFields;
 
     return condition;
-
 }
 
 QueryBuilder.prototype.where=function(partialRow,offset){
@@ -92,7 +94,7 @@ QueryBuilder.prototype.where=function(partialRow,offset){
 
 QueryBuilder.prototype.update=function(partialRowUpdate){
     let numbered=this.numberedFields(partialRowUpdate);
-    let ret="update "+this.name+" set "+numbered;
+    let ret=new String("update "+this.name+" set "+numbered);
     ret.where=(partialRow)=>{
         return ret+" "+this.where(partialRow,numbered.fields.length)
     }
@@ -100,9 +102,11 @@ QueryBuilder.prototype.update=function(partialRowUpdate){
 }
 
 QueryBuilder.prototype.delete=function(){
-    let ret="delete from "+this.name;
+    let ret=new String("delete from "+this.name);
     ret.where=(partialRow)=>{
         return ret + " "+this.where(partialRow);
     }
     return ret;
 }
+
+module.exports=QueryBuilder;
