@@ -20,6 +20,8 @@ services:
       - db
     #volumes:
     #  - ./:/app/
+    volumes:
+      - ./coverage:/app/coverage
     ports:
       - "8080:8080"
     command: ["./wait-for-it.sh", "db:5432", "--", "sh", "test-cover-enviar-en-docker.sh"]
