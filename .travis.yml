@@ -18,7 +18,8 @@ script:
   - docker-compose up --abort-on-container-exit
   #- docker-compose up -d db
   #- docker ps
-  - docker-compose run -v "$PWD/coverage:/app/coverage" $ci_env web sh test-cover-enviar-en-docker.sh
+  #VERSION VIEJA - docker-compose run -v "$PWD/coverage:/app/coverage" $ci_env web sh test-cover-enviar-en-docker.sh
+  - docker-compose run -v "$PWD/coverage:/app/coverage" $ci_env web npm run cover
   #- docker ps
   #- docker-compose down
   #- docker ps
