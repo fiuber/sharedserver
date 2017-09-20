@@ -19,7 +19,7 @@ script:
   #- docker-compose up -d db
   #- docker ps
   #VERSION VIEJA - docker-compose run -v "$PWD/coverage:/app/coverage" $ci_env web sh test-cover-enviar-en-docker.sh
-  - docker-compose run -v "$PWD/coverage:/app/coverage" $ci_env web npm run cover
+  - docker-compose run -v "$PWD/coverage:/app/coverage" $ci_env web ./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha --reporter lcovonly -- -R spec $(find src -name *-test.js )
   #- docker ps
   #- docker-compose down
   #- docker ps
