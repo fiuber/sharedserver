@@ -1,8 +1,24 @@
 # sharedserver
-PARA TESTING (local):
 
-para inicia la base de datos, ejecutar 1 sola vez
-> docker compose up -d db
-para iniciar web y testear, ejecutar cada vez
-> docker-compose run -v"./:/app/" web npm test 
+ANTES DE EJECUTAR CUALQUIER COMANDO ES CONVENIENTE EJECUTAR 
 
+sh db 
+
+De esta manera, el resto son más rápidos
+
+#test localmente
+docker-compose run -v "$PWD/src:/app/src" -v "$PWD/integration-test:/app/integration-test" web npm test
+
+o bien 
+
+sh test
+
+#ejecutar localmente
+
+docker-compose run --service-ports -v "$PWD/src:/app/src" -v "$PWD/integration-test:/app/integration-test" web npm start
+
+o bien
+
+sh run
+
+expone el port 8080

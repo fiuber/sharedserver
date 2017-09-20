@@ -1,0 +1,1 @@
+docker-compose run --service-ports -v "$PWD/src:/app/src" -v "$PWD/integration-test:/app/integration-test" web npm start
