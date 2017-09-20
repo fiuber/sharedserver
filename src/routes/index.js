@@ -12,6 +12,8 @@ router.get('/', (req, res) => {
 //autorizacion
 router.get("/login", auth.login);
 router.get("/logout", auth.logout);
+router.get("/register", auth.register);
+
 const app=auth.middleware("app");
 const admin=auth.middleware("admin");
 const manager=auth.middleware("manager");

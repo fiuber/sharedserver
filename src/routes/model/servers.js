@@ -1,4 +1,4 @@
-const db=require("./localdatabase").db;//la única manera no-hack de hacer un require global
+const db=require("./tables/localdatabase").db;//la única manera no-hack de hacer un require global
 
 exports.shape={
     "id": "string",

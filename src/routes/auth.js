@@ -7,6 +7,11 @@ exports.login = function(req,res,next){
     res.send("cookie: "+JSON.stringify(req.cookies));
 };
 
+exports.register = function(req,res,next){
+    
+    res.send("jiji");
+};
+
 exports.logout=function(req,res,next){
     
     res.send("ADIOS");
