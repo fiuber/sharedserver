@@ -18,10 +18,10 @@ script:
   - docker-compose start #la version vieja no tenia esto
   #VERSION VIEJA - docker-compose up --abort-on-container-exit
   #- docker-compose up -d db
-  #- docker ps
+  - docker ps
   #VERSION VIEJA - docker-compose run -v "$PWD/coverage:/app/coverage" $ci_env web sh test-cover-enviar-en-docker.sh
-  - docker-compose run -v "$PWD/coverage:/app/coverage" $ci_env web ./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha --reporter lcovonly -- -R spec $(find src -name *-test.js )
-  #- docker ps
+  - ./wait-for-it.sh localhost:5432 -- docker-compose run -v "$PWD/coverage:/app/coverage" $ci_env web ./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha --reporter lcovonly -- -R spec $(find src -name *-test.js )
+  - docker ps
   #- docker-compose down
   #- docker ps
   - bash <(curl -s https://codecov.io/bash) -f coverage/coverage.json -t 12e9be3a-0f98-417e-b477-d94f6d07b25e
