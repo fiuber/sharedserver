@@ -15,7 +15,7 @@ script:
   - mkdir coverage
   - docker-compose pull
   - docker-compose build
-  - docker-compose up --abort-on-container-exit
+  #VERSION VIEJA - docker-compose up --abort-on-container-exit
   #- docker-compose up -d db
   #- docker ps
   #VERSION VIEJA - docker-compose run -v "$PWD/coverage:/app/coverage" $ci_env web sh test-cover-enviar-en-docker.sh
