@@ -15,6 +15,7 @@ script:
   - mkdir coverage
   - docker-compose pull
   - docker-compose build
+  - docker-compose start #la version vieja no tenia esto
   #VERSION VIEJA - docker-compose up --abort-on-container-exit
   #- docker-compose up -d db
   #- docker ps
