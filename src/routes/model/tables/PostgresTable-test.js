@@ -1,13 +1,13 @@
 let assert=require("chai").assert;
-const Table=require("./Table")
+const PostgresTable=require("./PostgresTable")
 
-describe("Using a Table",function(){
+describe("Using a PostgresTable",function(){
     let fields={
         f1:"varchar(40)",
         f2:"int",
         f3:"serial"
     };
-    let table= new Table("table_test",fields,["f1"]);
+    let table= new PostgresTable("table_test",fields,["f1"]);
     beforeEach(function(){
         this.timeout(5000);
         return table.restart();
