@@ -30,11 +30,15 @@ QueryBuilder.prototype.create=function(){
     return "create table "+this.name+"("+joined+");";
 }
 
+QueryBuilder.prototype.isSerial=function(field){
+    let type=this.types[field];
+    return (type.replace(" ","")==="serial")
+}
+
 QueryBuilder.prototype.insert=function(){
 
     let notSerial=(f)=>{
-        let type=this.types[f];
-        return ! (type.replace(" ","")==="serial")
+        return ! this.isSerial(f);
     }
 
     let withoutSerials=this.fields.filter(notSerial);
@@ -55,9 +59,13 @@ QueryBuilder.prototype.insert=function(){
 }
 
 QueryBuilder.prototype.select=function(){
-    let ret=new String("select * from "+this.name);
+    let partial="select * from "+this.name;
+    let ret=new String(partial+";");
     ret.where=(partialRow)=>{
-        return ret+" "+this.where(partialRow);
+        return partial+" "+this.where(partialRow);
+    }
+    ret.simple=()=>{
+        return partial+";";
     }
     return ret;
 }

@@ -28,8 +28,8 @@ describe("query builder",function(){
 
     it("simple select", function(){
         assert.equal(
-            builder.select(),
-            "select * from table_name"
+            builder.select().simple(),
+            "select * from table_name;"
         );
     })
 
