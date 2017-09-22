@@ -10,16 +10,9 @@ const QueryBuilder=require("./QueryBuilder");
  */
 function PostgresTable(name,fields,primaryKeys){
     QueryBuilder.call(this,name,fields,primaryKeys)
-    /*
-    this.name=name;
-    this.fields=Object.keys(fields);
-    this.types=fields;
-    this.primaryKeys=primaryKeys;
-    */
 }
 PostgresTable.prototype=Object.create(QueryBuilder.prototype);
 PostgresTable.prototype.constructor=PostgresTable;
-//TODO: LO DE LAS MAYUSCULAS: CUANDO SALIS DE SQL VIENE TODO EN MINUSCULA!!!
 
 /**
  * Transforms the row in an Array that can be used to call pg-promise
