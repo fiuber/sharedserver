@@ -56,8 +56,13 @@ PostgresTable.prototype.add=function(row){
  * Finds the row by checking equality the properties and values of the passed object
  */
 PostgresTable.prototype.get=function(partialRow){
-    return db
-    .any(this.select().where(partialRow),this.rowToArray(partialRow));
+    let select=this.select();
+    if(partialRow){
+        return db.any(select.where(partialRow),this.rowToArray(partialRow));
+    }else{
+        return db.any(select.all());
+    }
+    
 }
 
 /**
@@ -83,10 +88,6 @@ PostgresTable.prototype.modify=function(partialRowSelection,partialRowUpdate){
 PostgresTable.prototype.remove=function(partialRowSelection){
     return db
     .none(this.delete().where(partialRowSelection),this.rowToArray(partialRowSelection))
-}
-
-PostgresTable.prototype.list=function(){
-    return db.any(this.select().simple());
 }
 
 

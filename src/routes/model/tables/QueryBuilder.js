@@ -64,7 +64,7 @@ QueryBuilder.prototype.select=function(){
     ret.where=(partialRow)=>{
         return partial+" "+this.where(partialRow);
     }
-    ret.simple=()=>{
+    ret.all=()=>{
         return partial+";";
     }
     return ret;

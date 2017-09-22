@@ -77,7 +77,7 @@ describe("Using a PostgresTable",function(){
     it("after adding two things, listing returns both",function(){
         return table.add({f1:"asd",f2:5}).then(()=>{
             return table.add({f1:"fgh",f2:5}).then(()=>{
-                return table.list().then((list)=>{
+                return table.get().then((list)=>{
                     assert.equal(list.length,2)
                 })
             })
