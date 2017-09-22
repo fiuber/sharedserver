@@ -5,7 +5,7 @@ describe("CRUD servers list", function(){
     var app;
     var db;
     const s={
-        "id":"pserver",
+        "id":"89",
         "_ref":"no matter",
         "createdBy":"pepe",
         "createdTime":15,
@@ -19,7 +19,7 @@ describe("CRUD servers list", function(){
     });
     it("A server is added and then requested",function(done){
         servers.add(s)
-        .then((e)=>servers.get(s.id,"nope"))
+        .then((q)=>servers.get(q.server.server.id,"nope"))
         .then(function (result){
             assert.equal(result.server.createdBy,s.createdBy);
             assert.equal(result.server.createdTime,s.createdTime);
@@ -30,7 +30,7 @@ describe("CRUD servers list", function(){
 
     it("A server is added, modified and then requested",function(done){
         var sRenamed={
-            "id":"pserver",
+            "id":"89",
             "_ref":"no matter",
             "createdBy":"pepe",
             "createdTime":15,
@@ -61,7 +61,7 @@ describe("CRUD servers list", function(){
 
     it("Multiple servers are added and then got",function(done){
         var s={
-            "id":"serv1",
+            "id":"5",
             "_ref":"no matter",
             "createdBy":"pepe",
             "createdTime":15,
@@ -91,7 +91,7 @@ describe("CRUD servers list", function(){
 
     it("Multiple servers are added,one is deleted, the rest are got",function(done){
         var s={
-            "id":"serv1",
+            "id":"8",
             "_ref":"no matter",
             "createdBy":"pepe",
             "createdTime":15,

@@ -22,6 +22,12 @@ exports.ping=function(){
 }
 
 exports.add=function(server){
+    server.token=0;
+    server.expiresAt=0;
+    return sdb.create(server).then(function(created){
+        return exports.updateToken(created.id,"id not found, how's that possible?");
+    });
+    /*
     return db.one(
         "insert into servers(name,createdTime,createdBy,token,expiresAt) values($1,$2,$3,$4,$5) returning id",
         [server.name,server.createdTime,server.createdBy,000,000]
@@ -29,6 +35,7 @@ exports.add=function(server){
         server.id=ret.id;
         return exports.updateToken(server.id,"id not found, how's that possible?");
     })
+    */
 }
 
 
@@ -59,7 +66,7 @@ exports.updateToken=function(id,nonexistent){
             .update({id:id},{token:token,expiresAt:expiresAt})
             .read({id:id})
             .then(function(rows){
-                return {
+                let toReturn= {
                     server:{
                         server:{
                             id:rows[0].id,
@@ -75,6 +82,7 @@ exports.updateToken=function(id,nonexistent){
                         }
                     }
                 }
+                return toReturn;
             })
         }
     })
