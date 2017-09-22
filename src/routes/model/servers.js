@@ -1,4 +1,5 @@
 const db=require("./tables/localdatabase").db;//la única manera no-hack de hacer un require global
+const sdb=require("./tables").servers;
 
 exports.shape={
     "id": "string",
@@ -35,13 +36,11 @@ exports.add=function(server){
  * Updates only the name of the server with the received ID
  */
 exports.update=function(body,id,nonexistent){
-    return db
-    .any("SELECT * FROM servers WHERE id=$1",[id])
-    .then(function(data){
-        if(data.length==0){
+    return sdb.exists({id:id}).then((exists)=>{
+        if(!exists){
             return nonexistent
         }else{
-            return db.none("UPDATE servers SET name=$1 WHERE id=$2",[body.name,id])
+            return sdb.update({id:id},{name:body.name});
         }
     })
 }
@@ -52,31 +51,27 @@ exports.updateToken=function(id,nonexistent){
     var expiresAtDate = new Date();
     expiresAtDate.setDate(expiresAtDate.getDate()+3);
     var expiresAt = expiresAtDate.getTime();
-
-    return db
-    .any("SELECT * FROM servers WHERE id=$1",[id])
-    .then(function(data){
-
-        if(data.length==0){
+    return sdb.exists({id:id}).then(function(exists){
+        if(!exists){
             return nonexistent;
         }else{
-            return db.none(
-                "UPDATE servers SET token=$1, expiresAt=$2 WHERE id=$3",
-                [token,expiresAt,id]
-            ).then(function(){
+            return sdb
+            .update({id:id},{token:token,expiresAt:expiresAt})
+            .read({id:id})
+            .then(function(rows){
                 return {
                     server:{
                         server:{
-                            id:data[0].id,
+                            id:rows[0].id,
                             _ref:"-",
-                            createdBy:data[0].createdby,
-                            createdTime:data[0].createdtime,
-                            name:data[0].name,
-                            lastConnection:data[0].lastconnection
+                            createdBy:rows[0].createdBy,
+                            createdTime:new Number(rows[0].createdTime),
+                            name:rows[0].name,
+                            lastConnection:new Number(rows[0].lastConnection)
                         },
                         token:{
-                            expiresAt:expiresAt,
-                            token:token
+                            expiresAt:new Number(rows[0].expiresAt),
+                            token:rows[0].token
                         }
                     }
                 }
@@ -89,13 +84,11 @@ exports.updateToken.shape={}
 
 
 exports.delete=function(id,nonexistent){
-    return db
-    .any("SELECT * FROM servers WHERE id=$1",[id])
-    .then(function(data){
-        if(data.length==0){
-            return nonexistent
+    return sdb.exists({id:id}).then((exists)=>{
+        if(!exists){
+            return nonexistent;
         }else{
-            return db.none("DELETE FROM servers WHERE id=$1",[id])
+            return sdb.delete({id:id});
         }
     })
 }
@@ -104,7 +97,7 @@ exports.delete.shape={}
  * no pongo el METADATA correspondiente porque no entiendo qué significa
  */
 exports.list=function(){
-    return db.any("SELECT * FROM servers").then(function(data){
+    return sdb.read().then(function(data){
         let jsonified=data.map(function(original){
             return {
                 "id":original.id,
@@ -123,19 +116,24 @@ exports.list=function(){
 exports.list.shape={};
 
 exports.get=function(id,nonexistent){
-    return db.one("SELECT * FROM servers WHERE id=$1",[id])
-    .then(function(data){
-        return {
-            "server": {
-                "id": id,
-                "_ref": "-",
-                "createdBy": data.createdby,
-                "createdTime": data.createdtime,
-                "name": data.name,
-                "lastConnection": data.lastconnection
-              }
+    return sdb.exists({id:id}).then(function(exists){
+        if(!exists){
+            return nonexistent
+        }else{
+            return sdb.read({id:id}).then(function(rows){
+                return {
+                    "server": {
+                        "id": rows[0].id,
+                        "_ref": "-",
+                        "createdBy": rows[0].createdBy,
+                        "createdTime": new Number(rows[0].createdTime),
+                        "name": rows[0].name,
+                        "lastConnection": new Number(rows[0].lastConnection)
+                      }
+                }
+            })
         }
-    }).catch(function(e){
+    }).catch((e)=>{
         return nonexistent;
     });
 }

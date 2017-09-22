@@ -15,7 +15,7 @@ describe("CRUD servers list", function(){
 
     beforeEach(function(){
         this.timeout(5000);
-        return require("./tables/localdatabase").restarted();
+        return require("./tables").restart();
     });
     it("A server is added and then requested",function(done){
         servers.add(s)
