@@ -1,3 +1,5 @@
+const CallWrapper=require("./CallWrapper");
+
 function actualKey(key,actualNames){
     for(let actualName of actualNames){
         if(key.toLowerCase()===actualName.toLowerCase()){
@@ -28,28 +30,14 @@ function fixCaps(something,actualNames){
 }
 
 
-function wrap(fun,actualNames){
-    return function(){
-        let ret = fun.apply(null,arguments);
+function CapsKeeper(keep,actualFields){
+    function wrapper (ret){
         return Promise.resolve(ret).then(function(result){
-            let asdasd=fixCaps(result,actualNames);
-            console.log(asdasd);
-            return asdasd;
+            return fixCaps(result,actualFields);
         })
     }
-}
 
-
-function CapsKeeper(keep,actualFields){
-    let protoKeys=[];
-    if(keep.prototype){
-        protoKeys=Object.keys(keep.prototype);
-    }
-
-    let allKeys=protoKeys.concat(Object.keys(keep));
-    for(let field of allKeys){
-        this[field]=wrap(keep[field].bind(keep),actualFields);
-    }
+    CallWrapper.call(this,keep,wrapper);
 }
 
 module.exports=CapsKeeper;
