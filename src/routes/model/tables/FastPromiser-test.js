@@ -17,7 +17,6 @@ describe("Fast promises work",function(){
     })
 
     it("many chained actions 1",function(){
-        console.log(fo);
         return fo.add(5).add(7).get().then(function(r){
             assert.equal(r,12)
         });

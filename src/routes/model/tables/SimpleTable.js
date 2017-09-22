@@ -24,16 +24,20 @@ const PostgresTable=require("./PostgresTable");
 function SimpleTable(name,fields,primaryKeys){
     let postgresTable=new PostgresTable(name,fields,primaryKeys);
 
-    this.create=postgresTable.create.bind(postgresTable);
+    this.create=postgresTable.add.bind(postgresTable);
     this.read=postgresTable.get.bind(postgresTable);
-    this.exists=postgresTable.exists.bind(postgresTable);
+    this.exists=function(){
+        return postgresTable.exists.apply(postgresTable,arguments);
+    }
     this.update=postgresTable.modify.bind(postgresTable);
     this.delete=function(){
         if(arguments.length==0){
-            postgresTable.restart();
+            return postgresTable.restart();
         }else{
-            postgresTable.remove.apply(postgresTable,arguments);
+            return postgresTable.remove.apply(postgresTable,arguments);
         }
     }
 
 }
+
+module.exports=SimpleTable;

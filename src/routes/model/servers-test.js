@@ -79,12 +79,9 @@ describe("CRUD servers list", function(){
             added.push(e.server.server.id);
             return servers.list()
         }).then(function(result){
-            //console.log("***$$$$$$444444$$$$$$******")
             var list = result.servers;
-            //console.log(added);
             
             var ids=list.map((s)=>s.id);
-            //console.log(ids)
             assert(ids.includes(added[0]))
             assert(ids.includes(added[1]))
             assert(ids.includes(added[2]))

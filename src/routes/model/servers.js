@@ -35,11 +35,9 @@ exports.add=function(server){
  * Updates only the name of the server with the received ID
  */
 exports.update=function(body,id,nonexistent){
-    console.log("ADENTRO DEL UPDATE")
     return db
     .any("SELECT * FROM servers WHERE id=$1",[id])
     .then(function(data){
-        console.log("estoy en then")
         if(data.length==0){
             return nonexistent
         }else{
@@ -82,14 +80,8 @@ exports.updateToken=function(id,nonexistent){
                         }
                     }
                 }
-            }).catch((err)=>{
-                console.log("ERRRROOOOOOOOORRRRRR");
-                console.log(err);
             })
         }
-    }).catch((err)=>{
-        console.log("ERRRROOOOOOOOORRRRRR");
-        console.log(err);
     })
 }
 exports.updateToken.shape={}

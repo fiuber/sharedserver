@@ -70,7 +70,7 @@ QueryBuilder.prototype.select=function(){
     return ret;
 }
 
-QueryBuilder.prototype.numberedFields=function(partialRow,offset){
+QueryBuilder.prototype.numberedFields=function(partialRow,offset,separator){
     if(offset==undefined){
         offset=0
     }
@@ -87,9 +87,9 @@ QueryBuilder.prototype.numberedFields=function(partialRow,offset){
         equalities.push(equality);
     }
 
-    
+    separator =separator || ", ";
 
-    let condition = new String(equalities.join(", "));
+    let condition = new String(equalities.join(separator));
     condition.fields=presentFields;
 
     return condition;
@@ -97,7 +97,7 @@ QueryBuilder.prototype.numberedFields=function(partialRow,offset){
 
 QueryBuilder.prototype.where=function(partialRow,offset){
 
-    return "where "+this.numberedFields(partialRow,offset);
+    return "where "+this.numberedFields(partialRow,offset," and ");
 }
 
 QueryBuilder.prototype.update=function(partialRowUpdate){

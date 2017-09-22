@@ -36,7 +36,7 @@ describe("query builder",function(){
     it("select where", function(){
         assert.equal(
             builder.select().where({f1:4,f2:58}),
-            "select * from table_name where f1=$1, f2=$2"
+            "select * from table_name where f1=$1 and f2=$2"
         );
     })
 

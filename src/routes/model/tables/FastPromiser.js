@@ -26,9 +26,6 @@ function FastPromiser(obj){
     let ownKeys=Object.keys(obj);
     let keys=protoKeys.concat(ownKeys);
 
-    console.log("------- LAS CLAVES SON --------")
-    console.log(keys);
-
     let funKeys=keys.filter((k)=>obj[k] instanceof Function);
 
     function wrap(ret){

@@ -1,5 +1,6 @@
-const SimpleTable=require("./SimpleTable")
-
+const SimpleTable=require("./SimpleTable");
+const CapsKeeper=require("./CapsKeeper");
+const FastPromiser=require("./FastPromiser");
 /**
  * A SimpleTable that is easy to use.
  * @param {String} name 
@@ -7,7 +8,9 @@ const SimpleTable=require("./SimpleTable")
  * @param {Array} primaryKeys 
  */
 function EasyTable(name,fields,primaryKeys){
-    let simpleTable=new SimpleTable(name,fields,primariKeys);
+    let simpleTable=new SimpleTable(name,fields,primaryKeys);
     let fixedCaps=new CapsKeeper(simpleTable,Object.keys(fields));
     FastPromiser.call(this,fixedCaps);
 }
+
+module.exports=EasyTable;
