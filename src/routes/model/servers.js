@@ -12,6 +12,10 @@ const servers_metadata={
     "version":"1"
 };
 
+function keepFirst(array){
+    return array[0];
+}
+
 function ifExists(id,fun,nonexistent){
     return sdb.exists({id:id}).then((exists)=>{
         if(exists){
@@ -57,9 +61,7 @@ exports.updateToken=function(id,nonexistent){
         return sdb
         .update({id:id},{token:token,expiresAt:expiresAt})
         .read({id:id})
-        .then(function(rows){
-            return rows[0];
-        })
+        .then(keepFirst);
     },nonexistent)
             
 }
@@ -73,6 +75,7 @@ exports.delete=function(id,nonexistent){
     },nonexistent)
 }
 exports.delete.shape={}
+
 /**
  * no pongo el METADATA correspondiente porque no entiendo qué significa
  */
@@ -83,9 +86,7 @@ exports.list.shape={};
 
 exports.get=function(id,nonexistent){
     return ifExists(id,()=>{
-        return sdb.read({id:id}).then(function(rows){
-            return rows[0]
-        })
+        return sdb.read({id:id}).then(keepFirst)
     },nonexistent);  
 }
 exports.get.shape={};
