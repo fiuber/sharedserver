@@ -19,11 +19,11 @@ describe("CRUD servers list", function(){
     });
     it("A server is added and then requested",function(done){
         servers.add(s)
-        .then((q)=>servers.get(q.server.server.id,"nope"))
+        .then((q)=>servers.get(q.id,"nope"))
         .then(function (result){
-            assert.equal(result.server.createdBy,s.createdBy);
-            assert.equal(result.server.createdTime,s.createdTime);
-            assert.equal(result.server.name,s.name);
+            assert.equal(result.createdBy,s.createdBy);
+            assert.equal(result.createdTime,s.createdTime);
+            assert.equal(result.name,s.name);
         })
         .then(done,done);
     })
@@ -40,13 +40,13 @@ describe("CRUD servers list", function(){
         var sResult=null;
         
         servers.add(s)
-        .then((res)=>{sResult=res.server.server;return res;})
+        .then((res)=>{sResult=res;return res;})
         .then(()=>servers.update(sRenamed,sResult.id,"nope"))
         .then(()=>servers.get(sResult.id,"nope"))
         .then(function (result){
-            assert.equal(result.server.createdBy,s.createdBy);
-            assert.equal(result.server.createdTime,s.createdTime);
-            assert.equal(result.server.name,sRenamed.name);
+            assert.equal(result.createdBy,s.createdBy);
+            assert.equal(result.createdTime,s.createdTime);
+            assert.equal(result.name,sRenamed.name);
         })
         .then(done,done);
     })
@@ -70,16 +70,16 @@ describe("CRUD servers list", function(){
         };
         var added=[]
         servers.add(s).then(function(e){
-            added.push(e.server.server.id);
+            added.push(e.id);
             return servers.add(s);
         }).then(function(e){
-            added.push(e.server.server.id);
+            added.push(e.id);
             return servers.add(s);
         }).then(function(e){
-            added.push(e.server.server.id);
+            added.push(e.id);
             return servers.list()
         }).then(function(result){
-            var list = result.servers;
+            var list = result;
             
             var ids=list.map((s)=>s.id);
             assert(ids.includes(added[0]))
@@ -101,18 +101,18 @@ describe("CRUD servers list", function(){
         var added=[];
                    servers.add(s)
           .then(function(e){
-            added.push(e.server.server.id)
+            added.push(e.id)
             return servers.add(s);
         }).then(function(e){
-            added.push(e.server.server.id)
+            added.push(e.id)
             return servers.add(s);
         }).then(function(e){
-            added.push(e.server.server.id)
+            added.push(e.id)
             return servers.delete(added[2])
         }).then(function(){
             return servers.list()
         }).then(function(result){
-            var list = result.servers
+            var list = result
             var ids=list.map((s)=>s.id);
             assert(ids.includes(added[0]))
             assert(ids.includes(added[1]))

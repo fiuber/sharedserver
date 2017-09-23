@@ -96,7 +96,7 @@ describe("POST en /servers", function(){
         request(app)
         .post("/servers")
         .send(s)
-        .expect((e)=>{added=e.body.server.server})
+        .expect((e)=>{console.log("-----------EL SERVER ES------",e.body);added=e.body.server.server})
         .expect(201).end(function(){
             return request(app)
             .put("/servers/"+added.id)

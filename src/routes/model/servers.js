@@ -20,6 +20,51 @@ exports.ping=function(){
     return "pong";
 }
 
+function wTokenOutputShape(string,number){
+    return{
+        server:{
+            server:{
+                id:number("id"),
+                _ref:"-",
+                createdBy:string("createdBy"),
+                createdTime:number("createdTime"),//new Number(rows[0].createdTime),
+                name:string("name"),//rows[0].name,
+                lastConnection:number("lastConnection")//new Number(rows[0].lastConnection)
+            },
+            token:{
+                expiresAt:number("expiresAt"),//new Number(rows[0].expiresAt),
+                token:string("token")//rows[0].token
+            }
+        }
+    }
+}
+
+function getShape(string,number){
+    return {
+        server:{
+            id: number("id"),
+            _ref: "-",
+            createdBy: string("createdBy"),
+            createdTime: number("createdTime"),
+            name: string("name"),
+            lastConnection: number("lastConnection")
+        }
+    }
+}
+
+function listShape(string,number,array){
+    return {
+        servers:array({
+            id:number("id"),
+            _ref:"-",
+            createdBy:string("createdBy"),
+            createdTime:number("createdTime"),
+            name:string("name"),
+            lastConnection:number("lastConnection")
+        })
+    }
+}
+
 exports.add=function(server){
     server.token=0;
     server.expiresAt=0;
@@ -27,6 +72,7 @@ exports.add=function(server){
         return exports.updateToken(created.id,"id not found, how's that possible?");
     });
 }
+exports.add.outputShape=wTokenOutputShape;
 
 
 /**
@@ -41,6 +87,7 @@ exports.update=function(body,id,nonexistent){
         }
     })
 }
+exports.update.outputShape=getShape;
 
 
 exports.updateToken=function(id,nonexistent){
@@ -56,28 +103,13 @@ exports.updateToken=function(id,nonexistent){
             .update({id:id},{token:token,expiresAt:expiresAt})
             .read({id:id})
             .then(function(rows){
-                let toReturn= {
-                    server:{
-                        server:{
-                            id:rows[0].id,
-                            _ref:"-",
-                            createdBy:rows[0].createdBy,
-                            createdTime:new Number(rows[0].createdTime),
-                            name:rows[0].name,
-                            lastConnection:new Number(rows[0].lastConnection)
-                        },
-                        token:{
-                            expiresAt:new Number(rows[0].expiresAt),
-                            token:rows[0].token
-                        }
-                    }
-                }
-                return toReturn;
+                return rows[0];
             })
         }
     })
 }
 exports.updateToken.shape={}
+exports.updateToken.outputShape=wTokenOutputShape;
 
 
 
@@ -96,22 +128,11 @@ exports.delete.shape={}
  */
 exports.list=function(){
     return sdb.read().then(function(data){
-        let jsonified=data.map(function(original){
-            return {
-                "id":original.id,
-                "_ref":"string",
-                "createdBy":original.createdby,
-                "createdTime":original.createdtime,
-                "name":original.name,
-                "lastConnection":original.lastconnection
-            }
-        })
-        return {
-            "servers":jsonified
-        }
+        return data;
     })
 }
 exports.list.shape={};
+exports.list.outputShape=listShape;
 
 exports.get=function(id,nonexistent){
     return sdb.exists({id:id}).then(function(exists){
@@ -119,16 +140,7 @@ exports.get=function(id,nonexistent){
             return nonexistent
         }else{
             return sdb.read({id:id}).then(function(rows){
-                return {
-                    "server": {
-                        "id": rows[0].id,
-                        "_ref": "-",
-                        "createdBy": rows[0].createdBy,
-                        "createdTime": new Number(rows[0].createdTime),
-                        "name": rows[0].name,
-                        "lastConnection": new Number(rows[0].lastConnection)
-                      }
-                }
+                return rows[0]
             })
         }
     }).catch((e)=>{
@@ -136,3 +148,4 @@ exports.get=function(id,nonexistent){
     });
 }
 exports.get.shape={};
+exports.get.outputShape=getShape;
