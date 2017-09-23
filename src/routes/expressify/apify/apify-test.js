@@ -18,7 +18,7 @@ describe("funcionamiento de apify",function(){
     function failer(){
         return Promise.reject("It failed");
     }
-    function parameterized(body,par1,par2){
+    function parameterized(body,par1,par2,nonexistent,badRevision){
         return [par1,par2];
     }
 

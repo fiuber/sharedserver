@@ -41,12 +41,41 @@ describe("CRUD servers list", function(){
         
         servers.add(s)
         .then((res)=>{sResult=res;return res;})
-        .then(()=>servers.update(sRenamed,sResult.id,"nope"))
-        .then(()=>servers.get(sResult.id,"nope"))
+        .then(()=>{
+            sRenamed._ref=sResult._ref;
+            return servers.update(sRenamed,sResult.id,"nope","badRevision")
+        })
+        .then((asd)=>{
+            console.log(asd);
+            return servers.get(sResult.id,"nope")
+        })
         .then(function (result){
             assert.equal(result.createdBy,s.createdBy);
             assert.equal(result.createdTime,s.createdTime);
             assert.equal(result.name,sRenamed.name);
+        })
+        .then(done,done);
+    })
+
+    it("A server is added, modified with wrong _ref",function(done){
+        var sRenamed={
+            "id":"89",
+            "_ref":"no matter",
+            "createdBy":"pepe",
+            "createdTime":15,
+            "name":"kekeserver",
+            "lastConnection":45
+        };
+        var sResult=null;
+        
+        servers.add(s)
+        .then((res)=>{sResult=res;return res;})
+        .then(()=>{
+            sRenamed._ref="juancito";
+            return servers.update(sRenamed,sResult.id,"nope","badRevision")
+        })
+        .then((asd)=>{
+            assert.equal(asd,"badRevision");
         })
         .then(done,done);
     })

@@ -7,7 +7,8 @@ const serversSchema={
     createdBy:"varchar(40)",
     token:"varchar(40)",
     expiresAt:"bigint",
-    lastConnection:"bigint"
+    lastConnection:"bigint",
+    _ref:"varchar(40)"
 }
 const tables={
     servers:new EasyTable("servers",serversSchema,["id"])

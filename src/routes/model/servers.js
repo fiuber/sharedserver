@@ -8,9 +8,6 @@ exports.shape={
     "name": "string",
     "lastConnection": 0
 };
-const servers_metadata={
-    "version":"1"
-};
 
 function keepFirst(array){
     return array[0];
@@ -37,6 +34,7 @@ exports.ping=function(){
 exports.add=function(server){
     server.token=0;
     server.expiresAt=0;
+    server._ref=Math.random()*1000+"";
     return sdb.create(server).then(function(created){
         return exports.updateToken(created.id,"id not found, how's that possible?");
     });
@@ -45,9 +43,16 @@ exports.add=function(server){
 /**
  * Updates only the name of the server with the received ID
  */
-exports.update=function(body,id,nonexistent){
+exports.update=function(body,id,nonexistent,badRevision){
     return ifExists(id,()=>{
-        return sdb.update({id:id},{name:body.name});
+        return sdb.read({id:id}).then(function(got){
+            if(got[0]._ref==body._ref){
+                return sdb.update({id:id},{name:body.name});
+            }else{
+                return badRevision
+            }
+        })
+        
     },nonexistent)
 }
 

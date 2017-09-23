@@ -17,12 +17,13 @@ function apify(shape,fun){
 
         var shapeOk=satisfiesShape(req_body,shape);
         if(shapeOk){
-            var inexistent={"inexistent":true};
+            let inexistent={"inexistent":true};
+            let badRevision={"bad revision":true};
             var argumentsToApply=[];
             if(!req_body || Object.keys(req_body).length==0){
-                argumentsToApply=[        ].concat(req_parameters).concat([inexistent]);
+                argumentsToApply=[        ].concat(req_parameters).concat([inexistent,badRevision]);
             }else{
-                argumentsToApply=[req_body].concat(req_parameters).concat([inexistent]);
+                argumentsToApply=[req_body].concat(req_parameters).concat([inexistent,badRevision]);
             }
             
             if(fun.length > argumentsToApply.length){
@@ -34,6 +35,8 @@ function apify(shape,fun){
             .then(function(result){
                 if(result==inexistent){
                     send(BAD_RESOURCE,"The resource doesn't exist.");
+                }else if(result == badRevision){
+                    send(BAD_REQUEST,"bad _ref");
                 }else{
                     if(result==null || result ==undefined){
                         send(SUCCESS);

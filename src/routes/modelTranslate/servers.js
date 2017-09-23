@@ -3,7 +3,7 @@ function wTokenOutputShape(string,number){
         server:{
             server:{
                 id:number("id"),
-                _ref:"-",
+                _ref:string("_ref"),
                 createdBy:string("createdBy"),
                 createdTime:number("createdTime"),//new Number(rows[0].createdTime),
                 name:string("name"),//rows[0].name,
@@ -21,7 +21,7 @@ function getShape(string,number){
     return {
         server:{
             id: number("id"),
-            _ref: "-",
+            _ref:string("_ref"),
             createdBy: string("createdBy"),
             createdTime: number("createdTime"),
             name: string("name"),
@@ -34,7 +34,7 @@ function listShape(string,number,array){
     return {
         servers:array({
             id:number("id"),
-            _ref:"-",
+            _ref:string("_ref"),
             createdBy:string("createdBy"),
             createdTime:number("createdTime"),
             name:string("name"),
