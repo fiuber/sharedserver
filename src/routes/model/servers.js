@@ -47,7 +47,8 @@ exports.update=function(body,id,nonexistent,badRevision){
     return ifExists(id,()=>{
         return sdb.read({id:id}).then(function(got){
             if(got[0]._ref==body._ref){
-                return sdb.update({id:id},{name:body.name});
+                let new_ref=Math.random()*1000+"";
+                return sdb.update({id:id},{name:body.name,new_ref});
             }else{
                 return badRevision
             }
@@ -62,9 +63,10 @@ exports.updateToken=function(id,nonexistent){
     var expiresAtDate = new Date();
     expiresAtDate.setDate(expiresAtDate.getDate()+3);
     var expiresAt = expiresAtDate.getTime();
+    let new_ref=Math.random()*1000+"";
     return ifExists(id,()=>{
         return sdb
-        .update({id:id},{token:token,expiresAt:expiresAt})
+        .update({id:id},{token:token,expiresAt:expiresAt,_ref:new_ref})
         .read({id:id})
         .then(keepFirst);
     },nonexistent)

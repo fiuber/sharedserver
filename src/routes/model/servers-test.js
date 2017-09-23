@@ -46,7 +46,6 @@ describe("CRUD servers list", function(){
             return servers.update(sRenamed,sResult.id,"nope","badRevision")
         })
         .then((asd)=>{
-            console.log(asd);
             return servers.get(sResult.id,"nope")
         })
         .then(function (result){
