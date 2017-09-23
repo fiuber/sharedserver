@@ -1,5 +1,6 @@
-const apify=require("./apify.js");
+const apify=require("./apify/apify.js");
 const wrapAll= require("./wrapAll.js");
+const reshaperCreator=require("./reshaperCreator");
 
 /**
  * Decouples apify.js and express.
@@ -10,8 +11,8 @@ const wrapAll= require("./wrapAll.js");
  * property
  * @param {fn} fun the function to expressify
  */
-function expressify(shape,metadata,fun){
-    var f=apify(shape,metadata,fun);
+function expressify(shape,fun,reshapeOutput){
+    var f=apify(shape,fun);
     return function(req,res){
 
         
@@ -32,10 +33,9 @@ function expressify(shape,metadata,fun){
                 case apify.ERROR: statusDef=500;break;
                 default: statusDef=500; break;
             }
-
             var dataDef=null;
             if(status==apify.SUCCESS){
-                dataDef=data;
+                dataDef=reshapeOutput(data);
             }else{
                 dataDef={
                     code:statusDef,
@@ -58,11 +58,14 @@ function expressify(shape,metadata,fun){
 
 expressify.all=function(module,metadata){
     return wrapAll(function(f){
-        if(f.shape==undefined){
-            return expressify(module.shape,metadata,f)
-        }else{
-            return expressify(f.shape,metadata,f)
+        let inShape=f.shape || module.shape;
+        let reshaper=reshaperCreator(f.outputShape || module.outputShape);
+        function trueReshaper(data){
+            let reshaped=reshaper(data);
+            reshaped.metadata=metadata;
+            return reshaped;
         }
+        return expressify(inShape,f,trueReshaper)
     },module)
 }
 

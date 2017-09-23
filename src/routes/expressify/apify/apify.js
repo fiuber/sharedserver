@@ -5,7 +5,8 @@ const BAD_REQUEST={"bad request":true}
 const BAD_RESOURCE={"bad resource":true}
 const ERROR={"error":true}
 
-function apify(shape,metadata,fun){
+function apify(shape,fun){
+    
     return function(req_body,send,req_parameters){
         if(req_parameters==undefined){
             req_parameters=[];
@@ -37,7 +38,6 @@ function apify(shape,metadata,fun){
                     if(result==null || result ==undefined){
                         send(SUCCESS);
                     }else{
-                        result.metadata=metadata
                         send(SUCCESS,result);
                     }
                 }
