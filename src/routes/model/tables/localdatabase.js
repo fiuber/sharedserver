@@ -1,3 +1,3 @@
-var asd=require("../../../database.js");
+var asd=require("../../../../database.js");
 exports.db=asd.db;
 exports.restarted=asd.restarted;

@@ -1,4 +1,5 @@
 # sharedserver
+PRECAUCIÓN: si se modifica algún .js de la raíz, hay que tirar docker-compose build
 
 ANTES DE EJECUTAR CUALQUIER COMANDO ES CONVENIENTE EJECUTAR 
 

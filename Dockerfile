@@ -24,6 +24,7 @@ ADD ./server.js /app/server.js
 ADD ./wait-for-it.sh /app/wait-for-it.sh
 ADD ./src /app/src
 ADD ./database.js /app/database.js
+ADD ./restartDatabase.js /app/restartDatabase.js
 ADD ./integration-test /app/integration-test
 
 ADD ./test-cover-enviar-en-docker.sh /app/test-cover-enviar-en-docker.sh

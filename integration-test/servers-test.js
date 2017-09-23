@@ -9,7 +9,8 @@ describe("POST en /servers", function(){
     beforeEach(function(){
         this.timeout(5000);
         app =require("../server.js");
-        return require("../database.js").restarted();
+        return require("../restartDatabase.js")();
+        //return require("../database.js").restarted();
     });
     afterEach(function(){
         app.close();
@@ -147,7 +148,7 @@ describe("POST en /servers", function(){
 
     it("A nonexistent server is requested",function(done){
         request(app)
-        .get("/servers/asd")
+        .get("/servers/72")
         .expect(404)
         .end(done);
     })
