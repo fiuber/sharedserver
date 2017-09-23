@@ -12,6 +12,16 @@ const servers_metadata={
     "version":"1"
 };
 
+function ifExists(id,fun,nonexistent){
+    return sdb.exists({id:id}).then((exists)=>{
+        if(exists){
+            return fun();
+        }else{
+            return nonexistent;
+        }
+    })
+}
+
 /**
  * No se agrega porque no se sabe cuál es el server 
  * que me está pegando porque no están implementadas las autorizaciones
@@ -32,13 +42,9 @@ exports.add=function(server){
  * Updates only the name of the server with the received ID
  */
 exports.update=function(body,id,nonexistent){
-    return sdb.exists({id:id}).then((exists)=>{
-        if(!exists){
-            return nonexistent
-        }else{
-            return sdb.update({id:id},{name:body.name});
-        }
-    })
+    return ifExists(id,()=>{
+        return sdb.update({id:id},{name:body.name});
+    },nonexistent)
 }
 
 
@@ -47,54 +53,39 @@ exports.updateToken=function(id,nonexistent){
     var expiresAtDate = new Date();
     expiresAtDate.setDate(expiresAtDate.getDate()+3);
     var expiresAt = expiresAtDate.getTime();
-    return sdb.exists({id:id}).then(function(exists){
-        if(!exists){
-            return nonexistent;
-        }else{
-            return sdb
-            .update({id:id},{token:token,expiresAt:expiresAt})
-            .read({id:id})
-            .then(function(rows){
-                return rows[0];
-            })
-        }
-    })
+    return ifExists(id,()=>{
+        return sdb
+        .update({id:id},{token:token,expiresAt:expiresAt})
+        .read({id:id})
+        .then(function(rows){
+            return rows[0];
+        })
+    },nonexistent)
+            
 }
 exports.updateToken.shape={}
 
 
 
 exports.delete=function(id,nonexistent){
-    return sdb.exists({id:id}).then((exists)=>{
-        if(!exists){
-            return nonexistent;
-        }else{
-            return sdb.delete({id:id});
-        }
-    })
+    return ifExists(id,()=>{
+        return sdb.delete({id:id});
+    },nonexistent)
 }
 exports.delete.shape={}
 /**
  * no pongo el METADATA correspondiente porque no entiendo qué significa
  */
 exports.list=function(){
-    return sdb.read().then(function(data){
-        return data;
-    })
+    return sdb.read();
 }
 exports.list.shape={};
 
 exports.get=function(id,nonexistent){
-    return sdb.exists({id:id}).then(function(exists){
-        if(!exists){
-            return nonexistent
-        }else{
-            return sdb.read({id:id}).then(function(rows){
-                return rows[0]
-            })
-        }
-    }).catch((e)=>{
-        return nonexistent;
-    });
+    return ifExists(id,()=>{
+        return sdb.read({id:id}).then(function(rows){
+            return rows[0]
+        })
+    },nonexistent);  
 }
 exports.get.shape={};
