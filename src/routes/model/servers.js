@@ -20,51 +20,6 @@ exports.ping=function(){
     return "pong";
 }
 
-function wTokenOutputShape(string,number){
-    return{
-        server:{
-            server:{
-                id:number("id"),
-                _ref:"-",
-                createdBy:string("createdBy"),
-                createdTime:number("createdTime"),//new Number(rows[0].createdTime),
-                name:string("name"),//rows[0].name,
-                lastConnection:number("lastConnection")//new Number(rows[0].lastConnection)
-            },
-            token:{
-                expiresAt:number("expiresAt"),//new Number(rows[0].expiresAt),
-                token:string("token")//rows[0].token
-            }
-        }
-    }
-}
-
-function getShape(string,number){
-    return {
-        server:{
-            id: number("id"),
-            _ref: "-",
-            createdBy: string("createdBy"),
-            createdTime: number("createdTime"),
-            name: string("name"),
-            lastConnection: number("lastConnection")
-        }
-    }
-}
-
-function listShape(string,number,array){
-    return {
-        servers:array({
-            id:number("id"),
-            _ref:"-",
-            createdBy:string("createdBy"),
-            createdTime:number("createdTime"),
-            name:string("name"),
-            lastConnection:number("lastConnection")
-        })
-    }
-}
-
 exports.add=function(server){
     server.token=0;
     server.expiresAt=0;
@@ -72,8 +27,6 @@ exports.add=function(server){
         return exports.updateToken(created.id,"id not found, how's that possible?");
     });
 }
-exports.add.outputShape=wTokenOutputShape;
-
 
 /**
  * Updates only the name of the server with the received ID
@@ -87,7 +40,6 @@ exports.update=function(body,id,nonexistent){
         }
     })
 }
-exports.update.outputShape=getShape;
 
 
 exports.updateToken=function(id,nonexistent){
@@ -109,7 +61,6 @@ exports.updateToken=function(id,nonexistent){
     })
 }
 exports.updateToken.shape={}
-exports.updateToken.outputShape=wTokenOutputShape;
 
 
 
@@ -132,7 +83,6 @@ exports.list=function(){
     })
 }
 exports.list.shape={};
-exports.list.outputShape=listShape;
 
 exports.get=function(id,nonexistent){
     return sdb.exists({id:id}).then(function(exists){
@@ -148,4 +98,3 @@ exports.get=function(id,nonexistent){
     });
 }
 exports.get.shape={};
-exports.get.outputShape=getShape;

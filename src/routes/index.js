@@ -20,8 +20,10 @@ const manager=auth.middleware("manager");
 const user=auth.middleware("user");
 
 //servers
-const ori=require("./model/servers.js");
-const servers=expressify.all(ori,{"version":"1"});
+const original=require("./model/servers.js");
+const translator=require("./modelTranslate/servers.js");
+const translated=require("./modelTranslate")(original,translator);
+const servers=expressify.all(translated,{"version":"1"});
 
 router.post("/servers/ping",app, servers.ping);
 router.post("/servers",manager, servers.add);
