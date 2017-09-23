@@ -1,4 +1,3 @@
-const db=require("./tables/localdatabase").db;//la única manera no-hack de hacer un require global
 const sdb=require("./tables").servers;
 
 exports.shape={
@@ -27,15 +26,6 @@ exports.add=function(server){
     return sdb.create(server).then(function(created){
         return exports.updateToken(created.id,"id not found, how's that possible?");
     });
-    /*
-    return db.one(
-        "insert into servers(name,createdTime,createdBy,token,expiresAt) values($1,$2,$3,$4,$5) returning id",
-        [server.name,server.createdTime,server.createdBy,000,000]
-    ).then((ret)=> {
-        server.id=ret.id;
-        return exports.updateToken(server.id,"id not found, how's that possible?");
-    })
-    */
 }
 
 
