@@ -70,20 +70,3 @@ describe("Using reshape",function(){
 
     })
 })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//van 40 min sin commitear
