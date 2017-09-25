@@ -12,7 +12,7 @@ router.get('/', (req, res) => {
 //autorizacion
 router.post("/login", auth.login);
 router.post("/logout", auth.logout);
-router.post("/register", auth.register);
+//router.post("/register", auth.register);
 
 const app=auth.middleware("app");
 const admin=auth.middleware("admin");
