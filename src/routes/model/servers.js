@@ -97,3 +97,17 @@ exports.get=function(id,nonexistent){
     },nonexistent);  
 }
 exports.get.shape={};
+
+
+exports.authorized=function(credentials,identifyAs){
+    let token = credentials.token;
+    return sdb.read({token:token}).then((rows)=>{
+        if(rows.length==0){
+            return false;
+        }else{
+            identifyAs(rows[0]);
+            let expiresAt=rows[0].expiresAt;
+            return expiresAt > (new Date()).getTime();
+        }
+    });
+}

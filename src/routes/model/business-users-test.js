@@ -80,6 +80,63 @@ describe("Usage of businessUsers",function(){
             })
         });
     })
+
+    it("The right user is authorized, and it is correctly identified",function(){
+        let identity=null;
+        function catchit(i){
+            identity=i;
+        }
+        return businessUsers.newToken("pepenacho","pepeword").then((u)=>{
+            return businessUsers.authorizedRoles("admin")({username:"pepenacho",token:u.token},catchit)
+            .then((authorized)=>{
+                assert.isTrue(authorized);
+                assert.equal(identity.username,"pepenacho");
+                assert.include(identity.roles,"admin");
+                assert.include(identity.roles,"manager");
+                assert.equal(identity.roles.length,2);
+            })
+        });
+        
+    })
+
+    it("The user is authorized only if it has the right roles",function(){
+        let identity=null;
+        function catchit(i){
+            identity=i;
+        }
+        return businessUsers.newToken("pepenacho","pepeword").then((u)=>{
+            return businessUsers.authorizedRoles("user")({username:"pepenacho",token:u.token},catchit)
+            .then((authorized)=>{
+                assert.isFalse(authorized);
+            })
+        });
+    })
+
+    it("Random token is not authorized",function(){
+        let identity=null;
+        function catchit(i){
+            identity=i;
+        }
+        return businessUsers.newToken("pepenacho","pepeword").then((u)=>{
+            return businessUsers.authorizedRoles("user")({username:"pepenacho",token:"ppp"},catchit)
+            .then((authorized)=>{
+                assert.isFalse(authorized);
+            })
+        });
+    })
+
+    it("Random user is not authorized",function(){
+        let identity=null;
+        function catchit(i){
+            identity=i;
+        }
+        return businessUsers.newToken("pepenacho","pepeword").then((u)=>{
+            return businessUsers.authorizedRoles("user")({username:"luis",token:u.token},catchit)
+            .then((authorized)=>{
+                assert.isFalse(authorized);
+            })
+        });
+    })
     
 
 })

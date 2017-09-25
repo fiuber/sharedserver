@@ -63,7 +63,6 @@ exports.newToken=function(username,password){
     var expiresAtDate = new Date();
     expiresAtDate.setMinutes(expiresAtDate.getMinutes()+10);//10 minutes
     var expiresAt = expiresAtDate.getTime();
-    console.log("Le asigno el token",token);
     return udb
     .update({username:username},{token:token,expiresAt:expiresAt})
     .read({username:username}).then((rows)=>rows[0])
@@ -90,3 +89,25 @@ exports.tokenCorrect=function(username,token){
     })
 }
 
+exports.authorizedRoles=function(){
+    let allowedRoles=Array.prototype.slice.call(arguments);
+    return function(credentials,identify){
+        let un=credentials.username;
+        let token=credentials.token;
+        return exports.tokenCorrect(un,token).then((correct)=>{
+            if(correct){
+                return exports.getRoles(un).then((roles)=>{
+                    if(     allowedRoles.includes("public") 
+                        ||  allowedRoles.some((allowed)=>roles.includes(allowed))){
+                        identify({username:un,roles:roles});
+                        return true;
+                    }else{
+                        return false;
+                    }
+                })
+            }else{
+                return false;
+            }
+        })
+    }
+}

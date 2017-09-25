@@ -25,9 +25,21 @@ exports.logout=function(req,res,next){
     });
 };
 
-exports.middleware=function(role){
-    let allowedRoles=arguments;
+exports.middleware=function(){
+    let authenticators=Array.prototype.slice.call(arguments);
     return function(req,res,next){
+        let promises = authenticators.map((authenticator)=>authenticator(req.cookies))
+        let allPromise = Promise.all(promises).then((returns)=>{
+            if(returns.some((x)=>x)){
+                next()
+            }else{
+                res.status(401).send({code:401,error:"bad credentials"});
+            }
+        })
+
+        
+
+        /*
         let un=req.cookies.username;
         let token=req.cookies.token;
         authModel.tokenCorrect(un,token).then((correct)=>{
@@ -46,5 +58,6 @@ exports.middleware=function(role){
                 res.status(401).send({code:401,error:"wrong token"});
             }
         })
+        */
     }
 }
