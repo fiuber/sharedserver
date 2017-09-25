@@ -1,25 +1,49 @@
 const express = require('express');
-
+const authModel=require("./model/business-users");
 var router = express.Router();
 
 exports.login = function(req,res,next){
     
-    res.send("cookie: "+JSON.stringify(req.cookies));
-};
-
-exports.register = function(req,res,next){
-    
-    res.send("jiji");
+    //res.send("cookie: "+JSON.stringify(req.cookies));
+    //res.send("the body is")
+    let un=req.body.username;
+    let pw=req.body.password;
+    authModel.exists(un,pw).then((exists)=>{
+        if(exists){
+            authModel.newToken(un,pw).then((token)=>{
+                res.status(200).send(token);  
+            })
+        }else{
+            res.status(404).send({error:"wrong user-password combination"});
+        }
+    });
 };
 
 exports.logout=function(req,res,next){
-    
-    res.send("ADIOS");
+    authModel.expireToken(req.body.username).then(()=>{
+        res.sendStatus(200);
+    });
 };
 
-exports.middleware=function(authorization){
+exports.middleware=function(role){
+    let allowedRoles=arguments;
     return function(req,res,next){
-        //podría chequear usando una query a postgres y luego authorization
-        next();
+        let un=req.body.username;
+        let token=req.body.token;
+        authModel.tokenCorrect(un,token).then((correct)=>{
+            if(correct){
+                authModel.getRoles(un).then((roles)=>{
+                    if(     allowedRoles.includes("public") 
+                        ||  allowedRoles.some((allowed)=>roles.includes(allowed))){
+                        req.body.roles=roles;
+                        next();
+                    }else{
+                        res.status(401).send({code:401,error:"wrong role"});
+                    }
+                })
+            }else{
+                res.status(401).send({code:401,error:"wrong token"});
+            }
+        })
     }
 }

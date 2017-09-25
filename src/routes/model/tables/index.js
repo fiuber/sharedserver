@@ -1,5 +1,19 @@
 const EasyTable=require("./EasyTable");
 
+
+const usersSchema={
+    _ref:"varchar(40)",
+    username:"varchar(40)",//no id. username is the id
+    password:"varchar(40)",
+    name:"varchar(40)",
+    surname:"varchar(40)",
+}
+
+const rolesSchema={
+    username:"varchar(40)",
+    role:"varchar(40)"
+}
+
 const serversSchema={
     id:"serial",
     name: "varchar(40)",
@@ -11,7 +25,9 @@ const serversSchema={
     _ref:"varchar(40)"
 }
 const tables={
-    servers:new EasyTable("servers",serversSchema,["id"])
+    servers:new EasyTable("servers",serversSchema,  ["id"]),
+    users:  new EasyTable("users",  usersSchema,    ["username"]),
+    roles:  new EasyTable("roles",  rolesSchema,    ["username","role"])
 }
 
 for (let t in tables){

@@ -10,14 +10,14 @@ router.get('/', (req, res) => {
 
 
 //autorizacion
-router.get("/login", auth.login);
-router.get("/logout", auth.logout);
-router.get("/register", auth.register);
+router.post("/login", auth.login);
+router.post("/logout", auth.logout);
+router.post("/register", auth.register);
 
 const app=auth.middleware("app");
 const admin=auth.middleware("admin");
 const manager=auth.middleware("manager");
-const user=auth.middleware("user");
+const businessUser=auth.middleware("business-user");
 
 //servers
 const original=require("./model/servers.js");
