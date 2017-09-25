@@ -51,33 +51,42 @@ exports.exists=function(username,password){
     }
 }
 
+exports.getRoles=function(username){
+    return rolesdb.read({username:username}).then(function(rows){
+        return rows.map((row)=>row.role);
+    })
+}
+
+
 exports.newToken=function(username,password){
     let token=Math.random()*1000+"";
     var expiresAtDate = new Date();
     expiresAtDate.setMinutes(expiresAtDate.getMinutes()+10);//10 minutes
     var expiresAt = expiresAtDate.getTime();
-    return udb.update({username:username},{token:token,expiresAt:expiresAt});
+    console.log("Le asigno el token",token);
+    return udb
+    .update({username:username},{token:token,expiresAt:expiresAt})
+    .read({username:username}).then((rows)=>rows[0])
 }
 
-exports.expireToken=function(username,password){
+exports.expireToken=function(username){
     var expiresAtDate = new Date();
     var expiresAt = expiresAtDate.getTime();
     return udb.update({username:username},{expiresAt:expiresAt});
 }
 
 exports.tokenCorrect=function(username,token){
-    return udb.read({username:username,token:token}).then(function(rows){
-        if(rows.length==0){
+    return udb.read({username:username}).then(function(rows){
+        if(!rows){
+            return false;
+        }else if(rows.length==0){
+            return false;
+        }else if(rows[0].token != token){
             return false;
         }else{
             let expiresAt=rows[0].expiresAt;
-            return new Date(expiresAt) > new Date();
+            return expiresAt > (new Date()).getTime();
         }
     })
 }
 
-exports.getRoles=function(username){
-    rolesdb.read({username:username}).then(function(rows){
-        return rows.map((row)=>row.role);
-    })
-}

@@ -10,8 +10,8 @@ exports.login = function(req,res,next){
     let pw=req.body.password;
     authModel.exists(un,pw).then((exists)=>{
         if(exists){
-            authModel.newToken(un,pw).then((token)=>{
-                res.status(200).send(token);  
+            authModel.newToken(un,pw).then((row)=>{
+                res.status(200).send(row.token);  
             })
         }else{
             res.status(404).send({error:"wrong user-password combination"});
