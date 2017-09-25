@@ -1,5 +1,47 @@
 const udb=require("./tables").users;
 const rolesdb=require("./tables").roles;
+/*
+const usersSchema={
+    _ref:"varchar(40)",
+    username:"varchar(40)",//no id. username is the id
+    password:"varchar(40)",
+    name:"varchar(40)",
+    surname:"varchar(40)",
+    token
+}
+
+const rolesSchema={
+    username:"varchar(40)",
+    role:"varchar(40)"
+}
+*/
+
+const userShape={
+    username:"password",
+    password:"password",
+    name:"name",
+    surname:"surname",
+    roles:[]
+}
+
+exports.add=function(user){
+    user._ref=Math.random()*1000+"";
+    user.token="000";
+    user.expiresAt=0;
+    let roles=user.roles;
+    return udb.create(user)
+    .then(()=>{
+        let promises=roles.map((r)=>rolesdb.create({role:r,username:user.username}));
+        return Promise.all(promises);
+    }).then(()=>{
+        return exports.newToken(user.username,user.password);
+    }).then(()=>{
+        return udb.read({username:user.username});
+    })
+}
+exports.add.shape=userShape;
+
+
 
 exports.exists=function(username,password){
     if(password){

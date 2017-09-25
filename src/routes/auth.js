@@ -28,14 +28,15 @@ exports.logout=function(req,res,next){
 exports.middleware=function(role){
     let allowedRoles=arguments;
     return function(req,res,next){
-        let un=req.body.username;
-        let token=req.body.token;
+        let un=req.cookies.username;
+        let token=req.cookies.token;
         authModel.tokenCorrect(un,token).then((correct)=>{
             if(correct){
                 authModel.getRoles(un).then((roles)=>{
                     if(     allowedRoles.includes("public") 
                         ||  allowedRoles.some((allowed)=>roles.includes(allowed))){
                         req.body.roles=roles;
+                        req.body.username=un;
                         next();
                     }else{
                         res.status(401).send({code:401,error:"wrong role"});

@@ -7,7 +7,10 @@ const usersSchema={
     password:"varchar(40)",
     name:"varchar(40)",
     surname:"varchar(40)",
+    token:"varchar(40)",
+    expiresAt:"bigint"
 }
+//TODO: hay que poner cascade! y foreign key!
 
 const rolesSchema={
     username:"varchar(40)",

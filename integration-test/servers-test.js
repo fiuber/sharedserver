@@ -1,6 +1,6 @@
 let assert=require("chai").assert;
 var request = require('supertest');
-
+/*
 
 
 describe("POST en /servers", function(){
@@ -219,3 +219,6 @@ describe("POST en /servers", function(){
     })
 
 });
+
+
+*/
