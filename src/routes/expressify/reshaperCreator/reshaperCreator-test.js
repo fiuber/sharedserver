@@ -69,4 +69,57 @@ describe("Using reshape",function(){
         assert.deepEqual(reshaped.data[2],{times:"85",name:"chavon"});
 
     })
+
+
+    it("complex reshape",function(){
+        let complexData={
+            a:"A",
+            b:"B",
+            set:{
+                c:"1",
+                d:"2"
+            }
+        }
+
+        let reshaped=reshape(function(string,number,array,from){
+            return {
+                a:string("a"),
+                b:string("b"),
+                c:from("set",string("c")),
+                d:from("set",number("d")),
+            };
+        },complexData);
+
+        assert.deepEqual(reshaped,{
+            a:"A",
+            b:"B",
+            c:"1",
+            d:2
+        });
+    })
+
+    it("complex array reshape",function(){
+        let complexData={
+            a:"A",
+            b:"B",
+            data:[
+                {name:"Pedro",age:12,pets:[]},
+                {name:"Mateo",age:17,pets:["dog"]},
+                {name:"Pablo",age:25,pets:["dog","cat"]}
+            ]
+        }
+
+        let reshaped=reshape(function(string,number,array,from){
+            return from("data",array({
+                name:string("name"),
+                pets:from("pets")
+            }))
+        },complexData)
+
+        assert.includeDeepMembers(reshaped,[
+            {name:"Pedro",pets:[]},
+            {name:"Mateo",pets:["dog"]},
+            {name:"Pablo",pets:["dog","cat"]},
+        ]);
+    })
 })

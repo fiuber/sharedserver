@@ -1,15 +1,22 @@
 let assert=require("chai").assert;
 var request = require('supertest');
-/*
 
 
 describe("POST en /servers", function(){
     var app;
     var db;
+    let token=null;
     beforeEach(function(){
         this.timeout(5000);
         app =require("../server.js");
-        return require("../restartDatabase.js")();
+        return require("../restartDatabase.js")().then(()=>{
+            return request(app)
+            .post("/token")
+            .send({username:"admin",password:"admin"})
+            .expect((data)=>{
+                token=data.token.token;
+            })
+        });
         //return require("../database.js").restarted();
     });
     afterEach(function(){
@@ -219,6 +226,3 @@ describe("POST en /servers", function(){
     })
 
 });
-
-
-*/

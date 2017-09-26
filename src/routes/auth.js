@@ -38,3 +38,7 @@ exports.middleware=function(){
         })
     }
 }
+
+exports.any=function(){
+    return true;
+}

@@ -6,12 +6,14 @@ function reshaperCreator(shape){
     }
 }
 function reshape(shapeCreator,data){
-    let shape=shapeCreator(StringSignal.new,NumberSignal.new,ArraySignal.new) 
+    let shape=shapeCreator(StringSignal.new,NumberSignal.new,ArraySignal.new,FromSignal.new) 
     return reshapeFromShape(shape,data)  ;
 }
 
 function reshapeFromShape(shape,data){
-    if(shape instanceof StringSignal){//key
+    if(shape instanceof FromSignal){
+        return reshapeFromShape(shape.innerShape,data[shape.key]);
+    }else if(shape instanceof StringSignal){//key
         return new String(data[shape.key]).valueOf();
     }else if(shape instanceof NumberSignal){//key
         return new Number(data[shape.key]).valueOf();
@@ -37,6 +39,13 @@ function reshapeFromShape(shape,data){
 
 }
 
+function FromSignal(shape,key){
+    this.innerShape=shape;
+    this.key=key;
+}
+FromSignal.new=function(key,shape){
+    return new FromSignal(shape,key);
+}
 
 function ArraySignal(shape){
     this.innerShape=shape;
