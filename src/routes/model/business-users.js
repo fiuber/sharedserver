@@ -31,6 +31,18 @@ exports.token.shape={
     password:"string"
 };
 
+//NO TESTEADO
+exports.get=function(username,nonexistent){
+    udb.exists({username:username}).then((exists)=>{
+        if(exists){
+            return udb.read({username:username}).then(getWithRoles).then((all)=>all[0])
+        }else{
+            return nonexistent;
+        }
+    })
+
+}
+
 //testeado
 exports.add=function(user){
     user._ref=Math.random()*1000+"";

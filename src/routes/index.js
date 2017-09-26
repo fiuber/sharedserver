@@ -39,14 +39,16 @@ const buTranslated=require("./modelTranslate")(businessUsersModel,buTranslator);
 const businessUsers=expressify.all(buTranslated,{"version":"1"});
 
 router.post("/token", public,businessUsers.token);
-router.post("/logout", public,businessUsers.logout);
+//router.post("/logout", public,businessUsers.logout);
 
 router.get("/business-users", admin, businessUsers.list);
 router.post("/business-users", admin, businessUsers.add);
-router.get("/business-users/:userId", user, businessUsers.delete);
+router.get("/business-users/:userId", user, businessUsers.get);
+router.delete("/business-users/:userId", admin, businessUsers.delete);
 router.put("/business-users/:userId", admin, businessUsers.update);
-router.get("/business-users/me", user, businessUsers.getMe);
-router.put("/business-users/me", user, businessUsers.updateMe);
+
+//router.get("/business-users/me", user, businessUsers.getMe);
+//router.put("/business-users/me", user, businessUsers.updateMe);
 
 
 module.exports = router;

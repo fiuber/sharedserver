@@ -28,7 +28,11 @@ exports.logout=function(req,res,next){
 exports.middleware=function(){
     let authenticators=Array.prototype.slice.call(arguments);
     return function(req,res,next){
-        let promises = authenticators.map((authenticator)=>authenticator(req.cookies))
+        function identify(identification){
+            console.log("------- IDENTIFIED AS ----------")
+            console.log(identification);
+        }
+        let promises = authenticators.map((authenticator)=>authenticator(req.cookies,identify))
         let allPromise = Promise.all(promises).then((returns)=>{
             if(returns.some((x)=>x)){
                 next()

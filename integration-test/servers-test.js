@@ -5,7 +5,7 @@ var request = require('supertest');
 describe("POST en /servers", function(){
     var app;
     var db;
-    let token=null;
+    let cookie=null;
     beforeEach(function(){
         this.timeout(5000);
         app =require("../server.js");
@@ -13,8 +13,12 @@ describe("POST en /servers", function(){
             return request(app)
             .post("/token")
             .send({username:"admin",password:"admin"})
-            .expect((data)=>{
-                token=data.token.token;
+            .expect((res)=>{
+                let token=res.body.token.token;
+                cookie=[
+                    "username=admin",
+                    "token="+token
+                ];
             })
         });
         //return require("../database.js").restarted();
@@ -34,6 +38,7 @@ describe("POST en /servers", function(){
         };
         request(app)
         .post("/servers")
+        .set("Cookie",cookie)
         .send(datosEnviados)
         .expect(function(res){
             assert.equal(res.statusCode,201,res.error);
@@ -56,6 +61,7 @@ describe("POST en /servers", function(){
         };
         request(app)
         .post("/servers")
+        .set("Cookie",cookie)
         .send(datosEnviados)
         .expect(400)
         .end(done);
@@ -73,11 +79,13 @@ describe("POST en /servers", function(){
         var added=s;
         request(app)
         .post("/servers")
+        .set("Cookie",cookie)
         .send(s)
         .expect((e)=>{added=e.body.server.server})
         .expect(201).end(function(){
             return request(app)
             .get("/servers/"+added.id)
+            .set("Cookie",cookie)
             .expect(200)
             .expect(function (res){
                 assert.equal(res.body.server.createdBy,added.createdBy);
@@ -102,16 +110,19 @@ describe("POST en /servers", function(){
         sRenamed.name="servikiki"
         request(app)
         .post("/servers")
+        .set("Cookie",cookie)
         .send(s)
         .expect((e)=>{added=e.body.server.server})
         .expect(201).end(function(){
             return request(app)
             .put("/servers/"+added.id)
+            .set("Cookie",cookie)
             .send(sRenamed)
             .expect(200)
             .end(function(){
                 return request(app)
                 .get("/servers/"+added.id)
+                .set("Cookie",cookie)
                 .expect(200)
                 .expect(function (res){
                     assert.equal(res.body.server.createdBy,added.createdBy);
@@ -137,11 +148,13 @@ describe("POST en /servers", function(){
         
         request(app)
         .post("/servers")
+        .set("Cookie",cookie)
         .send(s)
         .expect((e)=>{added=e.body.server})
         .expect(201).end(function(){
             return request(app)
             .post("/servers/"+added.server.id)
+            .set("Cookie",cookie)
             .expect(201)
             .expect((e)=>{newtoken=e.body.server})
             .expect(()=>{
@@ -156,6 +169,7 @@ describe("POST en /servers", function(){
     it("A nonexistent server is requested",function(done){
         request(app)
         .get("/servers/72")
+        .set("Cookie",cookie)
         .expect(404)
         .end(done);
     })
@@ -173,10 +187,10 @@ describe("POST en /servers", function(){
         function agregarId(res){
             intercepted.push(res.body.server.server.id)
         }
-        request(app).post("/servers").send(s).expect(agregarId).expect(201).end(function(){
-            return request(app).post("/servers").send(s).expect(agregarId).expect(201).end(function(){
-                return request(app).post("/servers").send(s).expect(agregarId).expect(201).end(function(){
-                    return request(app).get("/servers").expect(200).expect(function(result){
+        request(app).post("/servers").set("Cookie",cookie).send(s).expect(agregarId).expect(201).end(function(){
+            return request(app).post("/servers").set("Cookie",cookie).send(s).expect(agregarId).expect(201).end(function(){
+                return request(app).post("/servers").set("Cookie",cookie).send(s).expect(agregarId).expect(201).end(function(){
+                    return request(app).get("/servers").set("Cookie",cookie).expect(200).expect(function(result){
                         var list = result.body.servers;
                         var ids=list.map((s)=>s.id);
                         assert(intercepted.includes(ids[0]))
@@ -203,12 +217,12 @@ describe("POST en /servers", function(){
         function agregarId(res){
             intercepted.push(res.body.server.server.id)
         }
-        request(app).post("/servers").send(s).expect(agregarId).expect(201).end(function(){
-            return request(app).post("/servers").send(s).expect(agregarId).expect(201).end(function(){
-                return request(app).post("/servers").send(s).expect(agregarId).expect(201).end(function(){
-                    return request(app).delete("/servers/"+intercepted[0]).expect(204).end(function(){
+        request(app).post("/servers").set("Cookie",cookie).send(s).expect(agregarId).expect(201).end(function(){
+            return request(app).post("/servers").set("Cookie",cookie).send(s).expect(agregarId).expect(201).end(function(){
+                return request(app).post("/servers").set("Cookie",cookie).send(s).expect(agregarId).expect(201).end(function(){
+                    return request(app).delete("/servers/"+intercepted[0]).set("Cookie",cookie).expect(204).end(function(){
 
-                        return request(app).get("/servers").expect(200).expect(function(result){
+                        return request(app).get("/servers").set("Cookie",cookie).expect(200).expect(function(result){
                             var list = result.body.servers;
                             var ids=list.map((s)=>s.id);
                             assert(ids.includes(intercepted[1]))
@@ -222,7 +236,7 @@ describe("POST en /servers", function(){
     })
 
     it("Delete nonexistent server",function(done){
-        request(app).delete("/servers/894").expect(404).end(done);
+        request(app).delete("/servers/894").set("Cookie",cookie).expect(404).end(done);
     })
 
 });
