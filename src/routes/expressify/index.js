@@ -52,7 +52,17 @@ function expressify(shape,fun,reshapeOutput){
         }
 
 
-        f(req.body,send,req.params);
+        f(req.body,send,req.params,{
+            data:req.cookies,
+            set:function(cookies){
+                
+                for(let k in cookies){
+                    res.cookie(k,cookies[k]);
+                }
+                
+                
+            }
+        });
     }
 }
 

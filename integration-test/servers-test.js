@@ -14,6 +14,7 @@ describe("POST en /servers", function(){
             .post("/token")
             .send({username:"admin",password:"admin"})
             .expect((res)=>{
+                console.log("Y AL RECIBIR LA RESPONSE:",res.get("Set-Cookie"));
                 let token=res.body.token.token;
                 cookie=[
                     "username=admin",
@@ -37,8 +38,10 @@ describe("POST en /servers", function(){
             "lastConnection":1998
         };
         request(app)
+        
         .post("/servers")
         .set("Cookie",cookie)
+        
         .send(datosEnviados)
         .expect(function(res){
             assert.equal(res.statusCode,201,res.error);

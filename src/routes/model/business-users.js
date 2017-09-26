@@ -9,7 +9,7 @@ const userShape={
 }
 
 //testeado
-exports.token=function(body,nonexistent){
+exports.token=function(body,nonexistent,badRevision,me){
     let un=body.username;
     let token=Math.random()*1000+"";
     var expiresAtDate = new Date();
@@ -21,6 +21,8 @@ exports.token=function(body,nonexistent){
         if(rows.length==0){
             return nonexistent;
         }else{
+            me.username=un;
+            me.token=token;
             return rows[0];
         }
     })
