@@ -49,25 +49,17 @@ exports.add=function(user){
 }
 exports.add.shape=userShape;
 
-// NO TESTEADO
+// testeado
 exports.list=function(){
     let businessUsers=[];
     return udb
     .read()
-    .then((buRows)=>{
-        businessUsers=buRows;
-        return Promise.all(businessUsers.map(function(bUser){
-            return udb.read({username:bUser.username}).then((rolesRows)=>{
-                bUser.roles=rolesRows;
-                return bUser;
-            })
-        }))
-    });
+    .then(getWithRoles);
 }
 exports.list.shape={}
 
-//NO TESTEADO
-exports.delete=function(userId,nonexistent){
+//testeado
+exports.delete=function(username,nonexistent){
     return udb.exists({username:username}).then((exists)=>{
         if(exists){
             return udb.delete({username:username});
@@ -87,21 +79,21 @@ function getWithRoles(businessUsers){
         })
     }))
 }
-//NO TESTEADO
-exports.update=function(body,nonexistent){
-    let un=body.username;
-    return udb.exists({username:un}).then((exists)=>{
+//testeado
+exports.update=function(body,username,nonexistent){
+    return udb.exists({username:username}).then((exists)=>{
         if(exists){
-            return udb.update({username:un},body).then(()=>{
-                return rolesdb.delete({username:un}).then(()=>{
+            return udb.update({username:username},body).then(()=>{
+                return rolesdb.delete({username:username}).then(()=>{
                     let promises=body.roles.map((role)=>{
-                        return rolesdb.create({username:un,role:role});
+                        return rolesdb.create({username:body.username,role:role});
                     })
                     return Promise.all(promises);
                 })
             })
-            .read({username:un})
+            .then(()=>udb.read({username:body.username}))
             .then(getWithRoles)
+            .then((rows)=>rows[0]);
         }else{
             return nonexistent;
         }

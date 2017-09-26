@@ -10,6 +10,22 @@ const defaultUser={
     roles:["admin","manager"]
 }
 
+const juanperez={
+    username:"juanperez",
+    password:"juanpassword",
+    name:"Juan",
+    surname:"Perezszszsz",
+    roles:["user"]
+}
+
+const mariagonzales={
+    username:"mariagonzales",
+    password:"mariaword",
+    name:"Maria",
+    surname:"Gonzaleszszszsz",
+    roles:["manager"]
+}
+
 describe("Usage of businessUsers",function(){
     beforeEach(function(){
         this.timeout(5000);
@@ -141,6 +157,56 @@ describe("Usage of businessUsers",function(){
                 assert.isFalse(authorized);
             })
         });
+    })
+
+    it("Testing list",function(){
+        return businessUsers.add(mariagonzales).then(()=>{
+            return businessUsers.add(juanperez).then(()=>{
+                return businessUsers.list().then((all)=>{
+
+                    assert.equal(all.length,3);
+                    assert.nestedInclude(all[0],{username:"pepenacho"});
+                    assert.nestedInclude(all[1],{username:"mariagonzales"});
+                    assert.nestedInclude(all[2],{username:"juanperez"});
+
+                    assert.includeMembers(all[0].roles,["admin","manager"])
+                    assert.includeMembers(all[1].roles,["manager"])
+                    assert.includeMembers(all[2].roles,["user"])
+                })
+            })
+        })
+    })
+
+    it("Testing deletion",function(){
+        return businessUsers.delete("pepenacho").then(()=>{
+            return businessUsers.list().then((all)=>{
+                assert.equal(all.length,0);
+            })
+        })
+    })
+
+    it("Update, and check roles are kept",function(){
+        return businessUsers.update({
+            username:"cj",
+            password:"cjgangsta",
+            name:"carl",
+            surname:"Johnson",
+            roles:["user"]
+        },"pepenacho")
+        .then(()=>businessUsers.list())
+        .then((all)=>{
+            assert.equal(all.length,1);
+            let carl=all[0];
+            assert.include(carl,{
+                username:"cj",
+                password:"cjgangsta",
+                name:"carl",
+                surname:"Johnson"
+            })
+
+            assert.equal(carl.roles.length,1);
+            assert.equal(carl.roles[0],"user");
+        })
     })
     
 
