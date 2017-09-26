@@ -57,8 +57,13 @@ describe("Usage of businessUsers",function(){
         });
     })
 
+    const pepenachoPepeword={
+        username:"pepenacho",
+        password:"pepeword"
+    }
+
     it("Not any token is correct",function(){
-        return businessUsers.newToken("pepenacho","pepeword").then((u)=>{
+        return businessUsers.token(pepenachoPepeword,"x").then((u)=>{
             return Promise.all([
                 businessUsers.tokenCorrect("pepenacho","asd").then((r)=>assert.isFalse(r)),
                 businessUsers.tokenCorrect("q","asd").then((r)=>assert.isFalse(r)),
@@ -69,10 +74,10 @@ describe("Usage of businessUsers",function(){
     })
 
     it("Tokens are invalid after logout",function(){
-        return businessUsers.newToken("pepenacho","pepeword").then((u)=>{
+        return businessUsers.token(pepenachoPepeword,"x").then((u)=>{
             return businessUsers.tokenCorrect("pepenacho",u.token).then((correct)=>{
                 assert.isTrue(correct);
-                return businessUsers.expireToken("pepenacho").then(()=>{
+                return businessUsers.expireToken(pepenachoPepeword).then(()=>{
                     return businessUsers.tokenCorrect("pepenacho",u.token).then((correct)=>{
                         assert.isFalse(correct);
                     });
@@ -86,7 +91,7 @@ describe("Usage of businessUsers",function(){
         function catchit(i){
             identity=i;
         }
-        return businessUsers.newToken("pepenacho","pepeword").then((u)=>{
+        return businessUsers.token(pepenachoPepeword,"x").then((u)=>{
             return businessUsers.authorizedRoles("admin")({username:"pepenacho",token:u.token},catchit)
             .then((authorized)=>{
                 assert.isTrue(authorized);
@@ -104,7 +109,7 @@ describe("Usage of businessUsers",function(){
         function catchit(i){
             identity=i;
         }
-        return businessUsers.newToken("pepenacho","pepeword").then((u)=>{
+        return businessUsers.token(pepenachoPepeword,"x").then((u)=>{
             return businessUsers.authorizedRoles("user")({username:"pepenacho",token:u.token},catchit)
             .then((authorized)=>{
                 assert.isFalse(authorized);
@@ -117,7 +122,7 @@ describe("Usage of businessUsers",function(){
         function catchit(i){
             identity=i;
         }
-        return businessUsers.newToken("pepenacho","pepeword").then((u)=>{
+        return businessUsers.token(pepenachoPepeword,"x").then((u)=>{
             return businessUsers.authorizedRoles("user")({username:"pepenacho",token:"ppp"},catchit)
             .then((authorized)=>{
                 assert.isFalse(authorized);
@@ -130,7 +135,7 @@ describe("Usage of businessUsers",function(){
         function catchit(i){
             identity=i;
         }
-        return businessUsers.newToken("pepenacho","pepeword").then((u)=>{
+        return businessUsers.token(pepenachoPepeword,"x").then((u)=>{
             return businessUsers.authorizedRoles("user")({username:"luis",token:u.token},catchit)
             .then((authorized)=>{
                 assert.isFalse(authorized);

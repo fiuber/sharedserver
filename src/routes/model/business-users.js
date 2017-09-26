@@ -1,21 +1,5 @@
-const udb=require("./tables").users;
+const udb=require("./tables").businessUsers;
 const rolesdb=require("./tables").roles;
-/*
-const usersSchema={
-    _ref:"varchar(40)",
-    username:"varchar(40)",//no id. username is the id
-    password:"varchar(40)",
-    name:"varchar(40)",
-    surname:"varchar(40)",
-    token
-}
-
-const rolesSchema={
-    username:"varchar(40)",
-    role:"varchar(40)"
-}
-*/
-
 const userShape={
     username:"password",
     password:"password",
@@ -24,6 +8,29 @@ const userShape={
     roles:[]
 }
 
+//testeado
+exports.token=function(body,nonexistent){
+    let token=Math.random()*1000+"";
+    var expiresAtDate = new Date();
+    expiresAtDate.setMinutes(expiresAtDate.getMinutes()+10);//10 minutes
+    var expiresAt = expiresAtDate.getTime();
+    return udb
+    .update({username:username},{token:token,expiresAt:expiresAt})
+    .read({username:username}).then((rows)=>{
+        if(rows.length==0){
+            return nonexistent;
+        }else{
+            return rows[0];
+        }
+    })
+
+};
+exports.token.shape={
+    username:"string",
+    password:"string"
+};
+
+//testeado
 exports.add=function(user){
     user._ref=Math.random()*1000+"";
     user.token="000";
@@ -41,8 +48,66 @@ exports.add=function(user){
 }
 exports.add.shape=userShape;
 
+// NO TESTEADO
+exports.list=function(){
+    let businessUsers=[];
+    return udb
+    .read()
+    .then((buRows)=>{
+        businessUsers=buRows;
+        return Promise.all(businessUsers.map(function(bUser){
+            return udb.read({username:bUser.username}).then((rolesRows)=>{
+                bUser.roles=rolesRows;
+                return bUser;
+            })
+        }))
+    });
+}
+exports.list.shape={}
+
+//NO TESTEADO
+exports.delete=function(userId,nonexistent){
+    return udb.exists({username:username}).then((exists)=>{
+        if(exists){
+            return udb.delete({username:username});
+        }else{
+            return nonexistent;
+        }
+    })
+}
+exports.delete.shape={}
 
 
+function getWithRoles(businessUsers){
+    return Promise.all(businessUsers.map(function(bUser){
+        return exports.getRoles(bUser.username).then((roles)=>{
+            bUser.roles=roles;
+            return bUser;
+        })
+    }))
+}
+//NO TESTEADO
+exports.update=function(body,nonexistent){
+    let un=body.username;
+    return udb.exists({username:un}).then((exists)=>{
+        if(exists){
+            return udb.update({username:un},body).then(()=>{
+                return rolesdb.delete({username:un}).then(()=>{
+                    let promises=body.roles.map((role)=>{
+                        return rolesdb.create({username:un,role:role});
+                    })
+                    return Promise.all(promises);
+                })
+            })
+            .read({username:un})
+            .then(getWithRoles)
+        }else{
+            return nonexistent;
+        }
+    })
+}
+
+//testeado
 exports.exists=function(username,password){
     if(password){
         return udb.exists({username:username,password:password});
@@ -51,29 +116,24 @@ exports.exists=function(username,password){
     }
 }
 
+//testeado
 exports.getRoles=function(username){
     return rolesdb.read({username:username}).then(function(rows){
         return rows.map((row)=>row.role);
     })
 }
 
-
-exports.newToken=function(username,password){
-    let token=Math.random()*1000+"";
-    var expiresAtDate = new Date();
-    expiresAtDate.setMinutes(expiresAtDate.getMinutes()+10);//10 minutes
-    var expiresAt = expiresAtDate.getTime();
-    return udb
-    .update({username:username},{token:token,expiresAt:expiresAt})
-    .read({username:username}).then((rows)=>rows[0])
-}
-
-exports.expireToken=function(username){
+//testeado
+exports.expireToken=function(body){
     var expiresAtDate = new Date();
     var expiresAt = expiresAtDate.getTime();
-    return udb.update({username:username},{expiresAt:expiresAt});
+    return udb.update({username:body.username},{expiresAt:expiresAt});
+}
+exports.expireToken.shape={
+    username:"string"
 }
 
+//testeado
 exports.tokenCorrect=function(username,token){
     return udb.read({username:username}).then(function(rows){
         if(!rows){
@@ -89,6 +149,7 @@ exports.tokenCorrect=function(username,token){
     })
 }
 
+//testeado
 exports.authorizedRoles=function(){
     let allowedRoles=Array.prototype.slice.call(arguments);
     return function(credentials,identify){

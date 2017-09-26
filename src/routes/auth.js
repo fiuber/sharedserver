@@ -36,28 +36,5 @@ exports.middleware=function(){
                 res.status(401).send({code:401,error:"bad credentials"});
             }
         })
-
-        
-
-        /*
-        let un=req.cookies.username;
-        let token=req.cookies.token;
-        authModel.tokenCorrect(un,token).then((correct)=>{
-            if(correct){
-                authModel.getRoles(un).then((roles)=>{
-                    if(     allowedRoles.includes("public") 
-                        ||  allowedRoles.some((allowed)=>roles.includes(allowed))){
-                        req.body.roles=roles;
-                        req.body.username=un;
-                        next();
-                    }else{
-                        res.status(401).send({code:401,error:"wrong role"});
-                    }
-                })
-            }else{
-                res.status(401).send({code:401,error:"wrong token"});
-            }
-        })
-        */
     }
 }

@@ -29,7 +29,7 @@ const serversSchema={
 }
 const tables={
     servers:new EasyTable("servers",serversSchema,  ["id"]),
-    users:  new EasyTable("users",  usersSchema,    ["username"]),
+    businessUsers:  new EasyTable("businessUsers",  usersSchema,    ["username"]),
     roles:  new EasyTable("roles",  rolesSchema,    ["username","role"])
 }
 
