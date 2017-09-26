@@ -10,13 +10,14 @@ const userShape={
 
 //testeado
 exports.token=function(body,nonexistent){
+    let un=body.username;
     let token=Math.random()*1000+"";
     var expiresAtDate = new Date();
     expiresAtDate.setMinutes(expiresAtDate.getMinutes()+10);//10 minutes
     var expiresAt = expiresAtDate.getTime();
     return udb
-    .update({username:username},{token:token,expiresAt:expiresAt})
-    .read({username:username}).then((rows)=>{
+    .update({username:un},{token:token,expiresAt:expiresAt})
+    .read({username:un}).then((rows)=>{
         if(rows.length==0){
             return nonexistent;
         }else{
@@ -41,7 +42,7 @@ exports.add=function(user){
         let promises=roles.map((r)=>rolesdb.create({role:r,username:user.username}));
         return Promise.all(promises);
     }).then(()=>{
-        return exports.newToken(user.username,user.password);
+        return exports.token({username:user.username,password:user.password});
     }).then(()=>{
         return udb.read({username:user.username});
     })
