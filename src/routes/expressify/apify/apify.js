@@ -56,7 +56,12 @@ function apify(shape,fun){
                     }
                 }
             }).catch(function(e){
-                send(ERROR,e.toString());
+                /*
+                console.log("-------EL ERROR QUE ME LLEGA ES ------")
+                console.log(e);
+                console.log(Object.keys(e.prototype));
+                */
+                send(ERROR,e.stack);
             });
         }else{
             send(BAD_REQUEST,"Bad body. Send "+ shape.toString());

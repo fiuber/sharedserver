@@ -11,6 +11,8 @@ function reshape(shapeCreator,data){
 }
 
 function reshapeFromShape(shape,data){
+    //console.log("%%%%%% MI SHAPE",shape);
+    //console.log("%%%%%% MI DATA",data);
     if(shape instanceof FromSignal){
         return reshapeFromShape(shape.innerShape,data[shape.key]);
     }else if(shape instanceof StringSignal){//key

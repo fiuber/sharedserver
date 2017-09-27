@@ -79,7 +79,10 @@ describe("Usage of businessUsers",function(){
     }
 
     it("Not any token is correct",function(){
-        return businessUsers.token(pepenachoPepeword,"x").then((u)=>{
+        let me={};
+        return businessUsers.token(pepenachoPepeword,"x","x",me).then((u)=>{
+            assert.equal(me.username,"pepenacho");
+            assert.equal(me.token,u.token);
             return Promise.all([
                 businessUsers.tokenCorrect("pepenacho","asd").then((r)=>assert.isFalse(r)),
                 businessUsers.tokenCorrect("q","asd").then((r)=>assert.isFalse(r)),

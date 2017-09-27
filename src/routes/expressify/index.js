@@ -35,7 +35,9 @@ function expressify(shape,fun,reshapeOutput){
             }
             var dataDef=null;
             if(status==apify.SUCCESS){
-                dataDef=reshapeOutput(data);
+                if(data!=null){
+                    dataDef=reshapeOutput(data);
+                }
             }else{
                 dataDef={
                     code:statusDef,

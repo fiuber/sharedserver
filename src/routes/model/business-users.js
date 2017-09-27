@@ -21,8 +21,11 @@ exports.token=function(body,nonexistent,badRevision,me){
         if(rows.length==0){
             return nonexistent;
         }else{
-            me.username=un;
-            me.token=token;
+
+            if(me){
+                me.username=un;
+                me.token=token;
+            }
             return rows[0];
         }
     })
