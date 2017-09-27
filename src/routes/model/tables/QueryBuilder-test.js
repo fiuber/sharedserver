@@ -15,7 +15,7 @@ describe("query builder",function(){
     it("create",function(){
         assert.equal(
             builder.create(),
-            "create table table_name(f1 bigint primary key,f2 serial,f3 text);"
+            "create table table_name(f1 bigint, f2 serial, f3 text, primary key (f1));"
         )
     })
 

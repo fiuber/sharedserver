@@ -17,6 +17,7 @@ function expressify(shape,fun,reshapeOutput){
 
         
         function send(status,data){
+            //console.log("DATA QUE LE LLEGA A EXPRESSIFY:",data);
             var statusDef=0;
             switch (status) {
                 case apify.SUCCESS:
@@ -35,7 +36,9 @@ function expressify(shape,fun,reshapeOutput){
             }
             var dataDef=null;
             if(status==apify.SUCCESS){
-                dataDef=reshapeOutput(data);
+                if(data!=null){
+                    dataDef=reshapeOutput(data);
+                }
             }else{
                 dataDef={
                     code:statusDef,
@@ -52,7 +55,17 @@ function expressify(shape,fun,reshapeOutput){
         }
 
 
-        f(req.body,send,req.params);
+        f(req.body,send,req.params,{
+            data:req.cookies,
+            set:function(cookies){
+                
+                for(let k in cookies){
+                    res.cookie(k,cookies[k]);
+                }
+                
+                
+            }
+        });
     }
 }
 

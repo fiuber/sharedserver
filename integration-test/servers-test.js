@@ -1,22 +1,27 @@
 let assert=require("chai").assert;
 var request = require('supertest');
-
-
+const run=require("./run");
 
 describe("POST en /servers", function(){
     var app;
     var db;
+    let agent=null;
     beforeEach(function(){
         this.timeout(5000);
         app =require("../server.js");
-        return require("../restartDatabase.js")();
-        //return require("../database.js").restarted();
+        agent=request.agent(app);
+        return require("../restartDatabase.js")().then(()=>{
+            return agent
+            .post("/token")
+            .send({username:"admin",password:"admin"})
+        });
     });
+
     afterEach(function(){
         app.close();
     });
-    it("Si es correcto, entra lo que sale",function(done){
-        this.timeout(5000);
+
+    it("Si es correcto, entra lo que sale",function(){
         var datosEnviados={
             "id":"asder",
             "_ref" :"asder",
@@ -25,7 +30,7 @@ describe("POST en /servers", function(){
             "name":"servijiji",
             "lastConnection":1998
         };
-        request(app)
+        return agent
         .post("/servers")
         .send(datosEnviados)
         .expect(function(res){
@@ -39,22 +44,20 @@ describe("POST en /servers", function(){
             assert.isAbove(tok.expiresAt, Date.now());
             assert.isOk(tok.token);
         })
-        .end(done);
     });
 
-    it("Si no es correcto, vuelve el 400",function(done){
+    it("Si no es correcto, vuelve el 400",function(){
         this.timeout(5000);
         var datosEnviados={
             "holi":"chauchi"
         };
-        request(app)
+        return agent
         .post("/servers")
         .send(datosEnviados)
         .expect(400)
-        .end(done);
     });
 
-    it("A server is added and then requested (thorugh http)",function(done){
+    it("A server is added and then requested (thorugh http)",function(){
         var s={
             "id":"asder",
             "_ref" :"asder",
@@ -64,24 +67,26 @@ describe("POST en /servers", function(){
             "lastConnection":1998
         };
         var added=s;
-        request(app)
-        .post("/servers")
-        .send(s)
-        .expect((e)=>{added=e.body.server.server})
-        .expect(201).end(function(){
-            return request(app)
+
+        return run(
+            ()=>agent
+            .post("/servers")
+            .send(s)
+            .expect((e)=>{added=e.body.server.server})
+            .expect(201),
+
+            ()=>agent
             .get("/servers/"+added.id)
             .expect(200)
             .expect(function (res){
                 assert.equal(res.body.server.createdBy,added.createdBy);
                 assert.equal(res.body.server.createdTime,added.createdTime);
                 assert.equal(res.body.server.id,added.id);
-            })
-            .end(done);
-        });
+            }),
+        )
     })
 
-    it("A server is added, modified and then requested (thorugh http)",function(done){
+    it("A server is added, modified and then requested (thorugh http)",function(){
         var s={
             "id":"asder",
             "_ref" :"asder",
@@ -91,32 +96,39 @@ describe("POST en /servers", function(){
             "lastConnection":1998
         };
         var added=s;
-        var sRenamed=s;
-        sRenamed.name="servikiki"
-        request(app)
-        .post("/servers")
-        .send(s)
-        .expect((e)=>{added=e.body.server.server})
-        .expect(201).end(function(){
-            return request(app)
+        
+        return run(
+            ()=>agent
+            .post("/servers")
+            .send(s)
+            .expect((e)=>{
+                added=e.body.server.server
+            })
+            .expect(201),
+
+            ()=>{
+                s.name="servikiki";
+                s._ref=added._ref;
+                s.id=added.id;
+            },
+            
+            ()=>agent
             .put("/servers/"+added.id)
-            .send(sRenamed)
+            .send(s)
+            .expect(200),
+
+            ()=>agent
+            .get("/servers/"+added.id)
             .expect(200)
-            .end(function(){
-                return request(app)
-                .get("/servers/"+added.id)
-                .expect(200)
-                .expect(function (res){
-                    assert.equal(res.body.server.createdBy,added.createdBy);
-                    assert.equal(res.body.server.createdTime,added.createdTime);
-                    assert.equal(res.body.server.name,sRenamed.name);
-                })
-                .end(done);
-            });
-        });
+            .expect(function (res){
+                assert.equal(res.body.server.createdBy,added.createdBy);
+                assert.equal(res.body.server.createdTime,added.createdTime);
+                assert.equal(res.body.server.name,s.name);
+            })
+        )
     })
 
-    it("A server is added, then its token is updated",function(done){
+    it("A server is added, then its token is updated",function(){
         var s={
             "id":"asder",
             "_ref" :"asder",
@@ -128,12 +140,14 @@ describe("POST en /servers", function(){
         var added=s;
         var newtoken=s;
         
-        request(app)
-        .post("/servers")
-        .send(s)
-        .expect((e)=>{added=e.body.server})
-        .expect(201).end(function(){
-            return request(app)
+        return run(
+            ()=>agent
+            .post("/servers")
+            .send(s)
+            .expect((e)=>{added=e.body.server})
+            .expect(201),
+
+            ()=>agent
             .post("/servers/"+added.server.id)
             .expect(201)
             .expect((e)=>{newtoken=e.body.server})
@@ -142,18 +156,17 @@ describe("POST en /servers", function(){
                 assert.equal(added.server.id,newtoken.server.id);
                 assert.notEqual(added.token.token,newtoken.token.token);
                 assert.isBelow(added.token.expiresAt,newtoken.token.expiresAt);
-            }).end(done)
-        });
+            })
+        );
     })
 
-    it("A nonexistent server is requested",function(done){
-        request(app)
+    it("A nonexistent server is requested",function(){
+        return agent
         .get("/servers/72")
         .expect(404)
-        .end(done);
     })
 
-    it("Multiple servers are added and then got",function(done){
+    it("Multiple servers are added and then got",function(){
         var s={
             "id":"serv1",
             "_ref":"no matter",
@@ -166,24 +179,31 @@ describe("POST en /servers", function(){
         function agregarId(res){
             intercepted.push(res.body.server.server.id)
         }
-        request(app).post("/servers").send(s).expect(agregarId).expect(201).end(function(){
-            return request(app).post("/servers").send(s).expect(agregarId).expect(201).end(function(){
-                return request(app).post("/servers").send(s).expect(agregarId).expect(201).end(function(){
-                    return request(app).get("/servers").expect(200).expect(function(result){
-                        var list = result.body.servers;
-                        var ids=list.map((s)=>s.id);
-                        assert(intercepted.includes(ids[0]))
-                        assert(intercepted.includes(ids[1]))
-                        assert(intercepted.includes(ids[2]))
-                        assert.equal(ids.length,3);
-                    }).end(done)
-                    
-                })
+
+        let agregarServer=()=>agent
+        .post("/servers")
+        .send(s)
+        .expect(agregarId)
+        .expect(201);
+
+        return run(
+            agregarServer,
+            agregarServer,
+            agregarServer,
+            ()=>agent
+            .get("/servers").expect(200).expect(function(result){
+                var list = result.body.servers;
+                var ids=list.map((s)=>s.id);
+                assert(intercepted.includes(ids[0]))
+                assert(intercepted.includes(ids[1]))
+                assert(intercepted.includes(ids[2]))
+                assert.equal(ids.length,3);
             })
-        })
+
+        )
     })
 
-    it("Multiple servers are added and then got, one is deleted",function(done){
+    it("Multiple servers are added and then got, one is deleted",function(){
         var s={
             "id":"serv1",
             "_ref":"no matter",
@@ -196,26 +216,36 @@ describe("POST en /servers", function(){
         function agregarId(res){
             intercepted.push(res.body.server.server.id)
         }
-        request(app).post("/servers").send(s).expect(agregarId).expect(201).end(function(){
-            return request(app).post("/servers").send(s).expect(agregarId).expect(201).end(function(){
-                return request(app).post("/servers").send(s).expect(agregarId).expect(201).end(function(){
-                    return request(app).delete("/servers/"+intercepted[0]).expect(204).end(function(){
 
-                        return request(app).get("/servers").expect(200).expect(function(result){
-                            var list = result.body.servers;
-                            var ids=list.map((s)=>s.id);
-                            assert(ids.includes(intercepted[1]))
-                            assert(ids.includes(intercepted[2]))
-                            assert.equal(ids.length,2);
-                        }).end(done)
-                    });
-                })
+        let agregarServer=()=>agent
+        .post("/servers")
+        .send(s)
+        .expect(agregarId)
+        .expect(201);
+
+        return run(
+            agregarServer,
+            agregarServer,
+            agregarServer,
+            ()=>agent
+            .delete("/servers/"+intercepted[0])
+            .expect((res)=>{
+                console.log(res.body);
             })
-        })
+            .expect(204),
+
+            ()=>agent.get("/servers").expect(200).expect(function(result){
+                var list = result.body.servers;
+                var ids=list.map((s)=>s.id);
+                assert(ids.includes(intercepted[1]))
+                assert(ids.includes(intercepted[2]))
+                assert.equal(ids.length,2);
+            })
+        )
     })
 
-    it("Delete nonexistent server",function(done){
-        request(app).delete("/servers/894").expect(404).end(done);
+    it("Delete nonexistent server",function(){
+        return agent.delete("/servers/894").expect(404);
     })
 
 });

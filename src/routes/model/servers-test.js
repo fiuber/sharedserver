@@ -28,6 +28,28 @@ describe("CRUD servers list", function(){
         .then(done,done);
     })
 
+    it("A fresh server is authorized and its identity is correct",function(){
+        let identity=null;
+        let added=null;
+        return servers
+        .add(s)
+        .then((actual)=>added=actual)
+        .then(()=>servers.authorized({token:added.token},(e)=>identity=e))
+        .then((a)=>{
+            assert.isTrue(a);
+            assert.deepEqual(identity,added);
+        });
+    })
+
+    it("A random server is not authorized",function(){
+        let identity=null;
+        return servers
+        .authorized({token:"USA DID 9 11"},(e)=>identity=e)
+        .then((a)=>{
+            assert.isFalse(a);
+        });
+    })
+
     it("A server is added, modified and then requested",function(done){
         var sRenamed={
             "id":"89",

@@ -18,14 +18,13 @@ QueryBuilder.prototype.drop=function(){
 
 QueryBuilder.prototype.create=function(){
     let prepared=this.fields.map((t)=>{
-        if(this.primaryKeys.includes(t)){
-            return t+" "+this.types[t]+" primary key";
-        }else{
-            return t+" "+this.types[t];
-        }
+        return t+" "+this.types[t];
     })
 
-    let joined=prepared.join(",");
+    let primaryKeysField="primary key ("+this.primaryKeys.join(", ")+")"
+    prepared.push(primaryKeysField);
+
+    let joined=prepared.join(", ");
 
     return "create table "+this.name+"("+joined+");";
 }

@@ -7,7 +7,7 @@ const ERROR={"error":true}
 
 function apify(shape,fun){
     
-    return function(req_body,send,req_parameters){
+    return function(req_body,send,req_parameters,persistence){
         if(req_parameters==undefined){
             req_parameters=[];
         }
@@ -19,11 +19,20 @@ function apify(shape,fun){
         if(shapeOk){
             let inexistent={"inexistent":true};
             let badRevision={"bad revision":true};
+            /*
+            let itsThis={
+                inexistent:{"inexistent":true},
+                badRevision:{"bad revision":true},
+                identity:persistence.data,
+                identify:persistence.add
+            }
+            */
+            let me=persistence.data;
             var argumentsToApply=[];
             if(!req_body || Object.keys(req_body).length==0){
-                argumentsToApply=[        ].concat(req_parameters).concat([inexistent,badRevision]);
+                argumentsToApply=[        ].concat(req_parameters).concat([inexistent,badRevision,me]);
             }else{
-                argumentsToApply=[req_body].concat(req_parameters).concat([inexistent,badRevision]);
+                argumentsToApply=[req_body].concat(req_parameters).concat([inexistent,badRevision,me]);
             }
             
             if(fun.length > argumentsToApply.length){
@@ -33,19 +42,32 @@ function apify(shape,fun){
 
             return Promise.resolve(fun.apply(undefined,argumentsToApply))
             .then(function(result){
+                /*
+                console.log("EL RESULT EN APIFY ES:", result);
+                console.log("Estoy aplicandole",argumentsToApply);
+                console.log("A LA SGTE FUNCION", fun.toString());
+                */
+
                 if(result==inexistent){
                     send(BAD_RESOURCE,"The resource doesn't exist.");
                 }else if(result == badRevision){
                     send(BAD_REQUEST,"bad _ref");
                 }else{
                     if(result==null || result ==undefined){
+                        persistence.set(me);
                         send(SUCCESS);
                     }else{
+                        persistence.set(me);
                         send(SUCCESS,result);
                     }
                 }
             }).catch(function(e){
-                send(ERROR,e.toString());
+                /*
+                console.log("-------EL ERROR QUE ME LLEGA ES ------")
+                console.log(e);
+                console.log(Object.keys(e.prototype));
+                */
+                send(ERROR,e.stack);
             });
         }else{
             send(BAD_REQUEST,"Bad body. Send "+ shape.toString());
