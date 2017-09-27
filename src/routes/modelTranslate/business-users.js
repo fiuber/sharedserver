@@ -23,7 +23,9 @@ function businessUser(string,number,array,from){
 
 function businessUserList(string,number,array,from){
     let businessUserShape=businessUser(string,number,array,from).businessUser;
-    return array(businessUserShape);
+    return {
+        businessUser:array(businessUserShape),
+    }
 }
 
 exports.add=businessUser;

@@ -17,6 +17,7 @@ function expressify(shape,fun,reshapeOutput){
 
         
         function send(status,data){
+            //console.log("DATA QUE LE LLEGA A EXPRESSIFY:",data);
             var statusDef=0;
             switch (status) {
                 case apify.SUCCESS:

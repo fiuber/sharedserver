@@ -42,6 +42,12 @@ function apify(shape,fun){
 
             return Promise.resolve(fun.apply(undefined,argumentsToApply))
             .then(function(result){
+                /*
+                console.log("EL RESULT EN APIFY ES:", result);
+                console.log("Estoy aplicandole",argumentsToApply);
+                console.log("A LA SGTE FUNCION", fun.toString());
+                */
+
                 if(result==inexistent){
                     send(BAD_RESOURCE,"The resource doesn't exist.");
                 }else if(result == badRevision){

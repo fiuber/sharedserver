@@ -38,10 +38,18 @@ exports.token.shape={
 
 //NO TESTEADO
 exports.get=function(username,nonexistent){
-    udb.exists({username:username}).then((exists)=>{
+    return udb.exists({username:username}).then((exists)=>{
         if(exists){
+            //console.log("ACÁ ESTA SALIENDO UN USER");
             return udb.read({username:username}).then(getWithRoles).then((all)=>all[0])
+            /*
+            .then((u)=>{
+                console.log(u);
+                return u;
+            })
+            */
         }else{
+            //console.log("ESE USER NO EXISTEEE")
             return nonexistent;
         }
     })
@@ -61,7 +69,7 @@ exports.add=function(user){
     }).then(()=>{
         return exports.token({username:user.username,password:user.password});
     }).then(()=>{
-        return udb.read({username:user.username});
+        return udb.read({username:user.username}).then(getWithRoles).then((rows)=>rows[0]);
     })
 }
 exports.add.shape=userShape;
