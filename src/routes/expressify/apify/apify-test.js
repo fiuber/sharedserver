@@ -90,16 +90,4 @@ describe("funcionamiento de apify",function(){
             assert.equal(status,apify.BAD_REQUEST);
         }).then(done,done);
     })
-
-    it("Persistence works",function(done){
-        let apified=apify({},changeMe);
-        Promise.resolve(apified({},record,[],persistence)).then(function(){
-            assert.equal(status,apify.SUCCESS);
-            assert.deepEqual(persistence.data,{
-                q:5,
-                p:2
-            });
-        }).then(done,done);
-
-    })
 })

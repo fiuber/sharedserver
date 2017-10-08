@@ -7,7 +7,7 @@ const ERROR={"error":true}
 
 function apify(shape,fun){
     
-    return function(req_body,send,req_parameters,persistence){
+    return function(req_body,send,req_parameters,origin){
         if(req_parameters==undefined){
             req_parameters=[];
         }
@@ -27,12 +27,11 @@ function apify(shape,fun){
                 identify:persistence.add
             }
             */
-            let me=persistence.data;
             var argumentsToApply=[];
             if(!req_body || Object.keys(req_body).length==0){
-                argumentsToApply=[        ].concat(req_parameters).concat([inexistent,badRevision,me]);
+                argumentsToApply=[        ].concat(req_parameters).concat([inexistent,badRevision,origin]);
             }else{
-                argumentsToApply=[req_body].concat(req_parameters).concat([inexistent,badRevision,me]);
+                argumentsToApply=[req_body].concat(req_parameters).concat([inexistent,badRevision,origin]);
             }
             
             if(fun.length > argumentsToApply.length){
@@ -42,11 +41,11 @@ function apify(shape,fun){
 
             return Promise.resolve(fun.apply(undefined,argumentsToApply))
             .then(function(result){
-                /*
-                console.log("EL RESULT EN APIFY ES:", result);
-                console.log("Estoy aplicandole",argumentsToApply);
-                console.log("A LA SGTE FUNCION", fun.toString());
-                */
+                
+                //console.log("EL RESULT EN APIFY ES:", result);
+                //console.log("Estoy aplicandole",argumentsToApply);
+                //console.log("A LA SGTE FUNCION", fun.toString());
+                
 
                 if(result==inexistent){
                     send(BAD_RESOURCE,"The resource doesn't exist.");
@@ -54,10 +53,8 @@ function apify(shape,fun){
                     send(BAD_REQUEST,"bad _ref");
                 }else{
                     if(result==null || result ==undefined){
-                        persistence.set(me);
                         send(SUCCESS);
                     }else{
-                        persistence.set(me);
                         send(SUCCESS,result);
                     }
                 }

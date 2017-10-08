@@ -6,6 +6,7 @@ describe("POST en /servers", function(){
     var app;
     var db;
     let agent=null;
+    let authValue="";
     beforeEach(function(){
         this.timeout(5000);
         app =require("../server.js");
@@ -13,7 +14,9 @@ describe("POST en /servers", function(){
         return require("../restartDatabase.js")().then(()=>{
             return agent
             .post("/token")
-            .send({username:"admin",password:"admin"})
+            .send({username:"admin",password:"admin"}).then((res)=>{
+                authValue="api-key "+new Buffer(res.body.token.token+" admin").toString("base64");
+            })
         });
     });
 
@@ -32,6 +35,7 @@ describe("POST en /servers", function(){
         };
         return agent
         .post("/servers")
+        .set("authorization",authValue)
         .send(datosEnviados)
         .expect(function(res){
             assert.equal(res.statusCode,201,res.error);
@@ -53,6 +57,7 @@ describe("POST en /servers", function(){
         };
         return agent
         .post("/servers")
+        .set("Authorization",authValue)
         .send(datosEnviados)
         .expect(400)
     });
@@ -71,12 +76,14 @@ describe("POST en /servers", function(){
         return run(
             ()=>agent
             .post("/servers")
+            .set("Authorization",authValue)
             .send(s)
             .expect((e)=>{added=e.body.server.server})
             .expect(201),
 
             ()=>agent
             .get("/servers/"+added.id)
+            .set("Authorization",authValue)
             .expect(200)
             .expect(function (res){
                 assert.equal(res.body.server.createdBy,added.createdBy);
@@ -100,6 +107,7 @@ describe("POST en /servers", function(){
         return run(
             ()=>agent
             .post("/servers")
+            .set("Authorization",authValue)
             .send(s)
             .expect((e)=>{
                 added=e.body.server.server
@@ -114,11 +122,13 @@ describe("POST en /servers", function(){
             
             ()=>agent
             .put("/servers/"+added.id)
+            .set("Authorization",authValue)
             .send(s)
             .expect(200),
 
             ()=>agent
             .get("/servers/"+added.id)
+            .set("Authorization",authValue)
             .expect(200)
             .expect(function (res){
                 assert.equal(res.body.server.createdBy,added.createdBy);
@@ -143,12 +153,14 @@ describe("POST en /servers", function(){
         return run(
             ()=>agent
             .post("/servers")
+            .set("Authorization",authValue)
             .send(s)
             .expect((e)=>{added=e.body.server})
             .expect(201),
 
             ()=>agent
             .post("/servers/"+added.server.id)
+            .set("Authorization",authValue)
             .expect(201)
             .expect((e)=>{newtoken=e.body.server})
             .expect(()=>{
@@ -163,6 +175,7 @@ describe("POST en /servers", function(){
     it("A nonexistent server is requested",function(){
         return agent
         .get("/servers/72")
+        .set("Authorization",authValue)
         .expect(404)
     })
 
@@ -182,6 +195,7 @@ describe("POST en /servers", function(){
 
         let agregarServer=()=>agent
         .post("/servers")
+        .set("Authorization",authValue)
         .send(s)
         .expect(agregarId)
         .expect(201);
@@ -191,7 +205,9 @@ describe("POST en /servers", function(){
             agregarServer,
             agregarServer,
             ()=>agent
-            .get("/servers").expect(200).expect(function(result){
+            .get("/servers")
+            .set("Authorization",authValue)
+            .expect(200).expect(function(result){
                 var list = result.body.servers;
                 var ids=list.map((s)=>s.id);
                 assert(intercepted.includes(ids[0]))
@@ -219,6 +235,7 @@ describe("POST en /servers", function(){
 
         let agregarServer=()=>agent
         .post("/servers")
+        .set("Authorization",authValue)
         .send(s)
         .expect(agregarId)
         .expect(201);
@@ -229,12 +246,16 @@ describe("POST en /servers", function(){
             agregarServer,
             ()=>agent
             .delete("/servers/"+intercepted[0])
+            .set("Authorization",authValue)
             .expect((res)=>{
                 console.log(res.body);
             })
             .expect(204),
 
-            ()=>agent.get("/servers").expect(200).expect(function(result){
+            ()=>agent
+            .get("/servers")
+            .set("Authorization",authValue)
+            .expect(200).expect(function(result){
                 var list = result.body.servers;
                 var ids=list.map((s)=>s.id);
                 assert(ids.includes(intercepted[1]))
@@ -245,7 +266,10 @@ describe("POST en /servers", function(){
     })
 
     it("Delete nonexistent server",function(){
-        return agent.delete("/servers/894").expect(404);
+        return agent
+        .delete("/servers/894")
+        .set("Authorization",authValue)
+        .set("Authorization",authValue).expect(404);
     })
 
 });

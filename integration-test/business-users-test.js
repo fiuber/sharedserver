@@ -2,23 +2,25 @@ let assert=require("chai").assert;
 var request = require('supertest');
 const run=require("./run");
 
-describe.only("testing /business-users", function(){
+describe("testing /business-users", function(){
     let app=null;
     let agent=null;
+    let authValue="";
 
     function restart(){
         if(app!=null) app.close();
 
         app =require("../server.js");
         agent=request.agent(app);
-        console.log("-----LIMPIO BD --------")
         return require("../restartDatabase.js")()
     }
 
     function loginAdmin(){
         return agent
         .post("/token")
-        .send({username:"admin",password:"admin"})
+        .send({username:"admin",password:"admin"}).then((res)=>{
+            authValue="api-key "+new Buffer(res.body.token.token+" admin").toString("base64");
+        })
     }
 
     describe("POST a business user and then DELETE it",function(){
@@ -29,6 +31,7 @@ describe.only("testing /business-users", function(){
         it("POST /business-users returns a good user",function(){
             return agent
             .post("/business-users")
+            .set("authorization",authValue)
             .send({
                 username:"pepenacho",
                 password:"pepeword",
@@ -54,6 +57,7 @@ describe.only("testing /business-users", function(){
         it("POST the same user again returns 500",function(){
             return agent
             .post("/business-users")
+            .set("authorization",authValue)
             .send({
                 username:"pepenacho",
                 password:"pepeword",
@@ -69,6 +73,7 @@ describe.only("testing /business-users", function(){
         it("UPDATE the user",function(){
             return agent
             .put("/business-users/pepenacho")
+            .set("authorization",authValue)
             .send({
                 username:"pepenacho",
                 password:"perejil",
@@ -84,6 +89,7 @@ describe.only("testing /business-users", function(){
         it("GET the same user gets the info again",function(){
             return agent
             .get("/business-users/pepenacho")
+            .set("authorization",authValue)
             .expect(200)
             .expect((res)=>{
                 assert.include(res.body.businessUser,{
@@ -99,6 +105,7 @@ describe.only("testing /business-users", function(){
         it("GET /business-users returns both users",function(){
             return agent
             .get("/business-users")
+            .set("authorization",authValue)
             .expect(200)
             .expect((res)=>{
                 let result1=res.body.businessUser.some((u)=>{
@@ -116,18 +123,21 @@ describe.only("testing /business-users", function(){
         it("DELETE the user",function(){
             return agent
             .delete("/business-users/pepenacho")
+            .set("authorization",authValue)
             .expect(204);
         })
 
         it("DELETE the user again gives 404",function(){
             return agent
             .delete("/business-users/pepenacho")
+            .set("authorization",authValue)
             .expect(404);
         })
 
         it("GET /business-users returns only admin",function(){
             return agent
             .get("/business-users")
+            .set("authorization",authValue)
             .expect(200)
             .expect((res)=>{
                 assert.deepInclude(res.body.businessUser[0],{
@@ -147,6 +157,7 @@ describe.only("testing /business-users", function(){
         it("POST to /business-users",function(){
             return agent
             .post("/business-users")
+            .set("authorization",authValue)
             .send({
                 username:"pepenacho",
                 password:"pepeword",
@@ -168,6 +179,7 @@ describe.only("testing /business-users", function(){
             })
             .expect(201)
             .expect((res)=>{
+                authValueOther="api-key "+new Buffer(res.body.token.token+" admin").toString("base64");
                 assert.isAbove(res.body.token.expiresAt,Date.now());
             })
         })
@@ -175,6 +187,7 @@ describe.only("testing /business-users", function(){
         it("Profile user cant create businessusers",function(){
             return agent
             .post("/business-users")
+            .set("authorization",authValueOther)
             .send({
                 username:"gomez",
                 password:"pepeword",
@@ -190,18 +203,21 @@ describe.only("testing /business-users", function(){
         it("Profile user cant get all businessusers",function(){
             return agent
             .get("/business-users")
+            .set("authorization",authValueOther)
             .expect(401);
         })
 
         it("Profile user cant remove a businessusers",function(){
             return agent
             .delete("/business-users/admin")
+            .set("authorization",authValueOther)
             .expect(401);
         })
 
         it("Profile user cant update a businessusers",function(){
             return agent
             .put("/business-users/admin")
+            .set("authorization",authValueOther)
             .send({
                 username:"gomez",
                 password:"pepeword",
