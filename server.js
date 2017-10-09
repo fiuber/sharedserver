@@ -11,6 +11,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use("/",require("./src/routes"))//catches all requests. ./routes is an Express router
+app.use(express.static("public"))//catches all requests. ./routes is an Express router
 
 //else:
 app.use(function(req,res,next) {
