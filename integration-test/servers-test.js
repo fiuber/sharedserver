@@ -16,6 +16,7 @@ describe("POST en /servers", function(){
             .post("/token")
             .send({username:"admin",password:"admin"}).then((res)=>{
                 authValue="api-key "+new Buffer(res.body.token.token+" admin").toString("base64");
+                //hago request.set("authorization",authValue) todo el tiempo
             })
         });
     });

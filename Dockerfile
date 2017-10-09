@@ -26,6 +26,7 @@ ADD ./src /app/src
 ADD ./database.js /app/database.js
 ADD ./restartDatabase.js /app/restartDatabase.js
 ADD ./integration-test /app/integration-test
+ADD ./public /app/public
 
 ADD ./test-cover-enviar-en-docker.sh /app/test-cover-enviar-en-docker.sh
 

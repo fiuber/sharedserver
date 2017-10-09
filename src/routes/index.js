@@ -3,11 +3,11 @@ const expressify=require("./expressify");
 
 var router = express.Router();
 const auth =require("./auth");
-
+/*
 router.get('/', (req, res) => {
     res.send('Hello world\n');
 });
-
+*/
 
 //models
 const serversModel=require("./model/servers.js");
