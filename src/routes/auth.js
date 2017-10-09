@@ -58,6 +58,7 @@ exports.middleware=function(){
                 res.status(401).send({code:401,error:"bad credentials"});
             }
         })
+        return allPromise;
     }
 }
 

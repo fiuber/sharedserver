@@ -86,6 +86,8 @@ describe("testing /business-users", function(){
             .expect(200)
         })
 
+        
+
         it("GET the same user gets the info again",function(){
             return agent
             .get("/business-users/pepenacho")
@@ -99,7 +101,52 @@ describe("testing /business-users", function(){
                     surname:"sbru"
                 })
             })
-            
+        })
+
+
+
+        it("GETting me gets th admin",function(){
+            return agent
+            .get("/business-users/me")
+            .set("authorization",authValue)
+            .expect(200)
+            .expect((res)=>{
+                assert.include(res.body.businessUser,{
+                    username:"admin",
+                    password:"admin",
+                })
+            })
+        })
+
+        it("PUT me",function(){
+            return agent
+            .put("/business-users/me")
+            .set("authorization",authValue)
+            .send({
+                username:"admin",
+                password:"admin",
+                name:"macho",
+                surname:"sbru",
+                roles:[
+                    "user"//SE IGNORA!
+                ]
+            })
+            .expect(200)
+        })
+
+        it("GETting me gets the info again",function(){
+            return agent
+            .get("/business-users/me")
+            .set("authorization",authValue)
+            .expect(200)
+            .expect((res)=>{
+                assert.include(res.body.businessUser,{
+                    username:"admin",
+                    password:"admin",
+                    name:"macho",
+                    surname:"sbru"
+                })
+            })
         })
 
         it("GET /business-users returns both users",function(){

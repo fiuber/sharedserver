@@ -54,7 +54,7 @@ function expressify(shape,fun,reshapeOutput){
             
         }
 
-        f(req.body,send,req.params,res.locals.origin);
+        f(req.body,send,req.params,res.locals.identification);
     }
 }
 
