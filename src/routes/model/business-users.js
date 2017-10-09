@@ -36,7 +36,7 @@ exports.token.shape={
     password:"string"
 };
 
-//NO TESTEADO
+
 exports.get=function(username,nonexistent){
     return udb.exists({username:username}).then((exists)=>{
         if(exists){
@@ -54,6 +54,10 @@ exports.get=function(username,nonexistent){
         }
     })
 
+}
+
+exports.getMe=function(nonexistent,badRevision,me){
+    return exports.get(me.username,nonexistent,badRevision,me);
 }
 
 //testeado
@@ -105,17 +109,25 @@ function getWithRoles(businessUsers){
     }))
 }
 //testeado
-exports.update=function(body,username,nonexistent){
+
+function updateUser(body,username,changeRoles,nonexistent){
     return udb.exists({username:username}).then((exists)=>{
         if(exists){
-            return udb.update({username:username},body).then(()=>{
-                return rolesdb.delete({username:username}).then(()=>{
-                    let promises=body.roles.map((role)=>{
-                        return rolesdb.create({username:body.username,role:role});
+            let updationPromise = udb.update({username:username},body);//bad name
+
+            if(changeRoles){
+                updationPromise=updationPromise.then(()=>{
+                    let deletionPromise =rolesdb.delete({username:username});
+                    return deletionPromise.then(()=>{
+                        let promises=body.roles.map((role)=>{
+                            return rolesdb.create({username:body.username,role:role});
+                        })
+                        return Promise.all(promises);
                     })
-                    return Promise.all(promises);
                 })
-            })
+            }
+            
+            return updationPromise
             .then(()=>udb.read({username:body.username}))
             .then(getWithRoles)
             .then((rows)=>rows[0]);
@@ -123,6 +135,13 @@ exports.update=function(body,username,nonexistent){
             return nonexistent;
         }
     })
+}
+exports.update=function(body,username,nonexistent){
+    return updateUser(body,username,true,nonexistent);
+}
+
+exports.updateMe=function(body,nonexistent,badRevision,me){
+    return updateUser(body,me.username,false,nonexistent)
 }
 
 //testeado

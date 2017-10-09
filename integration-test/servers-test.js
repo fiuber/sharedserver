@@ -248,9 +248,6 @@ describe("POST en /servers", function(){
             ()=>agent
             .delete("/servers/"+intercepted[0])
             .set("Authorization",authValue)
-            .expect((res)=>{
-                console.log(res.body);
-            })
             .expect(204),
 
             ()=>agent
