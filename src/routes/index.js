@@ -39,7 +39,6 @@ const buTranslated=require("./modelTranslate")(businessUsersModel,buTranslator);
 const businessUsers=expressify.all(buTranslated,{"version":"1"});
 
 router.post("/token", public,businessUsers.token);
-//router.post("/logout", public,businessUsers.logout);
 
 router.get("/business-users/me", user, businessUsers.getMe);
 router.put("/business-users/me", user, businessUsers.updateMe);
