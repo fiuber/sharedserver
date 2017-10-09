@@ -1,21 +1,29 @@
 const users=require("./tables").users;
-const images=require("./tables").userImages;
+const userImages=require("./tables").userImages;
 const cars=require("./tables").cars;
 const carProperties=require("./tables").carProperties;
 
 exports.add=function(body,nonexistent,badRevision,me){
     body._ref=Math.random()*1000+"";
 
-    body.fbUserId=body.fb.userId || null;
-    body.fbAuthToken=body.fb.authToken || null;
+    if(body.fb){
+        body.fbUserId=body.fb.userId || null;
+        body.fbAuthToken=body.fb.authToken || null;
+    }else{
+        body.fbUserId=null;
+        body.fbAuthToken=null;
+    }
+    
+    
 
     body.name=body.firstName || body.name;
     body.surname=body.lastName || body.surname;
 
     body.applicationOwner=me.serverId;
 
-    return users.create(body).then((created)=>{
-        return addImages(body.id,body.images)
+    return users.create(body)
+    .then((created)=>{
+        return addImages(created.id,body.images)
         .then(()=>exports.get(created.id))
     });
 }
@@ -40,7 +48,9 @@ exports.validate=function(body,nonexistent,badRevision){
 
 exports.list=function(){
     return users.read().then((allUsers)=>{
-        return allUsers.map((u)=>exports.get(u.id));
+        return Promise.all(
+            allUsers.map((u)=>exports.get(u.id))
+        );
     })
 }
 
@@ -49,6 +59,7 @@ exports.get=function(userId){
         if(got.length==0){
             return nonexistent;
         }
+
         return exports.getCars(userId).then((cars)=>{
             return getBalance(userId).then((balance)=>{
                 return getImages(userId).then((images)=>{
@@ -60,6 +71,8 @@ exports.get=function(userId){
                 });
             });
         });
+        
+        
     });
 }
 
@@ -78,9 +91,14 @@ exports.update=function(userId,body,nonexistent,badRevision){
     return users.exists({id:userId}).then((exists)=>{
         if(!exists) return nonexistent;
         return users.read({id:userId}).then((myUsers)=>{
-            if(myUsers[0]._ref!==body._ref){
-                body.fbUserId=body.fb.userId || null;
-                body.fbAuthToken=body.fb.authToken || null;
+            if(myUsers[0]._ref===body._ref){
+                if(body.fb){
+                    body.fbUserId=body.fb.userId || null;
+                    body.fbAuthToken=body.fb.authToken || null;
+                }else{
+                    body.fbUserId=null;
+                    body.fbAuthToken=null;
+                }
                 
                 body.name=body.firstName || body.name;
                 body.surname=body.lastName || body.surname;
@@ -104,7 +122,7 @@ exports.update=function(userId,body,nonexistent,badRevision){
 
 function addImages(id,images){
     let additions=images.map((image)=>{
-        return userImages.add({id:id,image:image});
+        return userImages.create({id:id,image:image});
     });
     return Promise.all(additions);
 }
@@ -116,13 +134,13 @@ exports.deleteCar=function(carId){
 }
 
 function getImages(userId){
-    return images.read({id:userId}).then((rows)=>{
+    return userImages.read({id:userId}).then((rows)=>{
         return rows.map((row)=>row.image);
     })
 }
 
 function getBalance(userId){
-    return [];
+    return Promise.resolve([]);
 }
 
 function addProperties(id,properties){
@@ -145,6 +163,8 @@ exports.addCar=function(body){
 }
 
 exports.getCars=function(userId){
+    
+    
     return cars.read({owner:userId}).then((myCars)=>{
         let withProperties=myCars.map((car)=>{
             return carProperties.read({id:car.id}).then((properties)=>{
@@ -154,6 +174,7 @@ exports.getCars=function(userId){
         })
         return Promise.all(withProperties);
     })
+    
 }
 
 exports.getCar=function(userId,carId,nonexistent){

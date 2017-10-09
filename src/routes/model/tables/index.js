@@ -55,7 +55,7 @@ const userImagesSchema={
 const carsSchema={
     id:"serial",
     _ref:"varchar(40)",
-    owner:"varchar(40)"
+    owner:"bigint"
 }
 
 const carPropertiesSchema={
