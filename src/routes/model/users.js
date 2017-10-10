@@ -3,21 +3,48 @@ const userImages=require("./tables").userImages;
 const cars=require("./tables").cars;
 const carProperties=require("./tables").carProperties;
 
+const userShape={
+    "_ref": "string",
+    "type": "string",
+    "username": "string",
+    "firstName": "string",
+    "lastName": "string",
+    "country": "string",
+    "email": "string",
+    "birthdate": "string",
+    "images":[]
+};
+
+const carShape={
+    "id": "string",
+    "_ref": "string",
+    "owner": "string",
+    "properties": []
+};
+
+
 exports.add=function(body,nonexistent,badRevision,me){
     body._ref=Math.random()*1000+"";
 
     if(body.fb){
         body.fbUserId=body.fb.userId || null;
         body.fbAuthToken=body.fb.authToken || null;
+        delete body.fb;
     }else{
         body.fbUserId=null;
         body.fbAuthToken=null;
     }
     
     
-
-    body.name=body.firstName || body.name;
-    body.surname=body.lastName || body.surname;
+    if(body.firstName){
+        body.name=body.firstName;
+        delete body.firstName
+    }
+    if(body.lastName){
+        body.surname=body.lastName;
+        delete body.lastName;
+    }
+    body.password=body.password || null;
 
     body.applicationOwner=me.serverId;
 
@@ -25,8 +52,10 @@ exports.add=function(body,nonexistent,badRevision,me){
     .then((created)=>{
         return addImages(created.id,body.images)
         .then(()=>exports.get(created.id))
-    });
+    })
 }
+exports.add.shape=userShape;
+
 
 exports.validate=function(body,nonexistent,badRevision){
     let un=body.username;
@@ -34,8 +63,10 @@ exports.validate=function(body,nonexistent,badRevision){
     let pw=body.password;
     let fbToken=body.facebookAuthToken;
 
+
     return users.read({username:un}).then((got)=>{
         let user=got[0];
+        
         if(hasPw && pw === user.password){
             return exports.get(user.id);
         }else if(!hasPw && fbToken === user.fbAuthToken){
@@ -45,6 +76,9 @@ exports.validate=function(body,nonexistent,badRevision){
         }
     });
 }
+exports.validate.shape={
+    "username":"string"
+}
 
 exports.list=function(){
     return users.read().then((allUsers)=>{
@@ -53,6 +87,7 @@ exports.list=function(){
         );
     })
 }
+exports.list.shape={};
 
 exports.get=function(userId){
     return users.read({id:userId}).then((got)=>{
@@ -75,6 +110,7 @@ exports.get=function(userId){
         
     });
 }
+exports.get.shape={}
 
 exports.delete=function(userId){
     return users.delete({id:userId}).then(()=>{
@@ -86,6 +122,7 @@ exports.delete=function(userId){
         })
     })
 }
+exports.delete.shape={};
 
 exports.update=function(userId,body,nonexistent,badRevision){
     return users.exists({id:userId}).then((exists)=>{
@@ -119,6 +156,7 @@ exports.update=function(userId,body,nonexistent,badRevision){
         })
     })
 }
+exports.update.shape=userShape;
 
 function addImages(id,images){
     let additions=images.map((image)=>{
@@ -132,6 +170,7 @@ exports.deleteCar=function(carId){
         return carProperties.delete({id:carId});
     })
 }
+exports.deleteCar.shape={}
 
 function getImages(userId){
     return userImages.read({id:userId}).then((rows)=>{
@@ -162,6 +201,7 @@ exports.addCar=function(userId,body){
         });
     });
 }
+exports.addCar.shape=carShape;
 
 exports.getCars=function(userId){
     
@@ -175,8 +215,9 @@ exports.getCars=function(userId){
         })
         return Promise.all(withProperties);
     })
-    
 }
+exports.getCars.shape={};
+
 
 exports.getCar=function(userId,carId,nonexistent){
     return cars.exists({id:carId,owner:userId}).then((exists)=>{
@@ -192,6 +233,7 @@ exports.getCar=function(userId,carId,nonexistent){
         })
     })
 }
+exports.getCar.shape={};
 
 exports.updateCar=function(userId,carId,body,nonexistent){
     return cars.exists({id:carId,owner:userId}).then((exists)=>{
@@ -205,3 +247,4 @@ exports.updateCar=function(userId,carId,body,nonexistent){
         })
     })
 }
+exports.updateCar.shape=carShape;

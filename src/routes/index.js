@@ -12,6 +12,7 @@ router.get('/', (req, res) => {
 //models
 const serversModel=require("./model/servers.js");
 const businessUsersModel=require("./model/business-users")
+const usersModel=require("./model/users")
 
 //authorization
 const app=auth.middleware(serversModel.authorized);
@@ -49,7 +50,23 @@ router.get("/business-users/:userId", user, businessUsers.get);
 router.delete("/business-users/:userId", admin, businessUsers.delete);
 router.put("/business-users/:userId", admin, businessUsers.update);
 
+//business data model
+const usersTranslator=require("./modelTranslate/users.js");
+const usersTranslated=require("./modelTranslate")(usersModel,usersTranslator);
+const users=expressify.all(usersTranslated,{"version":"1"});
 
+router.get("/users",app,users.list)
+router.post("/users",app,users.add)
+router.delete("/users",app,users.delete)
+router.get("/users/:userId",app,users.get)
+router.put("/users/:userId",app,users.update)
 
+router.post("/users/validate",app,users.validate)
+
+router.get("/users/:userId/cars",app,users.getCars)
+router.post("/users/:userId/cars",app,users.addCar)
+router.delete("/users/:userId/cars/:carId",app,users.deleteCar)
+router.get("/users/:userId/cars/:carId",app,users.getCar)
+router.put("/users/:userId/cars/:carId",app,users.updateCar)
 
 module.exports = router;

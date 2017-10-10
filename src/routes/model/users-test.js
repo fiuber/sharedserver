@@ -1,7 +1,6 @@
 const users=require("./users");
 const assert=require("chai").assert;
 
-//SEGUIR POR LA PARTE DE AUTOSSSSSS
 
 describe("Using the users model",function(){
     let firstId=null;
