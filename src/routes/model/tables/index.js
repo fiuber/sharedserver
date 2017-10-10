@@ -1,7 +1,7 @@
 const EasyTable=require("./EasyTable");
 
 
-const usersSchema={
+const businessUsersSchema={
     _ref:"varchar(40)",
     username:"varchar(40)",//no id. username is the id
     password:"varchar(40)",
@@ -27,10 +27,53 @@ const serversSchema={
     lastConnection:"bigint",
     _ref:"varchar(40)"
 }
+
+const usersSchema={
+    id:"serial",
+    _ref:"varchar(40)",
+    applicationOwner: "varchar(40)",
+
+    password:"varchar(40)",
+
+    type: "varchar(40)",
+    username: "varchar(40)",
+    name: "varchar(40)",
+    surname: "varchar(40)",
+    country: "varchar(40)",
+    email: "varchar(40)",
+    birthdate: "varchar(40)",
+
+    fbUserId:"varchar(200)",
+    fbAuthToken:"varchar(1000)",
+}
+
+const userImagesSchema={
+    id:"bigint",
+    image:"varchar(200)"
+}
+
+const carsSchema={
+    id:"serial",
+    _ref:"varchar(40)",
+    owner:"bigint"
+}
+
+const carPropertiesSchema={
+    id:"bigint",
+    name:"varchar(40)",
+    value:"varchar(40)"
+}
+
 const tables={
     servers:new EasyTable("servers",serversSchema,  ["id"]),
-    businessUsers:  new EasyTable("businessUsers",  usersSchema,    ["username"]),
-    roles:  new EasyTable("roles",  rolesSchema,    ["username","role"])
+    
+    businessUsers:  new EasyTable("businessUsers",  businessUsersSchema,    ["username"]),
+    roles:  new EasyTable("roles",  rolesSchema,    ["username","role"]),
+
+    users:  new EasyTable("users",  usersSchema,    ["id"]),
+    userImages:  new EasyTable("userImages",  userImagesSchema,    ["id","image"]),
+    cars:  new EasyTable("cars", carsSchema,    ["id","owner"]),
+    carProperties:  new EasyTable("carProperties", carPropertiesSchema,    ["id","name"])
 }
 
 for (let t in tables){

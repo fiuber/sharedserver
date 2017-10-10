@@ -15,7 +15,7 @@ describe("POST en /servers", function(){
             return agent
             .post("/token")
             .send({username:"admin",password:"admin"}).then((res)=>{
-                authValue="api-key "+new Buffer(res.body.token.token+" admin").toString("base64");
+                authValue="api-key "+res.body.token.token;
                 //hago request.set("authorization",authValue) todo el tiempo
             })
         });

@@ -36,14 +36,14 @@ exports.middleware=function(){
         if(req.get("authorization")){
             let authHeader = authorization.parse(req.get("authorization"));
             if(authHeader.scheme === "api-key"){
-                let decodedParts = Buffer(authHeader.token, 'base64').toString().split(" ");
-                authData.token=decodedParts[0];
+                let actualToken=Buffer(authHeader.token, 'base64').toString()
+                let decodedParts = actualToken.split(" ");
+                authData.token=actualToken;
                 if(decodedParts.length==2){
                     authData.username=decodedParts[1];
                 }
             }
         }
-        
 
 
         function identify(identification){

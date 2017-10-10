@@ -11,7 +11,7 @@ const userShape={
 //testeado
 exports.token=function(body,nonexistent,badRevision,me){
     let un=body.username;
-    let token=Math.random()*1000+"";
+    let token=Math.random()*1000+" "+un;
     var expiresAtDate = new Date();
     expiresAtDate.setMinutes(expiresAtDate.getMinutes()+10);//10 minutes
     var expiresAt = expiresAtDate.getTime();
@@ -24,9 +24,11 @@ exports.token=function(body,nonexistent,badRevision,me){
 
             if(me){
                 me.username=un;
-                me.token=token;
+                me.token=new Buffer(token).toString("base64");
             }
-            return rows[0];
+            let o=rows[0]
+            o.token=new Buffer(token).toString("base64");
+            return o;
         }
     })
 
@@ -172,12 +174,13 @@ exports.expireToken.shape={
 
 //testeado
 exports.tokenCorrect=function(username,token){
+    
     return udb.read({username:username}).then(function(rows){
         if(!rows){
             return false;
         }else if(rows.length==0){
             return false;
-        }else if(rows[0].token != token){
+        }else if(rows[0].token !== token){
             return false;
         }else{
             let expiresAt=rows[0].expiresAt;

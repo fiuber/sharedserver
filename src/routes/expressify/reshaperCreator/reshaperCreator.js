@@ -2,17 +2,19 @@ function reshaperCreator(shape){
     if(shape){
         return reshape.bind(null,shape);
     }else{
-        return (x)=>x;
+        return (x)=>{
+            throw new Error("cant reshape"+x)
+        };
     }
 }
 function reshape(shapeCreator,data){
+    
     let shape=shapeCreator(StringSignal.new,NumberSignal.new,ArraySignal.new,FromSignal.new) 
     return reshapeFromShape(shape,data)  ;
 }
 
 function reshapeFromShape(shape,data){
-    //console.log("%%%%%% MI SHAPE",shape);
-    //console.log("%%%%%% MI DATA",data);
+    
     if(shape instanceof FromSignal){
         return reshapeFromShape(shape.innerShape,data[shape.key]);
     }else if(shape instanceof StringSignal){//key
