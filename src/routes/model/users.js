@@ -125,7 +125,7 @@ exports.delete=function(userId){
             let allDeletions=cars.map((c)=>{
                 return exports.deleteCar(c.id);
             })
-            return Promise.all(allDeletions);
+            return Promise.all(allDeletions).then(()=>null);
         })
     })
 }
@@ -165,7 +165,7 @@ function addImages(id,images){
 
 exports.deleteCar=function(carId){
     return cars.delete({id:carId}).then(()=>{
-        return carProperties.delete({id:carId});
+        return carProperties.delete({id:carId}).then(()=>null);
     })
 }
 exports.deleteCar.shape={}
@@ -242,6 +242,8 @@ exports.updateCar=function(body,userId,carId,nonexistent){
             return carProperties.delete({id:carId}).then(()=>{
                 return addProperties(carId,body.properties);
             })
+        }).then(()=>{
+            return exports.getCar(userId,carId,nonexistent);
         })
     })
 }

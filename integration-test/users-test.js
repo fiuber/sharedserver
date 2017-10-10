@@ -1,7 +1,7 @@
 let assert=require("chai").assert;
 var request = require('supertest');
 
-describe.only("using users",function(){
+describe("using users",function(){
     var app;
     let agent=null;
     let authValue="";
@@ -306,7 +306,7 @@ describe.only("using users",function(){
                 .put("/users/"+id_soyyo5159+"/cars/"+carId)
                 .set("authorization", authValue)
                 .send({
-                    id:"asd",
+                    id:1,
                     _ref:carRef,
                     owner:id_soyyo5159,
                     properties:[
@@ -330,6 +330,45 @@ describe.only("using users",function(){
                         ]
                     })
                     carRef=res.body.car._ref;
+                })
+            })
+
+            it("Get only that car",function(){
+                return agent
+                .get("/users/"+id_soyyo5159+"/cars/"+carId)
+                .set("authorization", authValue)
+                .expect(200)
+                .expect((res)=>{
+                    assert.deepEqual(res.body.car,{
+                        id:carId,
+                        _ref:carRef,
+                        owner:id_soyyo5159,
+                        properties:[
+                            {
+                                name:"asiento roto",
+                                value:"4"
+                            }
+                        ]
+                    })
+                    carRef=res.body.car._ref;
+                })
+            })
+
+            it("Remove that car",function(){
+                return agent
+                .delete("/users/"+id_soyyo5159+"/cars/"+carId)
+                .set("authorization", authValue)
+                .expect(204)
+            })
+
+            it("there are no cars in the list of cars",function(){
+                return agent
+                .get("/users/"+id_soyyo5159+"/cars")
+                .set("authorization", authValue)
+                .expect(200)
+                .expect((res)=>{
+                    let cars = res.body.cars;
+                    assert.equal(cars.length,0);
                 })
             })
 
