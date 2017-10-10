@@ -22,9 +22,7 @@ const carShape={
     "properties": []
 };
 
-
-exports.add=function(body,nonexistent,badRevision,me){
-    body._ref=Math.random()*1000+"";
+function fixUserBody(body){
 
     if(body.fb){
         body.fbUserId=body.fb.userId || null;
@@ -46,13 +44,23 @@ exports.add=function(body,nonexistent,badRevision,me){
     }
     body.password=body.password || null;
 
-    body.applicationOwner=me.serverId;
+}
 
-    return users.create(body)
-    .then((created)=>{
-        return addImages(created.id,body.images)
-        .then(()=>exports.get(created.id))
+
+exports.add=function(body,nonexistent,badRevision,me){
+    body._ref=Math.random()*1000+"";
+    fixUserBody(body);
+    return require("./servers").serverIdFromToken(me.token)
+    .then((serverId)=>{
+        body.applicationOwner=serverId;
+        
+        return users.create(body)
+        .then((created)=>{
+            return addImages(created.id,body.images)
+            .then(()=>exports.get(created.id))
+        })
     })
+    
 }
 exports.add.shape=userShape;
 
@@ -98,6 +106,7 @@ exports.get=function(userId){
         return exports.getCars(userId).then((cars)=>{
             return getBalance(userId).then((balance)=>{
                 return getImages(userId).then((images)=>{
+                    
                     let ret=got[0];
                     ret.balance=balance;
                     ret.cars=cars;
@@ -105,9 +114,7 @@ exports.get=function(userId){
                     return ret;
                 });
             });
-        });
-        
-        
+        }); 
     });
 }
 exports.get.shape={}
@@ -124,21 +131,12 @@ exports.delete=function(userId){
 }
 exports.delete.shape={};
 
-exports.update=function(userId,body,nonexistent,badRevision){
+exports.update=function(body,userId,nonexistent,badRevision){
     return users.exists({id:userId}).then((exists)=>{
         if(!exists) return nonexistent;
         return users.read({id:userId}).then((myUsers)=>{
             if(myUsers[0]._ref===body._ref){
-                if(body.fb){
-                    body.fbUserId=body.fb.userId || null;
-                    body.fbAuthToken=body.fb.authToken || null;
-                }else{
-                    body.fbUserId=null;
-                    body.fbAuthToken=null;
-                }
-                
-                body.name=body.firstName || body.name;
-                body.surname=body.lastName || body.surname;
+                fixUserBody(body);
                 body._ref=Math.random()*1000+"";
 
                 return users.update({id:userId},body).then(()=>{

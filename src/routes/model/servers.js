@@ -13,6 +13,12 @@ function keepFirst(array){
     return array[0];
 }
 
+exports.serverIdFromToken=function(token){
+    return sdb.read({token:token}).then((servers)=>{
+        return servers[0].id;
+    })
+}
+
 function ifExists(id,fun,nonexistent){
     return sdb.exists({id:id}).then((exists)=>{
         if(exists){

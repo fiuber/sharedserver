@@ -57,7 +57,7 @@ const users=expressify.all(usersTranslated,{"version":"1"});
 
 router.get("/users",app,users.list)
 router.post("/users",app,users.add)
-router.delete("/users",app,users.delete)
+router.delete("/users/:userId",app,users.delete)
 router.get("/users/:userId",app,users.get)
 router.put("/users/:userId",app,users.update)
 

@@ -31,11 +31,11 @@ function user(string,number,array,from){
 
             username:string("username"),
 
-            name:string("firstName"),
-            surname:string("lastName"),
+            name:string("name"),
+            surname:string("surname"),
             country:string("country"),
             email:string("email"),
-            birthdate:string("birthDate"),
+            birthdate:string("birthdate"),
 
             balance:from("balance",array({
                 currency:string("currency"),
