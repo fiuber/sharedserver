@@ -59,11 +59,10 @@ function apify(shape,fun){
                     }
                 }
             }).catch(function(e){
-                /*
+                
                 console.log("-------EL ERROR QUE ME LLEGA ES ------")
                 console.log(e);
-                console.log(Object.keys(e.prototype));
-                */
+                
                 send(ERROR,e.stack);
             });
         }else{

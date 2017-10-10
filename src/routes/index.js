@@ -63,8 +63,8 @@ router.put("/users/:userId",app,users.update)
 
 router.post("/users/validate",app,users.validate)
 
-router.get("/users/:userId/cars",app,users.getCars)
-router.post("/users/:userId/cars",app,users.addCar)
+router.get("/users/:userId/cars/",app,users.getCars)
+router.post("/users/:userId/cars/",app,users.addCar)
 router.delete("/users/:userId/cars/:carId",app,users.deleteCar)
 router.get("/users/:userId/cars/:carId",app,users.getCar)
 router.put("/users/:userId/cars/:carId",app,users.updateCar)

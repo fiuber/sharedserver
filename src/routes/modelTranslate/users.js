@@ -58,7 +58,7 @@ exports.validate=user;
 exports.get=user;
 exports.update=user;
 
-exports.listCars=carList;
+exports.getCars=carList;
 exports.addCar=car;
 exports.getCar=car;
 exports.updateCar=car;

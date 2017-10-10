@@ -184,7 +184,7 @@ describe("Using the users model",function(){
         let myCar=null;
 
         it("I get a car",function(){
-            return users.addCar(firstId,{
+            return users.addCar({
                 id:"7",
                 _ref:"me",
                 owner:firstId,
@@ -198,7 +198,7 @@ describe("Using the users model",function(){
                         value:10000.33
                     }
                 ]
-            })
+            },firstId)
         });
 
         let myCarId=null;
@@ -222,7 +222,7 @@ describe("Using the users model",function(){
         })
 
         it("the car changes",function(){
-            return users.updateCar(firstId,myCarId,{
+            return users.updateCar({
                 id:myCarId,
                 _ref:myCarRef,
                 owner:firstId,
@@ -232,7 +232,7 @@ describe("Using the users model",function(){
                         value:4.08
                     },
                 ]
-            })
+            },firstId,myCarId)
         })
 
         it("the new car is there",function(){

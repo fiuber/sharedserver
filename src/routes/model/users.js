@@ -115,7 +115,7 @@ exports.get=function(userId){
                 });
             });
         }); 
-    });
+    })
 }
 exports.get.shape={}
 
@@ -188,16 +188,16 @@ function addProperties(id,properties){
     return Promise.all(creations)
 }
 
-exports.addCar=function(userId,body){
+exports.addCar=function(body,userId){
     body._ref=Math.random()*1000+"";
     body.owner=userId;
     return cars.create(body).then((created)=>{
         
         return addProperties(created.id,body.properties)
         .then(()=>{
-            return exports.get(userId);
+            return exports.getCar(userId,created.id,"EIMPOSSIBLE");
         });
-    });
+    })
 }
 exports.addCar.shape=carShape;
 
@@ -233,7 +233,7 @@ exports.getCar=function(userId,carId,nonexistent){
 }
 exports.getCar.shape={};
 
-exports.updateCar=function(userId,carId,body,nonexistent){
+exports.updateCar=function(body,userId,carId,nonexistent){
     return cars.exists({id:carId,owner:userId}).then((exists)=>{
         if(!exists){
             return nonexistent;

@@ -1,7 +1,7 @@
 let assert=require("chai").assert;
 var request = require('supertest');
 
-describe("using users",function(){
+describe.only("using users",function(){
     var app;
     let agent=null;
     let authValue="";
@@ -245,9 +245,96 @@ describe("using users",function(){
             })
         })
 
+
+        describe("cars CRUD",function(){
+            let carId="";
+            let carRef="";
+
+            it("add a car",function(){
+                return agent
+                .post("/users/"+id_soyyo5159+"/cars/")
+                .set("authorization", authValue)
+                .send({
+                    id:"asd",
+                    _ref:"asd",
+                    owner:"asd",
+                    properties:[
+                        {
+                            name:"ventana",
+                            value:"150"
+                        },
+                        {
+                            name:"volante",
+                            value:"72"
+                        }
+                    ]
+                })
+                .expect(201)
+                .expect((res)=>{
+                    carId=res.body.car.id;
+                    carRef=res.body.car._ref;
+                })
+            })
+            it("there is only one car in the list of cars",function(){
+                return agent
+                .get("/users/"+id_soyyo5159+"/cars")
+                .set("authorization", authValue)
+                .expect(200)
+                .expect((res)=>{
+                    let cars = res.body.cars;
+                    assert.equal(cars.length,1)
+                    assert.include(cars[0],{
+                        id:carId,
+                        _ref:carRef,
+                        owner:id_soyyo5159
+                    })
+
+                    let ventana150=cars[0].properties.some((p)=>{
+                        return p.name==="ventana" && p.value==150
+                    })
+                    assert.isTrue(ventana150,"Window is not around")
+
+                    let volante72=cars[0].properties.some((p)=>{
+                        return p.name==="volante" && p.value==72
+                    })
+                    assert.isTrue(volante72,"Wheel is not around")
+                })
+            })
+
+            it("the car is updated",function(){
+                return agent
+                .put("/users/"+id_soyyo5159+"/cars/"+carId)
+                .set("authorization", authValue)
+                .send({
+                    id:"asd",
+                    _ref:carRef,
+                    owner:id_soyyo5159,
+                    properties:[
+                        {
+                            name:"asiento roto",
+                            value:"4"
+                        }
+                    ]
+                })
+                .expect(200)
+                .expect((res)=>{
+                    assert.deepEqual(res.body.car,{
+                        id:carId,
+                        _ref:carRef,
+                        owner:id_soyyo5159,
+                        properties:[
+                            {
+                                name:"asiento roto",
+                                value:"4"
+                            }
+                        ]
+                    })
+                    carRef=res.body.car._ref;
+                })
+            })
+
+        })
+
     })
-    
-
-
 
 })

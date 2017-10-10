@@ -37,7 +37,12 @@ function expressify(shape,fun,reshapeOutput){
             var dataDef=null;
             if(status==apify.SUCCESS){
                 if(data!=null){
-                    dataDef=reshapeOutput(data);
+                    if(data instanceof Array && data.length==0){
+                        dataDef=null
+                    }else{
+                        dataDef=reshapeOutput(data);
+                    }
+                    
                 }
             }else{
                 dataDef={
