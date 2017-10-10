@@ -6,9 +6,23 @@ describe("Using the users model",function(){
     let firstId=null;
     let secondId=null;
     let firstRef=null;
+    let createdServerToken="";
 
     before(function(){
-        return require("./tables").restart();
+        return require("./tables")
+        .restart()
+        .then(()=>{
+            return require("./servers").add({
+                "id":"89",
+                "_ref":"no matter",
+                "createdBy":"pepe",
+                "createdTime":15,
+                "name":"pepeserver",
+                "lastConnection":45
+            }).then((added)=>{
+                createdServerToken=added.token;
+            })
+        });
     })
 
     it("a user is added",function(){
@@ -31,7 +45,7 @@ describe("Using the users model",function(){
         "nonexistent",
         "badRevision",
         {
-            serverId:"myserver"
+            token:createdServerToken
         }).then((ret)=>{
             firstId=ret.id;
             firstRef=ret._ref;
@@ -88,7 +102,7 @@ describe("Using the users model",function(){
         "nonexistent",
         "badRevision",
         {
-            serverId:"myserver"
+            token:createdServerToken
         }).then((ret)=>{
             secondId=ret.id;
             assert.notEqual(ret,"nonexistent")
@@ -110,7 +124,7 @@ describe("Using the users model",function(){
     })
 
     it("A user can not be edited with a bad ref",function(){
-        return users.update(firstId,{
+        return users.update({
             _ref:"hola",
             type:"passenger",
             username:"soyyo5159",
@@ -125,13 +139,14 @@ describe("Using the users model",function(){
                 "muy serio.png",
                 "playa.png"
             ]
-        },"nonexistent","badRevision").then((v)=>{
+        },firstId,"nonexistent","badRevision")
+        .then((v)=>{
             assert.equal(v,"badRevision");
         })
     })
 
     it("A user can be edited with a good ref",function(){
-        return users.update(firstId,{
+        return users.update({
             _ref:firstRef,
             type:"passenger",
             username:"soyyo5159",
@@ -146,7 +161,7 @@ describe("Using the users model",function(){
                 "muy serio.png",
                 "playa.png"
             ]
-        },"nonexistent","badRevision").then((v)=>{
+        },firstId,"nonexistent","badRevision").then((v)=>{
             assert.notEqual(v,"badRevision");
             assert.notEqual(v,"nonexistent");
         })
