@@ -151,13 +151,14 @@ function addProperties(id,properties){
     return Promise.all(creations)
 }
 
-exports.addCar=function(body){
+exports.addCar=function(userId,body){
     body._ref=Math.random()*1000+"";
+    body.owner=userId;
     return cars.create(body).then((created)=>{
         
         return addProperties(created.id,body.properties)
         .then(()=>{
-            return exports.getCar(created.id,body.owner);
+            return exports.get(userId);
         });
     });
 }

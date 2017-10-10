@@ -1,7 +1,9 @@
 const users=require("./users");
 const assert=require("chai").assert;
 
-describe.only("Using the users model",function(){
+//SEGUIR POR LA PARTE DE AUTOSSSSSS
+
+describe("Using the users model",function(){
     let firstId=null;
     let secondId=null;
     let firstRef=null;
@@ -151,7 +153,7 @@ describe.only("Using the users model",function(){
         })
     })
 
-    it("Listings doesnt show the deleted user",function(){
+    it("Listings dont show the deleted user",function(){
         return users.list().then((allUsers)=>{
             let soyyo5159=allUsers.some((u)=>
                 u.username==="soyyo5159"
@@ -163,6 +165,94 @@ describe.only("Using the users model",function(){
             assert.isFalse(qman,"q-man not deleted")
         })
     })
+
+    describe("cars",function(){
+        let myCar=null;
+
+        it("I get a car",function(){
+            return users.addCar(firstId,{
+                id:"7",
+                _ref:"me",
+                owner:firstId,
+                properties:[
+                    {
+                        name:"ventana",
+                        value:100.50
+                    },
+                    {
+                        name:"asiento",
+                        value:10000.33
+                    }
+                ]
+            })
+        });
+
+        let myCarId=null;
+        let myCarRef=null;
+
+        it("the car is there",function(){
+            return users.getCars(firstId).then((cars)=>{
+                let windowIncluded=cars[0].properties.some((prop)=>
+                    prop.name==="ventana" && prop.value==="100.5"
+                )
+                assert.isTrue(windowIncluded,"The window is not included");
+
+                let seatIncluded=cars[0].properties.some((prop)=>
+                    prop.name==="asiento" && prop.value==="10000.33"
+                )
+                assert.isTrue(seatIncluded,"The seat is not included");
+                
+                myCarId=cars[0].id;
+                myCarRef=cars[0]._ref;
+            })
+        })
+
+        it("the car changes",function(){
+            return users.updateCar(firstId,myCarId,{
+                id:myCarId,
+                _ref:myCarRef,
+                owner:firstId,
+                properties:[
+                    {
+                        name:"rota",
+                        value:4.08
+                    },
+                ]
+            })
+        })
+
+        it("the new car is there",function(){
+            return users.getCar(firstId,myCarId).then((car)=>{
+                let seatIncluded=car.properties.some((prop)=>
+                    prop.name==="rota" && prop.value==="4.08"
+                )
+                assert.isTrue(seatIncluded,"The seat is not included");
+            })
+        })
+
+        it("the car is removed",function(){
+            return users.deleteCar(myCarId);
+        })
+
+        it("the new car is nonexistent",function(){
+            return users
+            .getCar(firstId,myCarId,"NOPE")
+            .then((ret)=>{
+                assert.equal(ret,"NOPE");
+            })
+        })
+
+        it("The user has no cars",function(){
+            return users.getCars(firstId).then((cars)=>{
+                assert.equal(cars.length,0);
+            })
+        })
+
+        
+
+    })
+
+    
 
 
 })
