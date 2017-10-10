@@ -29,14 +29,18 @@ describe("CRUD servers list", function(){
     })
 
     it("A fresh server is authorized and its identity is correct",function(){
+        function b64d(t){
+            return Buffer(t, 'base64').toString();
+        }
         let identity=null;
         let added=null;
         return servers
         .add(s)
         .then((actual)=>added=actual)
-        .then(()=>servers.authorized({token:added.token},(e)=>identity=e))
+        .then(()=>servers.authorized({token:b64d(added.token)},(e)=>identity=e))
         .then((a)=>{
             assert.isTrue(a);
+            added.token=b64d(added.token);
             assert.deepEqual(identity,added);
         });
     })

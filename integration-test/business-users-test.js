@@ -19,7 +19,7 @@ describe("testing /business-users", function(){
         return agent
         .post("/token")
         .send({username:"admin",password:"admin"}).then((res)=>{
-            authValue="api-key "+new Buffer(res.body.token.token+" admin").toString("base64");
+            authValue="api-key "+res.body.token.token;
         })
     }
 
@@ -226,7 +226,7 @@ describe("testing /business-users", function(){
             })
             .expect(201)
             .expect((res)=>{
-                authValueOther="api-key "+new Buffer(res.body.token.token+" admin").toString("base64");
+                authValueOther="api-key "+res.body.token.token;
                 assert.isAbove(res.body.token.expiresAt,Date.now());
             })
         })

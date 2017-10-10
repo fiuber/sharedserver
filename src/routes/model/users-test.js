@@ -20,7 +20,10 @@ describe("Using the users model",function(){
                 "name":"pepeserver",
                 "lastConnection":45
             }).then((added)=>{
+                
                 createdServerToken=added.token;
+                console.log("------- CREATED SERVE TOKEN -------")
+                console.log(createdServerToken);
             })
         });
     })

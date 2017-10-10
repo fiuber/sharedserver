@@ -15,8 +15,9 @@ describe("using users",function(){
             return agent
             .post("/token")
             .send({username:"admin",password:"admin"}).then((res)=>{
-                authValue="api-key "+new Buffer(res.body.token.token+" admin").toString("base64");
+                authValue="api-key "+res.body.token.token;
                 //hago request.set("authorization",authValue) todo el tiempo
+                assert.equal(res.statusCode,201);
             })
         }).then(()=>{//POST a new server and keep the id
             var datosEnviados={
@@ -34,7 +35,7 @@ describe("using users",function(){
             .expect((res)=>{
                 assert.equal(res.statusCode,201);
                 let token = res.body.server.token.token;
-                authValue="api-key "+new Buffer(token).toString("base64");
+                authValue="api-key "+token;
                 serverId=res.body.server.server.id;
             })
         })

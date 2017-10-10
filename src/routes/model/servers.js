@@ -15,8 +15,17 @@ function keepFirst(array){
 
 exports.serverIdFromToken=function(token){
     return sdb.read({token:token}).then((servers)=>{
-        return servers[0].id;
+        if(servers.length>0){
+            return servers[0].id;
+        }else{
+            let decoded=Buffer(token, 'base64').toString();
+            return sdb.read({token:decoded}).then((servers)=>{
+                return servers[0].id;
+            })
+        }
+        
     })
+    
 }
 
 function ifExists(id,fun,nonexistent){
@@ -37,6 +46,11 @@ exports.ping=function(){
     return "pong";
 }
 
+function base64Token(row){
+    row.token=new Buffer(row.token).toString("base64");
+    return row;
+}
+
 exports.add=function(server){
     server.token=0;
     server.expiresAt=0;
@@ -54,7 +68,7 @@ exports.update=function(body,id,nonexistent,badRevision){
         return sdb.read({id:id}).then(function(got){
             if(got[0]._ref==body._ref){
                 let new_ref=Math.random()*1000+"";
-                return sdb.update({id:id},{name:body.name,new_ref}).read({id:id}).then((rows)=>rows[0]);
+                return sdb.update({id:id},{name:body.name,new_ref}).read({id:id}).then((rows)=>base64Token(rows[0]));
             }else{
                 //console.log("EL REF POSTA ES ",got[0]._ref," EL REF Q ME DISTE ES ",body._ref);
                 return badRevision
@@ -75,7 +89,8 @@ exports.updateToken=function(id,nonexistent){
         return sdb
         .update({id:id},{token:token,expiresAt:expiresAt,_ref:new_ref})
         .read({id:id})
-        .then(keepFirst);
+        .then(keepFirst)
+        .then(base64Token);
     },nonexistent)
             
 }
@@ -100,7 +115,7 @@ exports.list.shape={};
 
 exports.get=function(id,nonexistent){
     return ifExists(id,()=>{
-        return sdb.read({id:id}).then(keepFirst)
+        return sdb.read({id:id}).then(keepFirst).then(base64Token)
     },nonexistent);  
 }
 exports.get.shape={};
