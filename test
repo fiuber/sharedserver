@@ -1,1 +1,1 @@
-docker-compose run -v "$PWD/src:/app/src" -v "$PWD/integration-test:/app/integration-test" web npm test
+npm run outsidetest
