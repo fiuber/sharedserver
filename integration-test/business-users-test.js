@@ -279,4 +279,50 @@ describe("testing /business-users", function(){
 
     })
 
+    describe("login attempts",function(){
+        before(function(){
+            return restart();
+        })
+
+        it("bad everything",()=>{
+            return agent
+            .post("/token")
+            .send({
+                username:"yo",
+                password:"ca",
+            })
+            .expect(404)
+        })
+
+        it("bad pw",()=>{
+            return agent
+            .post("/token")
+            .send({
+                username:"admin",
+                password:"ca",
+            })
+            .expect(404)
+        })
+
+        it("bad un",()=>{
+            return agent
+            .post("/token")
+            .send({
+                username:"yo",
+                password:"admin",
+            })
+            .expect(404)
+        })
+
+        it("alright",()=>{
+            return agent
+            .post("/token")
+            .send({
+                username:"admin",
+                password:"admin",
+            })
+            .expect(201)
+        })
+    })
+
 })
