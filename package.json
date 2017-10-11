@@ -19,10 +19,9 @@
     "enviar": "./node_modules/.bin/codecov -t 9b56dd78-a3ab-4a7d-a7ea-bd326e5348ad",
     "tcdock": "npm run cover && npm run enviar",
     "tcompose": "docker-compose build && docker-compose up --abort-on-container-exit",
-
-    "outsidebuild":"node_modules/.bin/browserify public/js6/main.js -o public/js/bundle.js -t  babelify",
-    "outsidetest":"docker-compose run -v $PWD'/src:/app/src' -v $PWD'/integration-test:/app/integration-test' web npm test",
-    "outsiderun":"docker-compose run --service-ports -v $PWD'/src:/app/src' -v $PWD'/public:/app/public' -v $PWD'/integration-test:/app/integration-test' web npm start"
+    "outsidebuild": "node_modules/.bin/browserify public/js6/main.js -o public/js/bundle.js -t  babelify",
+    "outsidetest": "docker-compose run -v $PWD'/src:/app/src' -v $PWD'/integration-test:/app/integration-test' web npm test",
+    "outsiderun": "docker-compose run --service-ports -v $PWD'/src:/app/src' -v $PWD'/public:/app/public' -v $PWD'/integration-test:/app/integration-test' web npm start"
   },
   "dependencies": {
     "auth-header": "^0.3.1",
@@ -32,7 +31,8 @@
     "express": "^4.13.3",
     "pg-promise": "^6.5.1",
     "react": "^16.0.0",
-    "react-dom": "^16.0.0"
+    "react-dom": "^16.0.0",
+    "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",
