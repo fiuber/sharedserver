@@ -17,6 +17,7 @@ export class App extends React.Component {
         onBusinessUsers={this.gotoBusinessUsers.bind(this)}
         onServers={this.gotoServers.bind(this)}
         onUsers={this.gotoUsers.bind(this)}
+        token={this.state.token}
       />
       this.businessUsers=()=><BusinessUsers token={this.state.token}/>
       this.servers=()=><h1>servers</h1>

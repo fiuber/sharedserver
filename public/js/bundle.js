@@ -40407,7 +40407,8 @@ var App = exports.App = function (_React$Component) {
       return _react2.default.createElement(_MainScreen.MainScreen, {
         onBusinessUsers: _this.gotoBusinessUsers.bind(_this),
         onServers: _this.gotoServers.bind(_this),
-        onUsers: _this.gotoUsers.bind(_this)
+        onUsers: _this.gotoUsers.bind(_this),
+        token: _this.state.token
       });
     };
     _this.businessUsers = function () {
@@ -40505,6 +40506,8 @@ var _reactPopout = require('react-popout');
 
 var _reactPopout2 = _interopRequireDefault(_reactPopout);
 
+var _Row = require('./Row');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -40521,6 +40524,7 @@ var BusinessUsers = exports.BusinessUsers = function (_React$Component) {
 
         var _this = _possibleConstructorReturn(this, (BusinessUsers.__proto__ || Object.getPrototypeOf(BusinessUsers)).call(this, props));
 
+        _this.token = props.token;
         _this.state = {
             renderedRows: []
         };
@@ -40579,121 +40583,9 @@ var BusinessUsers = exports.BusinessUsers = function (_React$Component) {
             //this.setState({renderedRows:this.rows.map(()=><span>asd</span>,this)});
         }
     }, {
-        key: 'update',
-        value: function update(index) {
-            console.log("update");
-
-            function removePopup() {
-                console.log("POPUP REMOVED");
-                var popups = this.popups.slice();
-                popups[index] = _react2.default.createElement('span', null);
-                this.popups = popups;
-                this.updateRenderedRows();
-            }
-
-            var popup = _react2.default.createElement(
-                _reactPopout2.default,
-                { title: 'Window title', onClosing: removePopup.bind(this) },
-                _react2.default.createElement(
-                    'div',
-                    null,
-                    'Popped out content!'
-                )
-            );
-            var popups = this.popups.slice();
-            popups[index] = popup;
-
-            console.log("POPUP ADDED");
-
-            this.popups = popups;
-            this.updateRenderedRows();
-        }
-    }, {
-        key: 'remove',
-        value: function remove(index) {
-            console.log("removing!!");
-        }
-    }, {
         key: 'renderRow',
         value: function renderRow(row, index) {
-            var renderedRowData = this.renderRowData(row, index);
-            var update = this.update.bind(this, index);
-            var remove = this.remove.bind(this, index);
-            return _react2.default.createElement(
-                'tr',
-                { key: index },
-                _react2.default.createElement(
-                    'td',
-                    null,
-                    renderedRowData
-                ),
-                _react2.default.createElement(
-                    'td',
-                    null,
-                    _react2.default.createElement(
-                        'a',
-                        { onClick: update },
-                        this.popups[index],
-                        'update'
-                    )
-                ),
-                _react2.default.createElement(
-                    'td',
-                    null,
-                    _react2.default.createElement(
-                        'a',
-                        { onClick: remove },
-                        'remove'
-                    )
-                )
-            );
-        }
-    }, {
-        key: 'renderRowData',
-        value: function renderRowData(row, i) {
-            var _this2 = this;
-
-            var expand = function expand(e) {
-                var rows = _this2.rows.slice();
-                rows[i].expanded = e;
-                //this.setState({rows})
-                _this2.rows = rows;
-                _this2.updateRenderedRows();
-            };
-            if (row.expanded) {
-                //console.log("THE ROW IS EXPANDED");
-                //console.log(row);
-                return _react2.default.createElement(
-                    'a',
-                    { onClick: expand.bind(this, false) },
-                    _react2.default.createElement('br', null),
-                    'username:',
-                    row.username,
-                    _react2.default.createElement('br', null),
-                    'name:',
-                    row.name,
-                    _react2.default.createElement('br', null),
-                    'surname:',
-                    row.surname,
-                    _react2.default.createElement('br', null),
-                    'roles:',
-                    row.roles.map(function (x) {
-                        return _react2.default.createElement(
-                            'span',
-                            { key: x },
-                            x,
-                            _react2.default.createElement('br', null)
-                        );
-                    })
-                );
-            } else {
-                return _react2.default.createElement(
-                    'a',
-                    { onClick: expand.bind(this, true) },
-                    ' username:',
-                    row.username
-                );
-            }
+            return _react2.default.createElement(_Row.Row, { data: row, key: index, token: this.token });
         }
     }, {
         key: 'render',
@@ -40704,7 +40596,7 @@ var BusinessUsers = exports.BusinessUsers = function (_React$Component) {
                 _react2.default.createElement(
                     'h1',
                     null,
-                    ' Soy la lista de BusinessUsers'
+                    ' Businessusers list'
                 ),
                 _react2.default.createElement(
                     'table',
@@ -40741,7 +40633,7 @@ var BusinessUsers = exports.BusinessUsers = function (_React$Component) {
     return BusinessUsers;
 }(_react2.default.Component);
 
-},{"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],194:[function(require,module,exports){
+},{"./Row":196,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],194:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40910,6 +40802,7 @@ var MainScreen = exports.MainScreen = function (_React$Component) {
 
         var _this = _possibleConstructorReturn(this, (MainScreen.__proto__ || Object.getPrototypeOf(MainScreen)).call(this, props));
 
+        _this.token = props.token;
         _this.onBusinessUsers = props.onBusinessUsers;
         _this.onServers = props.onServers;
         _this.onUsers = props.onUsers;
@@ -40955,6 +40848,248 @@ var MainScreen = exports.MainScreen = function (_React$Component) {
 },{"react":189,"react-dom":28,"whatwg-fetch":191}],196:[function(require,module,exports){
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.Row = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+require('whatwg-fetch');
+
+var _reactPopout = require('react-popout');
+
+var _reactPopout2 = _interopRequireDefault(_reactPopout);
+
+var _UpdateDialog = require('./UpdateDialog');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Row = exports.Row = function (_React$Component) {
+    _inherits(Row, _React$Component);
+
+    function Row(props) {
+        _classCallCheck(this, Row);
+
+        var _this = _possibleConstructorReturn(this, (Row.__proto__ || Object.getPrototypeOf(Row)).call(this, props));
+
+        _this.state = {
+            row: props.data,
+            expanded: false,
+            popup: _react2.default.createElement('span', null)
+        };
+        _this.token = props.token;
+        _this.onUpdate = _this.onUpdate.bind(_this);
+        _this.onRemove = _this.onRemove.bind(_this);
+        _this.onOpen = _this.onOpen.bind(_this);
+        _this.onClose = _this.onClose.bind(_this);
+        return _this;
+    }
+
+    _createClass(Row, [{
+        key: 'onUpdate',
+        value: function onUpdate() {
+            console.log("update");
+
+            function removePopup() {
+                this.setState({ popup: _react2.default.createElement('span', null) });
+            }
+            var username = this.state.row.username;
+            var popup = _react2.default.createElement(
+                _reactPopout2.default,
+                { title: 'Window title', onClosing: removePopup.bind(this) },
+                _react2.default.createElement(_UpdateDialog.UpdateDialog, { token: this.token, username: username })
+            );
+            this.setState({ popup: popup });
+        }
+    }, {
+        key: 'onRemove',
+        value: function onRemove() {
+            console.log("REMOVE");
+        }
+    }, {
+        key: 'onOpen',
+        value: function onOpen() {
+            this.setState({ expanded: true });
+        }
+    }, {
+        key: 'onClose',
+        value: function onClose() {
+            this.setState({ expanded: false });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'tr',
+                null,
+                _react2.default.createElement('td', null),
+                _react2.default.createElement(
+                    'td',
+                    null,
+                    _react2.default.createElement(
+                        'a',
+                        { onClick: this.onUpdate },
+                        this.state.popup,
+                        'update'
+                    )
+                ),
+                _react2.default.createElement(
+                    'td',
+                    null,
+                    _react2.default.createElement(
+                        'a',
+                        { onClick: this.onRemove },
+                        'remove'
+                    )
+                )
+            );
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+
+            var renderedRowData = _react2.default.createElement('span', null);
+            console.log("MI STATE ES:");
+            console.log(this.state);
+            var row = this.state.row;
+
+            if (this.state.expanded) {
+
+                renderedRowData = _react2.default.createElement(
+                    'a',
+                    { onClick: this.onClose },
+                    _react2.default.createElement('br', null),
+                    'username:',
+                    row.username,
+                    _react2.default.createElement('br', null),
+                    'name:',
+                    row.name,
+                    _react2.default.createElement('br', null),
+                    'surname:',
+                    row.surname,
+                    _react2.default.createElement('br', null),
+                    'roles:',
+                    row.roles.map(function (x) {
+                        return _react2.default.createElement(
+                            'span',
+                            { key: x },
+                            x,
+                            _react2.default.createElement('br', null)
+                        );
+                    })
+                );
+            } else {
+                renderedRowData = _react2.default.createElement(
+                    'a',
+                    { onClick: this.onOpen },
+                    ' username:',
+                    row.username
+                );
+            }
+
+            return _react2.default.createElement(
+                'tr',
+                null,
+                _react2.default.createElement(
+                    'td',
+                    null,
+                    renderedRowData
+                ),
+                _react2.default.createElement(
+                    'td',
+                    null,
+                    _react2.default.createElement(
+                        'a',
+                        { onClick: this.onUpdate },
+                        this.state.popup,
+                        'update'
+                    )
+                ),
+                _react2.default.createElement(
+                    'td',
+                    null,
+                    _react2.default.createElement(
+                        'a',
+                        { onClick: this.onRemove },
+                        'remove'
+                    )
+                )
+            );
+        }
+    }]);
+
+    return Row;
+}(_react2.default.Component);
+
+},{"./UpdateDialog":197,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],197:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.UpdateDialog = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+require('whatwg-fetch');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var UpdateDialog = exports.UpdateDialog = function (_React$Component) {
+    _inherits(UpdateDialog, _React$Component);
+
+    function UpdateDialog() {
+        _classCallCheck(this, UpdateDialog);
+
+        return _possibleConstructorReturn(this, (UpdateDialog.__proto__ || Object.getPrototypeOf(UpdateDialog)).apply(this, arguments));
+    }
+
+    _createClass(UpdateDialog, [{
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'h1',
+                null,
+                'Soy un update dialog'
+            );
+        }
+    }]);
+
+    return UpdateDialog;
+}(_react2.default.Component);
+
+},{"react":189,"react-dom":28,"whatwg-fetch":191}],198:[function(require,module,exports){
+'use strict';
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -40971,4 +41106,4 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 _reactDom2.default.render(_react2.default.createElement(_App.App, null), document.getElementById('root'));
 
-},{"./App":192,"react":189,"react-dom":28,"whatwg-fetch":191}]},{},[196]);
+},{"./App":192,"react":189,"react-dom":28,"whatwg-fetch":191}]},{},[198]);
