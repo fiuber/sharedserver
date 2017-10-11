@@ -32,6 +32,7 @@
     "pg-promise": "^6.5.1",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
+    "react-popout": "^1.0.1",
     "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
