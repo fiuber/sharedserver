@@ -40382,6 +40382,8 @@ var _MainScreen = require('./MainScreen');
 
 var _BusinessUsers = require('./BusinessUsers');
 
+var _Servers = require('./Servers');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -40415,11 +40417,7 @@ var App = exports.App = function (_React$Component) {
       return _react2.default.createElement(_BusinessUsers.BusinessUsers, { token: _this.state.token });
     };
     _this.servers = function () {
-      return _react2.default.createElement(
-        'h1',
-        null,
-        'servers'
-      );
+      return _react2.default.createElement(_Servers.Servers, { token: _this.state.token });
     };
     _this.users = function () {
       return _react2.default.createElement(
@@ -40482,7 +40480,7 @@ var App = exports.App = function (_React$Component) {
   return App;
 }(_react2.default.Component);
 
-},{"./BusinessUsers":193,"./Login":197,"./MainScreen":198,"react":189,"react-dom":28,"whatwg-fetch":191}],193:[function(require,module,exports){
+},{"./BusinessUsers":193,"./Login":197,"./MainScreen":198,"./Servers":200,"react":189,"react-dom":28,"whatwg-fetch":191}],193:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -41412,14 +41410,24 @@ var Row = exports.Row = function (_React$Component) {
             var row = this.state.row;
             if (this.state.expanded) {
                 renderedRowData = _react2.default.createElement(
-                    'a',
-                    { onClick: this.onClose },
+                    'span',
+                    null,
+                    _react2.default.createElement(
+                        'a',
+                        { onClick: this.onClose },
+                        '(less)'
+                    ),
                     this.renderOpened()
                 );
             } else {
                 renderedRowData = _react2.default.createElement(
-                    'a',
-                    { onClick: this.onOpen },
+                    'span',
+                    null,
+                    _react2.default.createElement(
+                        'a',
+                        { onClick: this.onOpen },
+                        '(more)'
+                    ),
                     this.renderClosed()
                 );
             }
@@ -41461,6 +41469,314 @@ var Row = exports.Row = function (_React$Component) {
 },{"./Dialog":196,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],200:[function(require,module,exports){
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.Servers = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+require('whatwg-fetch');
+
+var _reactPopout = require('react-popout');
+
+var _reactPopout2 = _interopRequireDefault(_reactPopout);
+
+var _CrudTable2 = require('./CrudTable');
+
+var _TokenCreatorButton = require('./TokenCreatorButton');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Strategy = function () {
+    function Strategy(token) {
+        _classCallCheck(this, Strategy);
+
+        this.token = token;
+    }
+
+    _createClass(Strategy, [{
+        key: 'getAll',
+        value: function getAll() {
+            return fetch("/servers", {
+                method: "GET",
+
+                headers: {
+                    "Authorization": "api-key " + this.token
+                },
+                cache: "no-store"
+            }).then(function (res) {
+                return res.json();
+            }).then(function (jsn) {
+                return jsn.servers;
+            });
+        }
+    }, {
+        key: 'doUpdate',
+        value: function doUpdate(row, content) {
+            return fetch("/servers/" + row.id, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'api-key ' + this.token
+                },
+                body: JSON.stringify({ //sólo me importa name
+                    id: new String(row.id).valueOf(),
+                    _ref: row._ref,
+                    createdBy: "q",
+                    createdTime: 0,
+                    name: content.name,
+                    lastConnection: 0
+                })
+            });
+        }
+    }, {
+        key: 'doDelete',
+        value: function doDelete(row) {
+            return fetch("/servers/" + row.id, {
+                method: "DELETE",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'api-key ' + this.token
+                }
+            });
+        }
+    }, {
+        key: 'renderOpened',
+        value: function renderOpened(row) {
+            return _react2.default.createElement(
+                'span',
+                null,
+                _react2.default.createElement('br', null),
+                'id:',
+                row.id,
+                _react2.default.createElement('br', null),
+                'createdBy:',
+                row.createdBy,
+                _react2.default.createElement('br', null),
+                'createdTime:',
+                row.createdTime,
+                _react2.default.createElement('br', null),
+                'name:',
+                row.name,
+                _react2.default.createElement('br', null),
+                'lastConnection:',
+                row.lastConnection,
+                _react2.default.createElement('br', null),
+                _react2.default.createElement(_TokenCreatorButton.TokenCreatorButton, { token: this.token, id: row.id })
+            );
+        }
+    }, {
+        key: 'renderClosed',
+        value: function renderClosed(row) {
+            return _react2.default.createElement(
+                'span',
+                null,
+                'name:',
+                row.name
+            );
+        }
+    }, {
+        key: 'createKey',
+        value: function createKey(row) {
+            return row.id + row.createdBy + row.createdTime + row.name + row.lastConnection;
+        }
+    }, {
+        key: 'defaults',
+        value: function defaults(row) {
+            return {
+                name: row.name
+            };
+        }
+    }, {
+        key: 'defaultCreationContent',
+        value: function defaultCreationContent() {
+            return {
+                name: "name"
+            };
+        }
+    }, {
+        key: 'doCreate',
+        value: function doCreate(content) {
+            return fetch("/servers/", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'api-key ' + this.token
+                },
+                body: JSON.stringify({
+                    id: "asd",
+                    _ref: "asd",
+                    createdBy: "a user",
+                    createdTime: 0,
+                    name: content.name,
+                    lastConnection: 0
+                })
+            });
+        }
+    }]);
+
+    return Strategy;
+}();
+
+var Servers = exports.Servers = function (_CrudTable) {
+    _inherits(Servers, _CrudTable);
+
+    function Servers(props) {
+        _classCallCheck(this, Servers);
+
+        var strategy = new Strategy(props.token);
+        return _possibleConstructorReturn(this, (Servers.__proto__ || Object.getPrototypeOf(Servers)).call(this, props, strategy));
+    }
+
+    return Servers;
+}(_CrudTable2.CrudTable);
+
+},{"./CrudTable":195,"./TokenCreatorButton":201,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],201:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.TokenCreatorButton = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+require('whatwg-fetch');
+
+var _reactPopout = require('react-popout');
+
+var _reactPopout2 = _interopRequireDefault(_reactPopout);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var TokenCreatorButton = exports.TokenCreatorButton = function (_React$Component) {
+    _inherits(TokenCreatorButton, _React$Component);
+
+    function TokenCreatorButton(props) {
+        _classCallCheck(this, TokenCreatorButton);
+
+        var _this = _possibleConstructorReturn(this, (TokenCreatorButton.__proto__ || Object.getPrototypeOf(TokenCreatorButton)).call(this, props));
+
+        _this.token = props.token;
+        _this.id = props.id;
+        _this.state = {
+            popup: _react2.default.createElement('span', null)
+        };
+        return _this;
+    }
+
+    _createClass(TokenCreatorButton, [{
+        key: 'onClick',
+        value: function onClick() {
+            var _this2 = this;
+
+            fetch("/servers/" + this.id, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'api-key ' + this.token
+                }
+            }).then(function (res) {
+                return res.json();
+            }).then(function (json) {
+                function closePopup() {
+                    this.setState({ popup: _react2.default.createElement('span', null) });
+                }
+                console.log("ESTE ES JASON");
+                console.log(json);
+                var popup = _react2.default.createElement(
+                    _reactPopout2.default,
+                    { title: 'Window title', onClosing: closePopup.bind(_this2) },
+                    _react2.default.createElement(
+                        'h1',
+                        null,
+                        ' new token created'
+                    ),
+                    'for server ',
+                    json.server.server.name,
+                    '. The token is valid until ',
+                    json.server.token.expiresAt,
+                    '. The token is ',
+                    json.server.token.token,
+                    '.'
+                );
+                _this2.setState({ popup: popup });
+            });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'span',
+                null,
+                _react2.default.createElement(
+                    'button',
+                    { onClick: this.onClick.bind(this) },
+                    ' Update Token '
+                ),
+                this.state.popup
+            );
+        }
+    }]);
+
+    return TokenCreatorButton;
+}(_react2.default.Component);
+
+/*
+createToken(row){
+        fetch("/servers/"+row.id,{
+            method:"POST",
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'api-key '+this.token
+            },
+        })
+        .then((res)=>res.json())
+        .then((json)=>{
+            function closePopup(){
+                this.popup=<span></span>;
+            }
+            this.popup=<Popout  title='Window title' onClosing={closePopup.bind(this)}>
+                {json}
+            </Popout>
+            
+        })
+
+    }
+    */
+
+},{"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],202:[function(require,module,exports){
+'use strict';
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -41477,4 +41793,4 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 _reactDom2.default.render(_react2.default.createElement(_App.App, null), document.getElementById('root'));
 
-},{"./App":192,"react":189,"react-dom":28,"whatwg-fetch":191}]},{},[200]);
+},{"./App":192,"react":189,"react-dom":28,"whatwg-fetch":191}]},{},[202]);

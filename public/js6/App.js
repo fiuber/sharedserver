@@ -4,6 +4,7 @@ import "whatwg-fetch";
 import {Login} from "./Login";
 import {MainScreen} from "./MainScreen";
 import {BusinessUsers} from "./BusinessUsers";
+import {Servers} from "./Servers";
 
 
 export class App extends React.Component {
@@ -20,7 +21,7 @@ export class App extends React.Component {
         token={this.state.token}
       />
       this.businessUsers=()=><BusinessUsers token={this.state.token}/>
-      this.servers=()=><h1>servers</h1>
+      this.servers=()=><Servers token={this.state.token} />
       this.users=()=><h1>users</h1>
 
       
