@@ -22,8 +22,8 @@ describe("Using the users model",function(){
             }).then((added)=>{
                 
                 createdServerToken=added.token;
-                console.log("------- CREATED SERVE TOKEN -------")
-                console.log(createdServerToken);
+                //console.log("------- CREATED SERVE TOKEN -------")
+                //console.log(createdServerToken);
             })
         });
     })

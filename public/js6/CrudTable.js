@@ -96,7 +96,7 @@ export class CrudTable extends React.Component{
 
     render(){
         return <div id="listContainer">
-            <h1> Businessusers list</h1>
+            <h1> Listing: </h1>
             <CreationDialogOpener 
                 content={this.strategy.defaultCreationContent()} 
                 onSubmit={(o)=>this.onCreate(o)}

@@ -46,6 +46,7 @@ function expressify(shape,fun,reshapeOutput){
                 }
             }
 
+
             if(data==undefined || data==null){
                 res.sendStatus(statusDef)
             }else{

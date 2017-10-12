@@ -103,7 +103,7 @@ module.exports.restartWithAdmin=function(){
             token:"addddada",
             expiresAt:10000
         });
-        
+
         let addAdminRoles=Promise.all(
             ["user","manager","admin"]
             .map((r)=>
@@ -113,9 +113,81 @@ module.exports.restartWithAdmin=function(){
                 })
             )
         );
+
+        return Promise.all([addAdminUser,
+            addAdminRoles,
+        ]);
+/*
+let addPepeuser=tables.users.create({
+            _ref:"ref",
+            applicationOwner: "varchar(40)",
+            
+                password:"varchar(40)",
+            
+                type: "varchar(40)",
+                username: "varchar(40)",
+                name: "varchar(40)",
+                surname: "varchar(40)",
+                country: "varchar(40)",
+                email: "varchar(40)",
+                birthdate: "varchar(40)",
+            
+                fbUserId:"varchar(200)",
+                fbAuthToken:"varchar(1000)",
+        });
+
+        let fotiUser=tables.userImages.create({
+            id:"1",
+            image:"varchar(200)"
+        });
+        let fotiUser2=tables.userImages.create({
+            id:"2",
+            image:"varchar(200)"
+        });
+
+        let car1=tables.cars.create({
+            id:"1",
+            _ref:"asd",
+            owner:"1"
+        });
+
+        let car2=tables.cars.create({
+            id:"2",
+            _ref:"asd",
+            owner:"1"
+        });
+
+
+        let prop1=tables.carProperties.create({
+            id:"1",
+            name:"varchar(40)",
+            value:"50pe"
+        });
+
+        let prop2=tables.carProperties.create({
+            id:"1",
+            name:"otra",
+            value:"50pe"
+        });
+
+        let prop3=tables.carProperties.create({
+            id:"2",
+            name:"otra",
+            value:"1000pe"
+        });
     
-        return Promise.all([addAdminUser,addAdminRoles]);
-        
+        return Promise.all([addAdminUser,
+            addAdminRoles,
+            addPepeuser,
+            fotiUser,
+            fotiUser2,
+            car1,
+            car2,
+            prop1,
+            prop2,
+            prop3
+        ]);
+        */
     });
 
 }

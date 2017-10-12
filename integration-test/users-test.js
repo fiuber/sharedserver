@@ -10,6 +10,7 @@ describe("using users",function(){
         this.timeout(5000);
         app =require("../server.js");
         agent=request.agent(app);
+        
         return require("../restartDatabase.js")()
         .then(()=>{//login
             return agent
@@ -164,17 +165,17 @@ describe("using users",function(){
             .set("authorization", authValue)
             .expect(200)
             .expect(function(res){
-                let owner_soyyo5159=null;
-                let has_soyyo5159=res.body.users.some((u)=>{
+                let soyyo5159=null;
+                for(let u of res.body.users){
                     if(u.username==="soyyo5159"){
-                        id_soyyo5159=u.id;
-                        ref_soyyo5159=u._ref;
-                        owner_soyyo5159=u.applicationOwner;
+                        soyyo5159=u;
                     }
-                    return u.username==="soyyo5159"
-                })
-                assert.isTrue(has_soyyo5159,"doesnt have soyyo5159")
-                assert.equal(owner_soyyo5159,serverId)
+                }
+                ref_soyyo5159=soyyo5159._ref;
+                id_soyyo5159=soyyo5159.id;
+                assert.isNotNull(soyyo5159);
+                assert.equal(soyyo5159.applicationOwner,serverId);
+                assert.equal(soyyo5159.images.length,3);
                 
                 let owner_fayo5159=""
                 let has_fayo5159=res.body.users.some((u)=>{

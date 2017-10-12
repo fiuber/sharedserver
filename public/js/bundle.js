@@ -40384,6 +40384,8 @@ var _BusinessUsers = require('./BusinessUsers');
 
 var _Servers = require('./Servers');
 
+var _Users = require('./Users');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -40420,11 +40422,7 @@ var App = exports.App = function (_React$Component) {
       return _react2.default.createElement(_Servers.Servers, { token: _this.state.token });
     };
     _this.users = function () {
-      return _react2.default.createElement(
-        'h1',
-        null,
-        'users'
-      );
+      return _react2.default.createElement(_Users.Users, { token: _this.state.token });
     };
 
     _this.state = {
@@ -40480,7 +40478,7 @@ var App = exports.App = function (_React$Component) {
   return App;
 }(_react2.default.Component);
 
-},{"./BusinessUsers":193,"./Login":197,"./MainScreen":198,"./Servers":200,"react":189,"react-dom":28,"whatwg-fetch":191}],193:[function(require,module,exports){
+},{"./BusinessUsers":193,"./Login":197,"./MainScreen":198,"./Servers":200,"./Users":202,"react":189,"react-dom":28,"whatwg-fetch":191}],193:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40940,7 +40938,7 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
                 _react2.default.createElement(
                     'h1',
                     null,
-                    ' Businessusers list'
+                    ' Listing: '
                 ),
                 _react2.default.createElement(_CreateDialog.CreationDialogOpener, {
                     content: this.strategy.defaultCreationContent(),
@@ -41777,6 +41775,177 @@ createToken(row){
 },{"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],202:[function(require,module,exports){
 'use strict';
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.Users = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+require('whatwg-fetch');
+
+var _reactPopout = require('react-popout');
+
+var _reactPopout2 = _interopRequireDefault(_reactPopout);
+
+var _CrudTable2 = require('./CrudTable');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+//import {TokenCreatorButton} from "./TokenCreatorButton"
+
+var Strategy = function () {
+    function Strategy(token) {
+        _classCallCheck(this, Strategy);
+
+        this.token = token;
+    }
+
+    _createClass(Strategy, [{
+        key: 'getAll',
+        value: function getAll() {
+            console.log("Iam getting all the things");
+            return fetch("/users", {
+                method: "GET",
+
+                headers: {
+                    "Authorization": "api-key " + this.token
+                },
+                cache: "no-store"
+            }).then(function (res) {
+                return res.json();
+            }).then(function (jsn) {
+                console.log("LOS USERS:");
+                console.log(jsn.users);
+
+                return jsn.users;
+            });
+        }
+    }, {
+        key: 'doUpdate',
+        value: function doUpdate(row, content) {
+            return Promise.resolve("Cant");
+        }
+    }, {
+        key: 'doDelete',
+        value: function doDelete(row) {
+            return fetch("/users/" + row.id, {
+                method: "DELETE",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'api-key ' + this.token
+                }
+            });
+        }
+    }, {
+        key: 'renderOpened',
+        value: function renderOpened(row) {
+            return _react2.default.createElement(
+                'span',
+                null,
+                _react2.default.createElement('br', null),
+                'id:',
+                row.id,
+                _react2.default.createElement('br', null),
+                'applicationOwner:',
+                row.applicationOwner,
+                _react2.default.createElement('br', null),
+                'type:',
+                row.type,
+                _react2.default.createElement('br', null),
+                'username:',
+                row.username,
+                _react2.default.createElement('br', null),
+                'name:',
+                row.name,
+                _react2.default.createElement('br', null),
+                'surname:',
+                row.surname,
+                _react2.default.createElement('br', null),
+                'country:',
+                row.country,
+                _react2.default.createElement('br', null),
+                'email:',
+                row.email,
+                _react2.default.createElement('br', null),
+                'birthdate:',
+                row.birthdate,
+                _react2.default.createElement('br', null),
+                'image:',
+                row.images[0],
+                _react2.default.createElement('br', null)
+            );
+            //<CarEditorButton token={this.token} id={row.id}/>
+        }
+    }, {
+        key: 'renderClosed',
+        value: function renderClosed(row) {
+            return _react2.default.createElement(
+                'span',
+                null,
+                'username:',
+                row.username
+            );
+        }
+    }, {
+        key: 'createKey',
+        value: function createKey(row) {
+            return row.id + row.applicationOwner + row.type + row.username + row.name + row.surname + row.country + row.email + row.birthdate + row.images.join("");
+        }
+    }, {
+        key: 'defaults',
+        value: function defaults(row) {
+            return {
+                username: "CANT UPDATE"
+            };
+        }
+    }, {
+        key: 'defaultCreationContent',
+        value: function defaultCreationContent() {
+            return {
+                username: "CANT CREATE"
+            };
+        }
+    }, {
+        key: 'doCreate',
+        value: function doCreate(content) {
+            return Promise.resolve(1);
+        }
+    }]);
+
+    return Strategy;
+}();
+
+var Users = exports.Users = function (_CrudTable) {
+    _inherits(Users, _CrudTable);
+
+    function Users(props) {
+        _classCallCheck(this, Users);
+
+        var strategy = new Strategy(props.token);
+        return _possibleConstructorReturn(this, (Users.__proto__ || Object.getPrototypeOf(Users)).call(this, props, strategy));
+    }
+
+    return Users;
+}(_CrudTable2.CrudTable);
+
+},{"./CrudTable":195,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],203:[function(require,module,exports){
+'use strict';
+
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -41793,4 +41962,4 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 _reactDom2.default.render(_react2.default.createElement(_App.App, null), document.getElementById('root'));
 
-},{"./App":192,"react":189,"react-dom":28,"whatwg-fetch":191}]},{},[202]);
+},{"./App":192,"react":189,"react-dom":28,"whatwg-fetch":191}]},{},[203]);

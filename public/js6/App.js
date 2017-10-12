@@ -5,6 +5,7 @@ import {Login} from "./Login";
 import {MainScreen} from "./MainScreen";
 import {BusinessUsers} from "./BusinessUsers";
 import {Servers} from "./Servers";
+import {Users} from "./Users";
 
 
 export class App extends React.Component {
@@ -22,7 +23,7 @@ export class App extends React.Component {
       />
       this.businessUsers=()=><BusinessUsers token={this.state.token}/>
       this.servers=()=><Servers token={this.state.token} />
-      this.users=()=><h1>users</h1>
+      this.users=()=><Users token={this.state.token} />
 
       
       this.state={
