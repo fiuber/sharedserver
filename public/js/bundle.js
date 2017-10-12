@@ -40531,61 +40531,72 @@ var BusinessUsers = exports.BusinessUsers = function (_React$Component) {
         _this.rows = [];
         _this.popups = [];
 
-        fetch("/business-users", {
-            method: "GET",
-            headers: {
-                "Authorization": "api-key " + props.token
-            }
-        }).then(function (res) {
-            return res.json();
-        }).then(function (json) {
-            _this.rows = json.businessUser.map(function (x) {
-                x.expanded = false;
-                return x;
-            });
-            _this.popups = [];
-            var _iteratorNormalCompletion = true;
-            var _didIteratorError = false;
-            var _iteratorError = undefined;
-
-            try {
-                for (var _iterator = _this.rows[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                    var row = _step.value;
-
-                    _this.popups.push(_react2.default.createElement('span', null));
-                }
-                //this.setState({rows,popups});
-            } catch (err) {
-                _didIteratorError = true;
-                _iteratorError = err;
-            } finally {
-                try {
-                    if (!_iteratorNormalCompletion && _iterator.return) {
-                        _iterator.return();
-                    }
-                } finally {
-                    if (_didIteratorError) {
-                        throw _iteratorError;
-                    }
-                }
-            }
-
-            _this.updateRenderedRows();
-        });
-
+        _this.refresh();
         return _this;
     }
 
     _createClass(BusinessUsers, [{
+        key: 'refresh',
+        value: function refresh() {
+            var _this2 = this;
+
+            fetch("/business-users", {
+                method: "GET",
+                headers: {
+                    "Authorization": "api-key " + this.token
+                },
+                cache: "no-store"
+            }).then(function (res) {
+                return res.json();
+            }).then(function (json) {
+                console.log(json);
+                _this2.rows = json.businessUser.map(function (x) {
+                    x.expanded = false;
+                    return x;
+                });
+                _this2.popups = [];
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
+
+                try {
+                    for (var _iterator = _this2.rows[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var row = _step.value;
+
+                        _this2.popups.push(_react2.default.createElement('span', null));
+                    }
+                } catch (err) {
+                    _didIteratorError = true;
+                    _iteratorError = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion && _iterator.return) {
+                            _iterator.return();
+                        }
+                    } finally {
+                        if (_didIteratorError) {
+                            throw _iteratorError;
+                        }
+                    }
+                }
+
+                _this2.updateRenderedRows();
+            });
+        }
+    }, {
         key: 'updateRenderedRows',
         value: function updateRenderedRows() {
+            console.log("REFRESCANDOOOO555555");
             this.setState({ renderedRows: this.rows.map(this.renderRow, this) });
-            //this.setState({renderedRows:this.rows.map(()=><span>asd</span>,this)});
+            this.forceUpdate();
         }
     }, {
         key: 'renderRow',
         value: function renderRow(row, index) {
-            return _react2.default.createElement(_Row.Row, { data: row, key: index, token: this.token });
+            console.log("Este es mi row");
+            console.log(row);
+            var key = row.username + row.password + row.name + row.surname + row.roles.join("");
+            return _react2.default.createElement(_Row.Row, { data: row, key: key, token: this.token, onUpdate: this.refresh.bind(this) });
         }
     }, {
         key: 'render',
@@ -40897,6 +40908,7 @@ var Row = exports.Row = function (_React$Component) {
         _this.onRemove = _this.onRemove.bind(_this);
         _this.onOpen = _this.onOpen.bind(_this);
         _this.onClose = _this.onClose.bind(_this);
+        _this.updated = props.onUpdate;
         return _this;
     }
 
@@ -40908,11 +40920,18 @@ var Row = exports.Row = function (_React$Component) {
             function removePopup() {
                 this.setState({ popup: _react2.default.createElement('span', null) });
             }
+
+            function success() {
+                removePopup.call(this);
+                this.updated();
+            }
+
             var username = this.state.row.username;
+            var updated = this.updated;
             var popup = _react2.default.createElement(
                 _reactPopout2.default,
                 { title: 'Window title', onClosing: removePopup.bind(this) },
-                _react2.default.createElement(_UpdateDialog.UpdateDialog, { token: this.token, username: username })
+                _react2.default.createElement(_UpdateDialog.UpdateDialog, { token: this.token, username: username, data: this.state.row, onSuccess: success.bind(this) })
             );
             this.setState({ popup: popup });
         }
@@ -41058,6 +41077,8 @@ require('whatwg-fetch');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
@@ -41067,19 +41088,82 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var UpdateDialog = exports.UpdateDialog = function (_React$Component) {
     _inherits(UpdateDialog, _React$Component);
 
-    function UpdateDialog() {
+    function UpdateDialog(props) {
         _classCallCheck(this, UpdateDialog);
 
-        return _possibleConstructorReturn(this, (UpdateDialog.__proto__ || Object.getPrototypeOf(UpdateDialog)).apply(this, arguments));
+        var _this = _possibleConstructorReturn(this, (UpdateDialog.__proto__ || Object.getPrototypeOf(UpdateDialog)).call(this, props));
+
+        var data = props.data;
+        _this.token = props.token;
+        //this.state.username=props.username;
+        _this.onChange = _this.onChange.bind(_this);
+        _this.onSubmit = _this.onSubmit.bind(_this);
+        _this.onSuccess = props.onSuccess;
+        _this.state = {
+            username: props.username,
+            password: data.password,
+            name: data.name,
+            surname: data.surname,
+            role: data.roles[0]
+        };
+        return _this;
     }
 
     _createClass(UpdateDialog, [{
+        key: 'onChange',
+        value: function onChange(event) {
+            var name = event.target.name;
+            var value = event.target.value;
+            this.setState(_defineProperty({}, name, value));
+        }
+    }, {
+        key: 'onSubmit',
+        value: function onSubmit() {
+            var _this2 = this;
+
+            fetch("/business-users/" + this.state.username, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'api-key ' + this.token
+                },
+                body: JSON.stringify({
+                    username: this.state.username,
+                    password: this.state.password,
+                    name: this.state.name,
+                    surname: this.state.surname,
+                    roles: [this.state.role]
+                })
+            }).then(function (response) {
+                console.log(response);
+                if (response.status == 200) {
+                    _this2.onSuccess();
+                } else {
+                    alert("unauthorized!");
+                }
+            });
+        }
+    }, {
         key: 'render',
         value: function render() {
             return _react2.default.createElement(
-                'h1',
-                null,
-                'Soy un update dialog'
+                'div',
+                { onSubmit: this.onSubmit },
+                _react2.default.createElement(
+                    'h1',
+                    null,
+                    'Updating user ',
+                    this.state.username
+                ),
+                _react2.default.createElement('input', { name: 'password', type: 'text', value: this.state.password, onChange: this.onChange }),
+                _react2.default.createElement('input', { name: 'name', type: 'text', value: this.state.name, onChange: this.onChange }),
+                _react2.default.createElement('input', { name: 'surname', type: 'text', value: this.state.surname, onChange: this.onChange }),
+                _react2.default.createElement('input', { name: 'role', type: 'text', value: this.state.role, onChange: this.onChange }),
+                _react2.default.createElement(
+                    'button',
+                    { onClick: this.onSubmit },
+                    'submit'
+                )
             );
         }
     }]);

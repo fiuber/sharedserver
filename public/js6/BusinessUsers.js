@@ -14,14 +14,20 @@ export class BusinessUsers extends React.Component{
         this.rows=[];
         this.popups=[];
 
+        this.refresh();
+    }
+
+    refresh(){
         fetch("/business-users",{
             method:"GET",
             headers:{
-                "Authorization":"api-key "+props.token
-            }
+                "Authorization":"api-key "+this.token,
+            },
+            cache:"no-store"
         })
         .then((res)=>res.json())
         .then((json)=>{
+            console.log(json);
             this.rows=json.businessUser.map((x)=>{
                 x.expanded=false;
                 return x;
@@ -30,18 +36,21 @@ export class BusinessUsers extends React.Component{
             for(let row of this.rows){
                 this.popups.push(<span></span>);
             }
-            //this.setState({rows,popups});
             this.updateRenderedRows();
         })
-
     }
+
     updateRenderedRows(){
+        console.log("REFRESCANDOOOO555555");
         this.setState({renderedRows:this.rows.map(this.renderRow,this)});
-        //this.setState({renderedRows:this.rows.map(()=><span>asd</span>,this)});
+        this.forceUpdate();
     }
 
     renderRow(row,index){
-        return <Row data={row} key={index} token={this.token}/>
+        console.log("Este es mi row");
+        console.log(row);
+        let key=row.username+row.password+row.name+row.surname+row.roles.join("");
+        return <Row data={row} key={key} token={this.token} onUpdate={this.refresh.bind(this)}/>
     }
     
 

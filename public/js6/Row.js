@@ -17,6 +17,7 @@ export class Row extends React.Component{
         this.onRemove=this.onRemove.bind(this);
         this.onOpen=this.onOpen.bind(this);
         this.onClose=this.onClose.bind(this);
+        this.updated=props.onUpdate;
     }
 
     onUpdate(){
@@ -25,10 +26,17 @@ export class Row extends React.Component{
         function removePopup(){
             this.setState({popup:<span></span>});
         }
+
+        function success(){
+            removePopup.call(this);
+            this.updated();
+        }
+
         let username=this.state.row.username;
+        let updated=this.updated;
         let popup=(
         <Popout  title='Window title' onClosing={removePopup.bind(this)}>
-            <UpdateDialog token={this.token} username={username} />
+            <UpdateDialog token={this.token} username={username} data={this.state.row} onSuccess={success.bind(this)}/>
         </Popout>
         );
         this.setState({popup});
