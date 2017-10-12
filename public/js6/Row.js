@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import "whatwg-fetch";
 import Popout from 'react-popout'
-import {UpdateDialog} from "./UpdateDialog"
+import {Dialog} from "./Dialog"
 
 export class Row extends React.Component{
     constructor(props){
@@ -12,38 +12,37 @@ export class Row extends React.Component{
             expanded:false,
             popup:<span></span>
         }
-        this.token=props.token;
+        this.renderOpened=props.renderOpened;
+        this.renderClosed=props.renderClosed;
         this.onUpdate=this.onUpdate.bind(this);
-        this.onRemove=this.onRemove.bind(this);
+        
         this.onOpen=this.onOpen.bind(this);
         this.onClose=this.onClose.bind(this);
-        this.updated=props.onUpdate;
+        this.onSubmit=this.onSubmit.bind(this);
+
+        this.removeCallback=props.onRemove;
+        this.updateCallback=props.onUpdate;
     }
 
+    onSubmit(content){
+        this.removePopup();
+        this.updateCallback(content);
+    }
+
+    removePopup(){
+        this.setState({popup:<span></span>});
+    }
+
+
     onUpdate(){
-        console.log("update")
-        
-        function removePopup(){
-            this.setState({popup:<span></span>});
-        }
-
-        function success(){
-            removePopup.call(this);
-            this.updated();
-        }
-
         let username=this.state.row.username;
-        let updated=this.updated;
         let popup=(
-        <Popout  title='Window title' onClosing={removePopup.bind(this)}>
-            <UpdateDialog token={this.token} username={username} data={this.state.row} onSuccess={success.bind(this)}/>
+        <Popout  title='Window title' onClosing={this.removePopup.bind(this)}>
+            <h1>Updating user {username}</h1>
+            <Dialog content={this.state.row} onSubmit={this.onSubmit.bind(this)} />
         </Popout>
         );
         this.setState({popup});
-    }
-
-    onRemove(){
-        console.log("REMOVE")
     }
 
     onOpen(){
@@ -53,44 +52,21 @@ export class Row extends React.Component{
         this.setState({expanded:false})
     }
 
-    render(){
-        return <tr>
-            <td></td>
-            <td><a onClick={this.onUpdate}>{this.state.popup}update</a></td>
-            <td><a onClick={this.onRemove}>remove</a></td>
-        </tr>
-    }
 
     render(){
         
         let renderedRowData=<span></span>;
-        console.log("MI STATE ES:")
-        console.log(this.state)
         let row=this.state.row;
-
         if(this.state.expanded){
-            
-            renderedRowData=(<a onClick={this.onClose}>
-                <br/>
-                username:{row.username}
-                <br/>
-                name:{row.name}
-                <br/>
-                surname:{row.surname}
-                <br/>
-                roles:{row.roles.map((x)=>
-                    <span key={x}>{x}<br/></span>
-                )}
-            </a>);
+            renderedRowData=<a onClick={this.onClose}>{this.renderOpened()}</a>;
         }else{
-            renderedRowData=(<a onClick={this.onOpen}> username:{row.username}</a>);
+            renderedRowData=<a onClick={this.onOpen }>{this.renderClosed()}</a>;
         }
-
 
         return <tr>
             <td>{renderedRowData}</td>  
             <td><a onClick={this.onUpdate}>{this.state.popup}update</a></td>
-            <td><a onClick={this.onRemove}>remove</a></td>
+            <td><a onClick={this.removeCallback}>remove</a></td>
         </tr>
     }
 }

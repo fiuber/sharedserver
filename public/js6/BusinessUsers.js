@@ -3,13 +3,15 @@ import ReactDOM from 'react-dom';
 import "whatwg-fetch";
 import Popout from 'react-popout';
 import {Row} from "./Row";
+import {CreationDialogOpener} from "./CreateDialog";
 
 export class BusinessUsers extends React.Component{
     constructor(props){
         super(props);
         this.token=props.token;
         this.state={
-            renderedRows:[]
+            renderedRows:[],
+            creatorOpen:false
         }
         this.rows=[];
         this.popups=[];
@@ -41,22 +43,74 @@ export class BusinessUsers extends React.Component{
     }
 
     updateRenderedRows(){
-        console.log("REFRESCANDOOOO555555");
         this.setState({renderedRows:this.rows.map(this.renderRow,this)});
         this.forceUpdate();
     }
 
+    onUpdate(username,content){
+        fetch("/business-users/"+username,{
+            method:"PUT",
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'api-key '+this.token
+            },
+            body:JSON.stringify({
+                username:username,
+                password:content.password,
+                name:content.name,
+                surname:content.surname,
+                roles:[content.role]
+            })
+        })
+        .then((response)=>{
+            console.log(response);
+            if(response.status==200){
+                this.refresh()
+            }else{
+                alert("unauthorized!")
+            }
+        })
+    }
+
     renderRow(row,index){
-        console.log("Este es mi row");
-        console.log(row);
+        let renderOpened=()=>(<span>
+            <br/>
+            username:{row.username}
+            <br/>
+            name:{row.name}
+            <br/>
+            surname:{row.surname}
+            <br/>
+            roles:{row.roles.map((x)=>
+                <span key={x}>{x}<br/></span>
+            )}
+        </span>);
+        let renderClosed=()=>(<span>username:{row.username}</span>);
+
+
         let key=row.username+row.password+row.name+row.surname+row.roles.join("");
-        return <Row data={row} key={key} token={this.token} onUpdate={this.refresh.bind(this)}/>
+        let data={
+            password:row.password,
+            name:row.name,
+            surname:row.surname,
+            role:row.roles[0]
+        }
+        return <Row 
+            data={data} 
+            key={key} 
+            onUpdate={(content)=>this.onUpdate(row.username,content)}
+            onRemove={()=>console.log("REMOVE")}
+            renderOpened={renderOpened}
+            renderClosed={renderClosed}
+        />
     }
     
 
     render(){
         return <div id="listContainer">
             <h1> Businessusers list</h1>
+            <CreationDialogOpener token={this.token} />
+            
             <table>
                 <tbody>
                 <tr>
