@@ -8,33 +8,22 @@ import {CreationDialogOpener} from "./CreateDialog";
 export class CrudTable extends React.Component{
     constructor(props){
         super(props);
-        this.token=props.token;
         this.state={
             renderedRows:[],
             creatorOpen:false
         }
         this.rows=[];
         this.popups=[];
-
+        this.token=props.token;
         this.refresh();
     }
-    /*
-    fetch("/business-users",{
-            method:"GET",
-            headers:{
-                "Authorization":"api-key "+this.token,
-            },
-            cache:"no-store"
-        })
-        .then((res)=>res.json())
-    */
 
     getAll(){
         return [];
     }
 
     refresh(){
-        getAll()
+        this.getAll()
         .then((all)=>{
             console.log(all);
             this.rows=all.map((x)=>{
@@ -53,28 +42,13 @@ export class CrudTable extends React.Component{
         this.setState({renderedRows:this.rows.map(this.renderRow,this)});
         this.forceUpdate();
     }
-    /*
-    fetch("/business-users/"+username,{
-            method:"PUT",
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'api-key '+this.token
-            },
-            body:JSON.stringify({
-                username:username,
-                password:content.password,
-                name:content.name,
-                surname:content.surname,
-                roles:[content.role]
-            })
-        })
-        */
-        doUpdate(row,content){
+
+    doUpdate(row,content){
         return {};
     }
 
     onUpdate(row,content){
-        doUpdate(row,content)
+        this.doUpdate(row,content)
         .then((response)=>{
             console.log(response);
             if(response.status==200){
@@ -90,7 +64,7 @@ export class CrudTable extends React.Component{
     }
 
     onDelete(row){
-        doDelete(row)
+        this.doDelete(row)
         .then((response)=>{
             console.log(response);
             if(response.status==204){
@@ -100,35 +74,6 @@ export class CrudTable extends React.Component{
             }
         })
     }
-
-    /*
-    ()=>(<span>
-            <br/>
-            username:{row.username}
-            <br/>
-            name:{row.name}
-            <br/>
-            surname:{row.surname}
-            <br/>
-            roles:{row.roles.map((x)=>
-                <span key={x}>{x}<br/></span>
-            )}
-        </span>);
-        */
-    /*
-    (<span>username:{row.username}</span>)
-    */
-
-    //row.username+row.password+row.name+row.surname+row.roles.join("");
-
-    /*
-    {
-            password:row.password,
-            name:row.name,
-            surname:row.surname,
-            role:row.roles[0]
-        }
-        */
 
     renderOpened(row){
         return <span></span>;
@@ -145,8 +90,6 @@ export class CrudTable extends React.Component{
     defaults(row){
         return {};
     }
-
-    
 
     renderRow(row,index){
         let renderOpened=()=>this.renderOpened(row);

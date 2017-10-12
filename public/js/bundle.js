@@ -40482,7 +40482,7 @@ var App = exports.App = function (_React$Component) {
   return App;
 }(_react2.default.Component);
 
-},{"./BusinessUsers":193,"./Login":196,"./MainScreen":197,"react":189,"react-dom":28,"whatwg-fetch":191}],193:[function(require,module,exports){
+},{"./BusinessUsers":193,"./Login":197,"./MainScreen":198,"react":189,"react-dom":28,"whatwg-fetch":191}],193:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40491,6 +40491,8 @@ Object.defineProperty(exports, "__esModule", {
 exports.BusinessUsers = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _set = function set(object, property, value, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent !== null) { set(parent, property, value, receiver); } } else if ("value" in desc && desc.writable) { desc.value = value; } else { var setter = desc.set; if (setter !== undefined) { setter.call(receiver, value); } } return value; };
 
 var _react = require('react');
 
@@ -40506,9 +40508,7 @@ var _reactPopout = require('react-popout');
 
 var _reactPopout2 = _interopRequireDefault(_reactPopout);
 
-var _Row = require('./Row');
-
-var _CreateDialog = require('./CreateDialog');
+var _CrudTable2 = require('./CrudTable');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -40518,214 +40518,123 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var BusinessUsers = exports.BusinessUsers = function (_React$Component) {
-    _inherits(BusinessUsers, _React$Component);
+var BusinessUsers = exports.BusinessUsers = function (_CrudTable) {
+    _inherits(BusinessUsers, _CrudTable);
 
     function BusinessUsers(props) {
         _classCallCheck(this, BusinessUsers);
 
         var _this = _possibleConstructorReturn(this, (BusinessUsers.__proto__ || Object.getPrototypeOf(BusinessUsers)).call(this, props));
 
+        console.log("las props son:");
+        console.log(props);
+        _set(BusinessUsers.prototype.__proto__ || Object.getPrototypeOf(BusinessUsers.prototype), 'token', props.token, _this);
         _this.token = props.token;
-        _this.state = {
-            renderedRows: [],
-            creatorOpen: false
-        };
-        _this.rows = [];
-        _this.popups = [];
-
-        _this.refresh();
         return _this;
     }
 
     _createClass(BusinessUsers, [{
-        key: 'refresh',
-        value: function refresh() {
-            var _this2 = this;
-
-            fetch("/business-users", {
+        key: 'getAll',
+        value: function getAll() {
+            console.log("This is:");
+            console.log(this);
+            console.log(this.constructor);
+            console.log(this.prototype);
+            console.log("MI token es", this.token);
+            return fetch("/business-users", {
                 method: "GET",
+
                 headers: {
                     "Authorization": "api-key " + this.token
                 },
                 cache: "no-store"
             }).then(function (res) {
                 return res.json();
-            }).then(function (json) {
-                console.log(json);
-                _this2.rows = json.businessUser.map(function (x) {
-                    x.expanded = false;
-                    return x;
-                });
-                _this2.popups = [];
-                var _iteratorNormalCompletion = true;
-                var _didIteratorError = false;
-                var _iteratorError = undefined;
-
-                try {
-                    for (var _iterator = _this2.rows[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-                        var row = _step.value;
-
-                        _this2.popups.push(_react2.default.createElement('span', null));
-                    }
-                } catch (err) {
-                    _didIteratorError = true;
-                    _iteratorError = err;
-                } finally {
-                    try {
-                        if (!_iteratorNormalCompletion && _iterator.return) {
-                            _iterator.return();
-                        }
-                    } finally {
-                        if (_didIteratorError) {
-                            throw _iteratorError;
-                        }
-                    }
-                }
-
-                _this2.updateRenderedRows();
+            }).then(function (jsn) {
+                return jsn.businessUser;
             });
         }
     }, {
-        key: 'updateRenderedRows',
-        value: function updateRenderedRows() {
-            this.setState({ renderedRows: this.rows.map(this.renderRow, this) });
-            this.forceUpdate();
-        }
-    }, {
-        key: 'onUpdate',
-        value: function onUpdate(username, content) {
-            var _this3 = this;
-
-            fetch("/business-users/" + username, {
+        key: 'doUpdate',
+        value: function doUpdate(row, content) {
+            return fetch("/business-users/" + row.username, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': 'api-key ' + this.token
                 },
                 body: JSON.stringify({
-                    username: username,
+                    username: row.username,
                     password: content.password,
                     name: content.name,
                     surname: content.surname,
                     roles: [content.role]
                 })
-            }).then(function (response) {
-                console.log(response);
-                if (response.status == 200) {
-                    _this3.refresh();
-                } else {
-                    alert("unauthorized!");
-                }
             });
         }
     }, {
-        key: 'renderRow',
-        value: function renderRow(row, index) {
-            var _this4 = this;
-
-            var renderOpened = function renderOpened() {
-                return _react2.default.createElement(
-                    'span',
-                    null,
-                    _react2.default.createElement('br', null),
-                    'username:',
-                    row.username,
-                    _react2.default.createElement('br', null),
-                    'name:',
-                    row.name,
-                    _react2.default.createElement('br', null),
-                    'surname:',
-                    row.surname,
-                    _react2.default.createElement('br', null),
-                    'roles:',
-                    row.roles.map(function (x) {
-                        return _react2.default.createElement(
-                            'span',
-                            { key: x },
-                            x,
-                            _react2.default.createElement('br', null)
-                        );
-                    })
-                );
-            };
-            var renderClosed = function renderClosed() {
-                return _react2.default.createElement(
-                    'span',
-                    null,
-                    'username:',
-                    row.username
-                );
-            };
-
-            var key = row.username + row.password + row.name + row.surname + row.roles.join("");
-            var data = {
+        key: 'doDelete',
+        value: function doDelete(row) {
+            console.log("DELETEEEEEEEEE");
+        }
+    }, {
+        key: 'renderOpened',
+        value: function renderOpened(row) {
+            return _react2.default.createElement(
+                'span',
+                null,
+                _react2.default.createElement('br', null),
+                'username:',
+                row.username,
+                _react2.default.createElement('br', null),
+                'name:',
+                row.name,
+                _react2.default.createElement('br', null),
+                'surname:',
+                row.surname,
+                _react2.default.createElement('br', null),
+                'roles:',
+                row.roles.map(function (x) {
+                    return _react2.default.createElement(
+                        'span',
+                        { key: x },
+                        x,
+                        _react2.default.createElement('br', null)
+                    );
+                })
+            );
+        }
+    }, {
+        key: 'renderClosed',
+        value: function renderClosed(row) {
+            return _react2.default.createElement(
+                'span',
+                null,
+                'username:',
+                row.username
+            );
+        }
+    }, {
+        key: 'createKey',
+        value: function createKey(row) {
+            return row.username + row.password + row.name + row.surname + row.roles.join("");
+        }
+    }, {
+        key: 'defaults',
+        value: function defaults(row) {
+            return {
                 password: row.password,
                 name: row.name,
                 surname: row.surname,
                 role: row.roles[0]
             };
-            return _react2.default.createElement(_Row.Row, {
-                data: data,
-                key: key,
-                onUpdate: function onUpdate(content) {
-                    return _this4.onUpdate(row.username, content);
-                },
-                onRemove: function onRemove() {
-                    return console.log("REMOVE");
-                },
-                renderOpened: renderOpened,
-                renderClosed: renderClosed
-            });
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            return _react2.default.createElement(
-                'div',
-                { id: 'listContainer' },
-                _react2.default.createElement(
-                    'h1',
-                    null,
-                    ' Businessusers list'
-                ),
-                _react2.default.createElement(_CreateDialog.CreationDialogOpener, { token: this.token }),
-                _react2.default.createElement(
-                    'table',
-                    null,
-                    _react2.default.createElement(
-                        'tbody',
-                        null,
-                        _react2.default.createElement(
-                            'tr',
-                            null,
-                            _react2.default.createElement(
-                                'th',
-                                null,
-                                'content'
-                            ),
-                            _react2.default.createElement(
-                                'th',
-                                null,
-                                'edit'
-                            ),
-                            _react2.default.createElement(
-                                'th',
-                                null,
-                                'remove'
-                            )
-                        ),
-                        this.state.renderedRows
-                    )
-                )
-            );
         }
     }]);
 
     return BusinessUsers;
-}(_react2.default.Component);
+}(_CrudTable2.CrudTable);
 
-},{"./CreateDialog":194,"./Row":198,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],194:[function(require,module,exports){
+},{"./CrudTable":195,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],194:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40824,6 +40733,244 @@ var UpdateDialog = function (_React$Component2) {
 //<UpdateDialog token={this.token} username={username} data={this.state.row} onSuccess={success.bind(this)}/>
 
 },{"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],195:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.CrudTable = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+require('whatwg-fetch');
+
+var _reactPopout = require('react-popout');
+
+var _reactPopout2 = _interopRequireDefault(_reactPopout);
+
+var _Row = require('./Row');
+
+var _CreateDialog = require('./CreateDialog');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var CrudTable = exports.CrudTable = function (_React$Component) {
+    _inherits(CrudTable, _React$Component);
+
+    function CrudTable(props) {
+        _classCallCheck(this, CrudTable);
+
+        var _this = _possibleConstructorReturn(this, (CrudTable.__proto__ || Object.getPrototypeOf(CrudTable)).call(this, props));
+
+        _this.state = {
+            renderedRows: [],
+            creatorOpen: false
+        };
+        _this.rows = [];
+        _this.popups = [];
+        _this.token = props.token;
+        _this.refresh();
+        return _this;
+    }
+
+    _createClass(CrudTable, [{
+        key: 'getAll',
+        value: function getAll() {
+            return [];
+        }
+    }, {
+        key: 'refresh',
+        value: function refresh() {
+            var _this2 = this;
+
+            this.getAll().then(function (all) {
+                console.log(all);
+                _this2.rows = all.map(function (x) {
+                    x.expanded = false;
+                    return x;
+                });
+                _this2.popups = [];
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
+
+                try {
+                    for (var _iterator = _this2.rows[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var row = _step.value;
+
+                        _this2.popups.push(_react2.default.createElement('span', null));
+                    }
+                } catch (err) {
+                    _didIteratorError = true;
+                    _iteratorError = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion && _iterator.return) {
+                            _iterator.return();
+                        }
+                    } finally {
+                        if (_didIteratorError) {
+                            throw _iteratorError;
+                        }
+                    }
+                }
+
+                _this2.updateRenderedRows();
+            });
+        }
+    }, {
+        key: 'updateRenderedRows',
+        value: function updateRenderedRows() {
+            this.setState({ renderedRows: this.rows.map(this.renderRow, this) });
+            this.forceUpdate();
+        }
+    }, {
+        key: 'doUpdate',
+        value: function doUpdate(row, content) {
+            return {};
+        }
+    }, {
+        key: 'onUpdate',
+        value: function onUpdate(row, content) {
+            var _this3 = this;
+
+            this.doUpdate(row, content).then(function (response) {
+                console.log(response);
+                if (response.status == 200) {
+                    _this3.refresh();
+                } else {
+                    alert("unauthorized!");
+                }
+            });
+        }
+    }, {
+        key: 'doDelete',
+        value: function doDelete(row) {
+            return {};
+        }
+    }, {
+        key: 'onDelete',
+        value: function onDelete(row) {
+            var _this4 = this;
+
+            this.doDelete(row).then(function (response) {
+                console.log(response);
+                if (response.status == 204) {
+                    _this4.refresh();
+                } else {
+                    alert("unauthorized!");
+                }
+            });
+        }
+    }, {
+        key: 'renderOpened',
+        value: function renderOpened(row) {
+            return _react2.default.createElement('span', null);
+        }
+    }, {
+        key: 'renderClosed',
+        value: function renderClosed(row) {
+            return _react2.default.createElement('span', null);
+        }
+    }, {
+        key: 'createKey',
+        value: function createKey(row) {
+            return "key";
+        }
+    }, {
+        key: 'defaults',
+        value: function defaults(row) {
+            return {};
+        }
+    }, {
+        key: 'renderRow',
+        value: function renderRow(row, index) {
+            var _this5 = this;
+
+            var renderOpened = function renderOpened() {
+                return _this5.renderOpened(row);
+            };
+            var renderClosed = function renderClosed() {
+                return _this5.renderClosed(row);
+            };
+
+            var key = this.createKey(row);
+            var data = this.defaults(row);
+            return _react2.default.createElement(_Row.Row, {
+                data: data,
+                key: key,
+                onUpdate: function onUpdate(content) {
+                    return _this5.onUpdate(row, content);
+                },
+                onRemove: function onRemove() {
+                    return console.log("REMOVE");
+                },
+                renderOpened: renderOpened,
+                renderClosed: renderClosed
+            });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'div',
+                { id: 'listContainer' },
+                _react2.default.createElement(
+                    'h1',
+                    null,
+                    ' Businessusers list'
+                ),
+                _react2.default.createElement(_CreateDialog.CreationDialogOpener, { token: this.token }),
+                _react2.default.createElement(
+                    'table',
+                    null,
+                    _react2.default.createElement(
+                        'tbody',
+                        null,
+                        _react2.default.createElement(
+                            'tr',
+                            null,
+                            _react2.default.createElement(
+                                'th',
+                                null,
+                                'content'
+                            ),
+                            _react2.default.createElement(
+                                'th',
+                                null,
+                                'edit'
+                            ),
+                            _react2.default.createElement(
+                                'th',
+                                null,
+                                'remove'
+                            )
+                        ),
+                        this.state.renderedRows
+                    )
+                )
+            );
+        }
+    }]);
+
+    return CrudTable;
+}(_react2.default.Component);
+
+},{"./CreateDialog":194,"./Row":199,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],196:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40932,7 +41079,7 @@ var Dialog = exports.Dialog = function (_React$Component) {
     return Dialog;
 }(_react2.default.Component);
 
-},{"react":189,"react-dom":28,"whatwg-fetch":191}],196:[function(require,module,exports){
+},{"react":189,"react-dom":28,"whatwg-fetch":191}],197:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -41065,7 +41212,7 @@ var Login = exports.Login = function (_React$Component) {
   return Login;
 }(_react2.default.Component);
 
-},{"react":189,"react-dom":28,"whatwg-fetch":191}],197:[function(require,module,exports){
+},{"react":189,"react-dom":28,"whatwg-fetch":191}],198:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -41144,7 +41291,7 @@ var MainScreen = exports.MainScreen = function (_React$Component) {
     return MainScreen;
 }(_react2.default.Component);
 
-},{"react":189,"react-dom":28,"whatwg-fetch":191}],198:[function(require,module,exports){
+},{"react":189,"react-dom":28,"whatwg-fetch":191}],199:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -41296,7 +41443,7 @@ var Row = exports.Row = function (_React$Component) {
     return Row;
 }(_react2.default.Component);
 
-},{"./Dialog":195,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],199:[function(require,module,exports){
+},{"./Dialog":196,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],200:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -41315,4 +41462,4 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 _reactDom2.default.render(_react2.default.createElement(_App.App, null), document.getElementById('root'));
 
-},{"./App":192,"react":189,"react-dom":28,"whatwg-fetch":191}]},{},[199]);
+},{"./App":192,"react":189,"react-dom":28,"whatwg-fetch":191}]},{},[200]);
