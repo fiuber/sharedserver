@@ -14,6 +14,9 @@ function keepFirst(array){
 }
 
 exports.serverIdFromToken=function(token){
+    if(token==null){
+        return null;
+    }
     return sdb.read({token:token}).then((servers)=>{
         if(servers.length>0){
             return servers[0].id;

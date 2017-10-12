@@ -40478,7 +40478,7 @@ var App = exports.App = function (_React$Component) {
   return App;
 }(_react2.default.Component);
 
-},{"./BusinessUsers":193,"./Login":197,"./MainScreen":198,"./Servers":200,"./Users":202,"react":189,"react-dom":28,"whatwg-fetch":191}],193:[function(require,module,exports){
+},{"./BusinessUsers":193,"./Login":199,"./MainScreen":200,"./Servers":202,"./Users":204,"react":189,"react-dom":28,"whatwg-fetch":191}],193:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40668,7 +40668,279 @@ var BusinessUsers = exports.BusinessUsers = function (_CrudTable) {
     return BusinessUsers;
 }(_CrudTable2.CrudTable);
 
-},{"./CrudTable":195,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],194:[function(require,module,exports){
+},{"./CrudTable":197,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],194:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.CarEditorButton = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+require('whatwg-fetch');
+
+var _reactPopout = require('react-popout');
+
+var _reactPopout2 = _interopRequireDefault(_reactPopout);
+
+var _Cars = require('./Cars');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var CarEditorButton = exports.CarEditorButton = function (_React$Component) {
+    _inherits(CarEditorButton, _React$Component);
+
+    function CarEditorButton(props) {
+        _classCallCheck(this, CarEditorButton);
+
+        var _this = _possibleConstructorReturn(this, (CarEditorButton.__proto__ || Object.getPrototypeOf(CarEditorButton)).call(this, props));
+
+        _this.token = props.token;
+        _this.id = props.id;
+        _this.state = {
+            popup: _react2.default.createElement('span', null)
+        };
+        return _this;
+    }
+
+    _createClass(CarEditorButton, [{
+        key: 'onClick',
+        value: function onClick() {
+            var _this2 = this;
+
+            fetch("/users/" + this.id + "/cars", {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'api-key ' + this.token
+                }
+            }).then(function (res) {
+                return res.json();
+            }).then(function (json) {
+                function closePopup() {
+                    this.setState({ popup: _react2.default.createElement('span', null) });
+                }
+                console.log("ESTE ES JASON");
+                console.log(json);
+                var popup = _react2.default.createElement(
+                    _reactPopout2.default,
+                    { title: 'Window title', onClosing: closePopup.bind(_this2) },
+                    _react2.default.createElement(_Cars.Cars, { token: _this2.token, userId: _this2.id })
+                );
+                _this2.setState({ popup: popup });
+            });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'span',
+                null,
+                _react2.default.createElement(
+                    'button',
+                    { onClick: this.onClick.bind(this) },
+                    ' Show cars '
+                ),
+                this.state.popup
+            );
+        }
+    }]);
+
+    return CarEditorButton;
+}(_react2.default.Component);
+
+/*
+createToken(row){
+        fetch("/servers/"+row.id,{
+            method:"POST",
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'api-key '+this.token
+            },
+        })
+        .then((res)=>res.json())
+        .then((json)=>{
+            function closePopup(){
+                this.popup=<span></span>;
+            }
+            this.popup=<Popout  title='Window title' onClosing={closePopup.bind(this)}>
+                {json}
+            </Popout>
+            
+        })
+
+    }
+    */
+
+},{"./Cars":195,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],195:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.Cars = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+require('whatwg-fetch');
+
+var _reactPopout = require('react-popout');
+
+var _reactPopout2 = _interopRequireDefault(_reactPopout);
+
+var _CrudTable2 = require('./CrudTable');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Strategy = function () {
+    function Strategy(token, userId) {
+        _classCallCheck(this, Strategy);
+
+        this.token = token;
+        this.userId = userId;
+    }
+
+    _createClass(Strategy, [{
+        key: 'getAll',
+        value: function getAll() {
+            return fetch("/users/" + this.userId + "/cars", {
+                method: "GET",
+
+                headers: {
+                    "Authorization": "api-key " + this.token
+                },
+                cache: "no-store"
+            }).then(function (res) {
+                return res.json();
+            }).then(function (jsn) {
+                return jsn.cars;
+            });
+        }
+    }, {
+        key: 'doUpdate',
+        value: function doUpdate(row, content) {
+            return Promise.resolve("CANT UPDATE");
+        }
+    }, {
+        key: 'doDelete',
+        value: function doDelete(row) {
+            return fetch("/users/" + this.userId + "/cars/" + row.id, {
+                method: "DELETE",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'api-key ' + this.token
+                }
+            });
+        }
+    }, {
+        key: 'renderOpened',
+        value: function renderOpened(row) {
+            return _react2.default.createElement(
+                'span',
+                null,
+                'id:',
+                row.id,
+                'owner:',
+                row.owner,
+                'properties:',
+                _react2.default.createElement(
+                    'ul',
+                    null,
+                    row.properties.map(function (prop) {
+                        var key = prop.name + prop.value;
+                        return _react2.default.createElement(
+                            'li',
+                            { key: key },
+                            prop.name,
+                            ':',
+                            prop.value
+                        );
+                    })
+                )
+            );
+        }
+    }, {
+        key: 'renderClosed',
+        value: function renderClosed(row) {
+            return _react2.default.createElement(
+                'span',
+                null,
+                'id:',
+                row.id
+            );
+        }
+    }, {
+        key: 'createKey',
+        value: function createKey(row) {
+            return row.id + row.owner + row.properties.join("");
+        }
+    }, {
+        key: 'defaults',
+        value: function defaults(row) {
+            return {
+                name: "CANT UPDATE"
+            };
+        }
+    }, {
+        key: 'defaultCreationContent',
+        value: function defaultCreationContent() {
+            return {
+                name: "CANT CREATE"
+            };
+        }
+    }, {
+        key: 'doCreate',
+        value: function doCreate(content) {
+            return Promise.resolve("yesss");
+        }
+    }]);
+
+    return Strategy;
+}();
+
+var Cars = exports.Cars = function (_CrudTable) {
+    _inherits(Cars, _CrudTable);
+
+    function Cars(props) {
+        _classCallCheck(this, Cars);
+
+        var strategy = new Strategy(props.token, props.userId);
+        return _possibleConstructorReturn(this, (Cars.__proto__ || Object.getPrototypeOf(Cars)).call(this, props, strategy));
+    }
+
+    return Cars;
+}(_CrudTable2.CrudTable);
+
+},{"./CrudTable":197,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],196:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40757,7 +41029,7 @@ var CreationDialogOpener = exports.CreationDialogOpener = function (_React$Compo
     return CreationDialogOpener;
 }(_react2.default.Component);
 
-},{"./Dialog":196,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],195:[function(require,module,exports){
+},{"./Dialog":198,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],197:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40981,7 +41253,7 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
     return CrudTable;
 }(_react2.default.Component);
 
-},{"./CreateDialog":194,"./Row":199,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],196:[function(require,module,exports){
+},{"./CreateDialog":196,"./Row":201,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],198:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -41090,7 +41362,7 @@ var Dialog = exports.Dialog = function (_React$Component) {
     return Dialog;
 }(_react2.default.Component);
 
-},{"react":189,"react-dom":28,"whatwg-fetch":191}],197:[function(require,module,exports){
+},{"react":189,"react-dom":28,"whatwg-fetch":191}],199:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -41223,7 +41495,7 @@ var Login = exports.Login = function (_React$Component) {
   return Login;
 }(_react2.default.Component);
 
-},{"react":189,"react-dom":28,"whatwg-fetch":191}],198:[function(require,module,exports){
+},{"react":189,"react-dom":28,"whatwg-fetch":191}],200:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -41302,7 +41574,7 @@ var MainScreen = exports.MainScreen = function (_React$Component) {
     return MainScreen;
 }(_react2.default.Component);
 
-},{"react":189,"react-dom":28,"whatwg-fetch":191}],199:[function(require,module,exports){
+},{"react":189,"react-dom":28,"whatwg-fetch":191}],201:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -41464,7 +41736,7 @@ var Row = exports.Row = function (_React$Component) {
     return Row;
 }(_react2.default.Component);
 
-},{"./Dialog":196,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],200:[function(require,module,exports){
+},{"./Dialog":198,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],202:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -41644,7 +41916,7 @@ var Servers = exports.Servers = function (_CrudTable) {
     return Servers;
 }(_CrudTable2.CrudTable);
 
-},{"./CrudTable":195,"./TokenCreatorButton":201,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],201:[function(require,module,exports){
+},{"./CrudTable":197,"./TokenCreatorButton":203,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],203:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -41772,7 +42044,7 @@ createToken(row){
     }
     */
 
-},{"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],202:[function(require,module,exports){
+},{"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],204:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -41797,6 +42069,8 @@ var _reactPopout = require('react-popout');
 var _reactPopout2 = _interopRequireDefault(_reactPopout);
 
 var _CrudTable2 = require('./CrudTable');
+
+var _CarEditorButton = require('./CarEditorButton');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -41887,9 +42161,9 @@ var Strategy = function () {
                 _react2.default.createElement('br', null),
                 'image:',
                 row.images[0],
-                _react2.default.createElement('br', null)
+                _react2.default.createElement('br', null),
+                _react2.default.createElement(_CarEditorButton.CarEditorButton, { token: this.token, id: row.id })
             );
-            //<CarEditorButton token={this.token} id={row.id}/>
         }
     }, {
         key: 'renderClosed',
@@ -41943,7 +42217,7 @@ var Users = exports.Users = function (_CrudTable) {
     return Users;
 }(_CrudTable2.CrudTable);
 
-},{"./CrudTable":195,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],203:[function(require,module,exports){
+},{"./CarEditorButton":194,"./CrudTable":197,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],205:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -41962,4 +42236,4 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 _reactDom2.default.render(_react2.default.createElement(_App.App, null), document.getElementById('root'));
 
-},{"./App":192,"react":189,"react-dom":28,"whatwg-fetch":191}]},{},[203]);
+},{"./App":192,"react":189,"react-dom":28,"whatwg-fetch":191}]},{},[205]);

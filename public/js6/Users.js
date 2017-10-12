@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import "whatwg-fetch";
 import Popout from 'react-popout';
 import {CrudTable} from "./CrudTable";
-
+import {CarEditorButton} from "./CarEditorButton";
 //import {TokenCreatorButton} from "./TokenCreatorButton"
 
 class Strategy{
@@ -68,10 +68,11 @@ class Strategy{
             <br/>
             image:{row.images[0]}
             <br/>
+            <CarEditorButton token={this.token} id={row.id}/>
             
             
         </span>);
-        //<CarEditorButton token={this.token} id={row.id}/>
+        
     }
 
     renderClosed(row){
