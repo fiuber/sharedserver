@@ -2,9 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import "whatwg-fetch";
 import Popout from 'react-popout';
-import {CrudTable} from "./CrudTable";
+import {Row} from "./Row";
+import {CreationDialogOpener} from "./CreateDialog";
 
-export class BusinessUsers extends React.Component{
+export class CrudTable extends React.Component{
     constructor(props){
         super(props);
         this.token=props.token;
@@ -17,9 +18,8 @@ export class BusinessUsers extends React.Component{
 
         this.refresh();
     }
-
-    refresh(){
-        fetch("/business-users",{
+    /*
+    fetch("/business-users",{
             method:"GET",
             headers:{
                 "Authorization":"api-key "+this.token,
@@ -27,9 +27,17 @@ export class BusinessUsers extends React.Component{
             cache:"no-store"
         })
         .then((res)=>res.json())
-        .then((json)=>{
-            console.log(json);
-            this.rows=json.businessUser.map((x)=>{
+    */
+
+    getAll(){
+        return [];
+    }
+
+    refresh(){
+        getAll()
+        .then((all)=>{
+            console.log(all);
+            this.rows=all.map((x)=>{
                 x.expanded=false;
                 return x;
             })
@@ -45,9 +53,8 @@ export class BusinessUsers extends React.Component{
         this.setState({renderedRows:this.rows.map(this.renderRow,this)});
         this.forceUpdate();
     }
-
-    onUpdate(username,content){
-        fetch("/business-users/"+username,{
+    /*
+    fetch("/business-users/"+username,{
             method:"PUT",
             headers: {
               'Content-Type': 'application/json',
@@ -61,6 +68,13 @@ export class BusinessUsers extends React.Component{
                 roles:[content.role]
             })
         })
+        */
+        doUpdate(row,content){
+        return {};
+    }
+
+    onUpdate(row,content){
+        doUpdate(row,content)
         .then((response)=>{
             console.log(response);
             if(response.status==200){
@@ -71,8 +85,24 @@ export class BusinessUsers extends React.Component{
         })
     }
 
-    renderRow(row,index){
-        let renderOpened=()=>(<span>
+    doDelete(row){
+        return {};
+    }
+
+    onDelete(row){
+        doDelete(row)
+        .then((response)=>{
+            console.log(response);
+            if(response.status==204){
+                this.refresh()
+            }else{
+                alert("unauthorized!")
+            }
+        })
+    }
+
+    /*
+    ()=>(<span>
             <br/>
             username:{row.username}
             <br/>
@@ -84,20 +114,51 @@ export class BusinessUsers extends React.Component{
                 <span key={x}>{x}<br/></span>
             )}
         </span>);
-        let renderClosed=()=>(<span>username:{row.username}</span>);
+        */
+    /*
+    (<span>username:{row.username}</span>)
+    */
 
+    //row.username+row.password+row.name+row.surname+row.roles.join("");
 
-        let key=row.username+row.password+row.name+row.surname+row.roles.join("");
-        let data={
+    /*
+    {
             password:row.password,
             name:row.name,
             surname:row.surname,
             role:row.roles[0]
         }
+        */
+
+    renderOpened(row){
+        return <span></span>;
+    }
+
+    renderClosed(row){
+        return <span></span>;
+    }
+
+    createKey(row){
+        return "key";
+    }
+
+    defaults(row){
+        return {};
+    }
+
+    
+
+    renderRow(row,index){
+        let renderOpened=()=>this.renderOpened(row);
+        let renderClosed=()=>this.renderClosed(row);
+
+
+        let key=this.createKey(row);
+        let data=this.defaults(row);
         return <Row 
             data={data} 
             key={key} 
-            onUpdate={(content)=>this.onUpdate(row.username,content)}
+            onUpdate={(content)=>this.onUpdate(row,content)}
             onRemove={()=>console.log("REMOVE")}
             renderOpened={renderOpened}
             renderClosed={renderClosed}

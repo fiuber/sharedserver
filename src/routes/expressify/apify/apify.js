@@ -5,6 +5,8 @@ const BAD_REQUEST={"bad request":true}
 const BAD_RESOURCE={"bad resource":true}
 const ERROR={"error":true}
 
+const util=require("util");
+
 function apify(shape,fun){
     
     return function(req_body,send,req_parameters,origin){
@@ -66,7 +68,7 @@ function apify(shape,fun){
                 send(ERROR,e.stack);
             });
         }else{
-            send(BAD_REQUEST,"Bad body. Send "+ shape.toString());
+            send(BAD_REQUEST,"Bad body. Send "+ util.inspect(shape,false,null));
         }
     }
 }
