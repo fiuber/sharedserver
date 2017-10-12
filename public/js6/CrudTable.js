@@ -6,7 +6,7 @@ import {Row} from "./Row";
 import {CreationDialogOpener} from "./CreateDialog";
 
 export class CrudTable extends React.Component{
-    constructor(props){
+    constructor(props,strategy){
         super(props);
         this.state={
             renderedRows:[],
@@ -14,16 +14,12 @@ export class CrudTable extends React.Component{
         }
         this.rows=[];
         this.popups=[];
-        this.token=props.token;
+        this.strategy=strategy;
         this.refresh();
     }
 
-    getAll(){
-        return [];
-    }
-
     refresh(){
-        this.getAll()
+        this.strategy.getAll()
         .then((all)=>{
             console.log(all);
             this.rows=all.map((x)=>{
@@ -43,12 +39,8 @@ export class CrudTable extends React.Component{
         this.forceUpdate();
     }
 
-    doUpdate(row,content){
-        return {};
-    }
-
     onUpdate(row,content){
-        this.doUpdate(row,content)
+        this.strategy.doUpdate(row,content)
         .then((response)=>{
             console.log(response);
             if(response.status==200){
@@ -59,12 +51,21 @@ export class CrudTable extends React.Component{
         })
     }
 
-    doDelete(row){
-        return {};
+    onCreate(object){
+        this.strategy.doCreate(object)
+        .then((response)=>{
+            console.log(response);
+            if(response.status==201){
+                this.refresh()
+            }else{
+                alert("unauthorized!")
+            }
+        })
     }
 
+
     onDelete(row){
-        this.doDelete(row)
+        this.strategy.doDelete(row)
         .then((response)=>{
             console.log(response);
             if(response.status==204){
@@ -75,34 +76,18 @@ export class CrudTable extends React.Component{
         })
     }
 
-    renderOpened(row){
-        return <span></span>;
-    }
-
-    renderClosed(row){
-        return <span></span>;
-    }
-
-    createKey(row){
-        return "key";
-    }
-
-    defaults(row){
-        return {};
-    }
-
     renderRow(row,index){
-        let renderOpened=()=>this.renderOpened(row);
-        let renderClosed=()=>this.renderClosed(row);
+        let renderOpened=()=>this.strategy.renderOpened(row);
+        let renderClosed=()=>this.strategy.renderClosed(row);
 
 
-        let key=this.createKey(row);
-        let data=this.defaults(row);
+        let key=this.strategy.createKey(row);
+        let data=this.strategy.defaults(row);
         return <Row 
             data={data} 
             key={key} 
             onUpdate={(content)=>this.onUpdate(row,content)}
-            onRemove={()=>console.log("REMOVE")}
+            onRemove={()=>this.onDelete(row)}
             renderOpened={renderOpened}
             renderClosed={renderClosed}
         />
@@ -112,7 +97,10 @@ export class CrudTable extends React.Component{
     render(){
         return <div id="listContainer">
             <h1> Businessusers list</h1>
-            <CreationDialogOpener token={this.token} />
+            <CreationDialogOpener 
+                content={this.strategy.defaultCreationContent()} 
+                onSubmit={(o)=>this.onCreate(o)}
+            />
             
             <table>
                 <tbody>

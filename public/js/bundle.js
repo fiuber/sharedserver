@@ -40492,8 +40492,6 @@ exports.BusinessUsers = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _set = function set(object, property, value, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent !== null) { set(parent, property, value, receiver); } } else if ("value" in desc && desc.writable) { desc.value = value; } else { var setter = desc.set; if (setter !== undefined) { setter.call(receiver, value); } } return value; };
-
 var _react = require('react');
 
 var _react2 = _interopRequireDefault(_react);
@@ -40512,28 +40510,20 @@ var _CrudTable2 = require('./CrudTable');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var BusinessUsers = exports.BusinessUsers = function (_CrudTable) {
-    _inherits(BusinessUsers, _CrudTable);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-    function BusinessUsers(props) {
-        _classCallCheck(this, BusinessUsers);
+var Strategy = function () {
+    function Strategy(token) {
+        _classCallCheck(this, Strategy);
 
-        var _this = _possibleConstructorReturn(this, (BusinessUsers.__proto__ || Object.getPrototypeOf(BusinessUsers)).call(this, props));
-
-        console.log("las props son:");
-        console.log(props);
-        _set(BusinessUsers.prototype.__proto__ || Object.getPrototypeOf(BusinessUsers.prototype), 'token', props.token, _this);
-        _this.token = props.token;
-        return _this;
+        this.token = token;
     }
 
-    _createClass(BusinessUsers, [{
+    _createClass(Strategy, [{
         key: 'getAll',
         value: function getAll() {
             console.log("This is:");
@@ -40575,7 +40565,13 @@ var BusinessUsers = exports.BusinessUsers = function (_CrudTable) {
     }, {
         key: 'doDelete',
         value: function doDelete(row) {
-            console.log("DELETEEEEEEEEE");
+            return fetch("/business-users/" + row.username, {
+                method: "DELETE",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'api-key ' + this.token
+                }
+            });
         }
     }, {
         key: 'renderOpened',
@@ -40629,7 +40625,49 @@ var BusinessUsers = exports.BusinessUsers = function (_CrudTable) {
                 role: row.roles[0]
             };
         }
+    }, {
+        key: 'defaultCreationContent',
+        value: function defaultCreationContent() {
+            return {
+                username: "username",
+                password: "password",
+                name: "name",
+                surname: "surname",
+                role: "user"
+            };
+        }
+    }, {
+        key: 'doCreate',
+        value: function doCreate(content) {
+            return fetch("/business-users/", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'api-key ' + this.token
+                },
+                body: JSON.stringify({
+                    username: content.username,
+                    password: content.password,
+                    name: content.name,
+                    surname: content.surname,
+                    roles: [content.role]
+                })
+            });
+        }
     }]);
+
+    return Strategy;
+}();
+
+var BusinessUsers = exports.BusinessUsers = function (_CrudTable) {
+    _inherits(BusinessUsers, _CrudTable);
+
+    function BusinessUsers(props) {
+        _classCallCheck(this, BusinessUsers);
+
+        var strategy = new Strategy(props.token);
+        return _possibleConstructorReturn(this, (BusinessUsers.__proto__ || Object.getPrototypeOf(BusinessUsers)).call(this, props, strategy));
+    }
 
     return BusinessUsers;
 }(_CrudTable2.CrudTable);
@@ -40658,6 +40696,8 @@ var _reactPopout = require('react-popout');
 
 var _reactPopout2 = _interopRequireDefault(_reactPopout);
 
+var _Dialog = require('./Dialog');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -40674,6 +40714,7 @@ var CreationDialogOpener = exports.CreationDialogOpener = function (_React$Compo
 
         var _this = _possibleConstructorReturn(this, (CreationDialogOpener.__proto__ || Object.getPrototypeOf(CreationDialogOpener)).call(this, props));
 
+        _this.onSubmitCallback = props.onSubmit;
         _this.noPopup = _react2.default.createElement(
             'a',
             { onClick: _this.openPopup.bind(_this) },
@@ -40682,15 +40723,21 @@ var CreationDialogOpener = exports.CreationDialogOpener = function (_React$Compo
         _this.yesPopup = _react2.default.createElement(
             _reactPopout2.default,
             { title: 'Window title', onClosing: _this.closePopup.bind(_this) },
-            _react2.default.createElement(UpdateDialog, { token: _this.token })
+            _react2.default.createElement(_Dialog.Dialog, { content: props.content, onSubmit: _this.onSubmit.bind(_this) })
         );
         _this.state = {
             popup: _this.noPopup
-        };
-        return _this;
+            //<UpdateDialog token={this.token}/>
+        };return _this;
     }
 
     _createClass(CreationDialogOpener, [{
+        key: 'onSubmit',
+        value: function onSubmit(content) {
+            this.closePopup();
+            this.onSubmitCallback(content);
+        }
+    }, {
         key: 'openPopup',
         value: function openPopup() {
             this.setState({
@@ -40714,25 +40761,7 @@ var CreationDialogOpener = exports.CreationDialogOpener = function (_React$Compo
     return CreationDialogOpener;
 }(_react2.default.Component);
 
-var UpdateDialog = function (_React$Component2) {
-    _inherits(UpdateDialog, _React$Component2);
-
-    function UpdateDialog(props) {
-        _classCallCheck(this, UpdateDialog);
-
-        var _this2 = _possibleConstructorReturn(this, (UpdateDialog.__proto__ || Object.getPrototypeOf(UpdateDialog)).call(this, props));
-
-        _this2.token = props.token;
-
-        return _this2;
-    }
-
-    return UpdateDialog;
-}(_react2.default.Component);
-
-//<UpdateDialog token={this.token} username={username} data={this.state.row} onSuccess={success.bind(this)}/>
-
-},{"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],195:[function(require,module,exports){
+},{"./Dialog":196,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],195:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -40771,7 +40800,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var CrudTable = exports.CrudTable = function (_React$Component) {
     _inherits(CrudTable, _React$Component);
 
-    function CrudTable(props) {
+    function CrudTable(props, strategy) {
         _classCallCheck(this, CrudTable);
 
         var _this = _possibleConstructorReturn(this, (CrudTable.__proto__ || Object.getPrototypeOf(CrudTable)).call(this, props));
@@ -40782,22 +40811,17 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
         };
         _this.rows = [];
         _this.popups = [];
-        _this.token = props.token;
+        _this.strategy = strategy;
         _this.refresh();
         return _this;
     }
 
     _createClass(CrudTable, [{
-        key: 'getAll',
-        value: function getAll() {
-            return [];
-        }
-    }, {
         key: 'refresh',
         value: function refresh() {
             var _this2 = this;
 
-            this.getAll().then(function (all) {
+            this.strategy.getAll().then(function (all) {
                 console.log(all);
                 _this2.rows = all.map(function (x) {
                     x.expanded = false;
@@ -40839,16 +40863,11 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
             this.forceUpdate();
         }
     }, {
-        key: 'doUpdate',
-        value: function doUpdate(row, content) {
-            return {};
-        }
-    }, {
         key: 'onUpdate',
         value: function onUpdate(row, content) {
             var _this3 = this;
 
-            this.doUpdate(row, content).then(function (response) {
+            this.strategy.doUpdate(row, content).then(function (response) {
                 console.log(response);
                 if (response.status == 200) {
                     _this3.refresh();
@@ -40858,18 +40877,13 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
             });
         }
     }, {
-        key: 'doDelete',
-        value: function doDelete(row) {
-            return {};
-        }
-    }, {
-        key: 'onDelete',
-        value: function onDelete(row) {
+        key: 'onCreate',
+        value: function onCreate(object) {
             var _this4 = this;
 
-            this.doDelete(row).then(function (response) {
+            this.strategy.doCreate(object).then(function (response) {
                 console.log(response);
-                if (response.status == 204) {
+                if (response.status == 201) {
                     _this4.refresh();
                 } else {
                     alert("unauthorized!");
@@ -40877,47 +40891,41 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
             });
         }
     }, {
-        key: 'renderOpened',
-        value: function renderOpened(row) {
-            return _react2.default.createElement('span', null);
-        }
-    }, {
-        key: 'renderClosed',
-        value: function renderClosed(row) {
-            return _react2.default.createElement('span', null);
-        }
-    }, {
-        key: 'createKey',
-        value: function createKey(row) {
-            return "key";
-        }
-    }, {
-        key: 'defaults',
-        value: function defaults(row) {
-            return {};
+        key: 'onDelete',
+        value: function onDelete(row) {
+            var _this5 = this;
+
+            this.strategy.doDelete(row).then(function (response) {
+                console.log(response);
+                if (response.status == 204) {
+                    _this5.refresh();
+                } else {
+                    alert("unauthorized!");
+                }
+            });
         }
     }, {
         key: 'renderRow',
         value: function renderRow(row, index) {
-            var _this5 = this;
+            var _this6 = this;
 
             var renderOpened = function renderOpened() {
-                return _this5.renderOpened(row);
+                return _this6.strategy.renderOpened(row);
             };
             var renderClosed = function renderClosed() {
-                return _this5.renderClosed(row);
+                return _this6.strategy.renderClosed(row);
             };
 
-            var key = this.createKey(row);
-            var data = this.defaults(row);
+            var key = this.strategy.createKey(row);
+            var data = this.strategy.defaults(row);
             return _react2.default.createElement(_Row.Row, {
                 data: data,
                 key: key,
                 onUpdate: function onUpdate(content) {
-                    return _this5.onUpdate(row, content);
+                    return _this6.onUpdate(row, content);
                 },
                 onRemove: function onRemove() {
-                    return console.log("REMOVE");
+                    return _this6.onDelete(row);
                 },
                 renderOpened: renderOpened,
                 renderClosed: renderClosed
@@ -40926,6 +40934,8 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
+            var _this7 = this;
+
             return _react2.default.createElement(
                 'div',
                 { id: 'listContainer' },
@@ -40934,7 +40944,12 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
                     null,
                     ' Businessusers list'
                 ),
-                _react2.default.createElement(_CreateDialog.CreationDialogOpener, { token: this.token }),
+                _react2.default.createElement(_CreateDialog.CreationDialogOpener, {
+                    content: this.strategy.defaultCreationContent(),
+                    onSubmit: function onSubmit(o) {
+                        return _this7.onCreate(o);
+                    }
+                }),
                 _react2.default.createElement(
                     'table',
                     null,

@@ -4,14 +4,9 @@ import "whatwg-fetch";
 import Popout from 'react-popout';
 import {CrudTable} from "./CrudTable";
 
-export class BusinessUsers extends CrudTable{
-
-    constructor(props){
-        super(props);
-        console.log("las props son:");
-        console.log(props);
-        super.token=props.token;
-        this.token=props.token;
+class Strategy {
+    constructor(token){
+        this.token=token;
     }
     getAll(){
         console.log("This is:")
@@ -49,7 +44,13 @@ export class BusinessUsers extends CrudTable{
     }
 
     doDelete(row){
-        console.log("DELETEEEEEEEEE");
+        return fetch("/business-users/"+row.username,{
+            method:"DELETE",
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'api-key '+this.token
+            },
+        })
     }
 
     renderOpened(row){
@@ -83,4 +84,44 @@ export class BusinessUsers extends CrudTable{
             role:row.roles[0]
         }
     }
+
+    defaultCreationContent(){
+        return {
+            username:"username",
+            password:"password",
+            name:"name",
+            surname:"surname",
+            role:"user"
+        };
+    }
+
+    doCreate(content){
+        return fetch("/business-users/",{
+            method:"POST",
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'api-key '+this.token
+            },
+            body:JSON.stringify({
+                username:content.username,
+                password:content.password,
+                name:content.name,
+                surname:content.surname,
+                roles:[content.role]
+            })
+        })
+        
+    }
+
+
 }
+
+
+export class BusinessUsers extends CrudTable{
+    
+        constructor(props){
+            let strategy=new Strategy(props.token);
+            super(props,strategy);
+        }
+        
+    }
