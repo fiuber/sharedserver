@@ -53,24 +53,48 @@ export class Login extends React.Component {
       });
     }
     render(){
-      return (<div id="centeredbox">
-        <h1>Enter password</h1>
+      return (<div class="container" align="center" id="centeredbox">
         
-        <form onSubmit={this.handleSubmit}>
-          <label> user:
-            <input type="text" name="username" value={this.state.username} onChange={this.handleInputChange} />
-          </label>
-          <br/>
-          <label> password:
-            <input type="password" name="password" value={this.state.password} onChange={this.handleInputChange} />
-          </label>
-          <br/>
-          <button onClick={this.handleSubmit}>
-            submit
-          </button>
+        <form class="form-horizontal" onSubmit={this.handleSubmit}>
+
+          <div class="form-group">
+            <h1 align="center">Login</h1>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-sm-2"> User:</label>
+            <div class="col-sm-8">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                <input type="text" class="form-control"  name="username" value={this.state.username} onChange={this.handleInputChange} />
+                </div>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="control-label col-sm-2"> Password:</label>
+            <div class="col-sm-8">
+              <div class="input-group">
+                <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                <input type="password" class="form-control" name="password" value={this.state.password} onChange={this.handleInputChange} />
+              </div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <div class="col-sm-offset-9 col-sm-1">
+              <div align="right">
+                <button  class="btn btn-primary" onClick={this.handleSubmit}>Submit</button>
+              </div>
+            </div>
+            <div class="col-sm-2">
+              <div align="left">
+                  <p id="tryagain">{this.state.redMessage}</p>
+              </div>
+            </div>
+          </div> 
         </form>
-  
-        {this.state.redMessage}
+        
         
   
       </div>);
