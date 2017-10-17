@@ -18,16 +18,29 @@
     "cover": "./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha --reporter lcovonly -- -R spec $(find src -name *-test.js )",
     "enviar": "./node_modules/.bin/codecov -t 9b56dd78-a3ab-4a7d-a7ea-bd326e5348ad",
     "tcdock": "npm run cover && npm run enviar",
-    "tcompose": "docker-compose build && docker-compose up --abort-on-container-exit"
+    "tcompose": "docker-compose build && docker-compose up --abort-on-container-exit",
+    "outsidebuild": "node_modules/.bin/browserify public/js6/main.js -o public/js/bundle.js -t  babelify",
+    "outsidetest": "docker-compose run -v $PWD'/src:/app/src' -v $PWD'/integration-test:/app/integration-test' web npm test",
+    "outsiderun": "docker-compose run --service-ports -v $PWD'/src:/app/src' -v $PWD'/public:/app/public' -v $PWD'/integration-test:/app/integration-test' web npm start"
   },
   "dependencies": {
     "auth-header": "^0.3.1",
     "body-parser": "^1.17.2",
+    "browserify": "^14.4.0",
     "cookie-parser": "^1.4.3",
     "express": "^4.13.3",
-    "pg-promise": "^6.5.1"
+    "pg-promise": "^6.5.1",
+    "react": "^16.0.0",
+    "react-dom": "^16.0.0",
+    "react-popout": "^1.0.1",
+    "whatwg-fetch": "^2.0.3"
   },
   "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babelify": "^7.3.0",
     "chai": "^4.1.1",
     "codecov": "^2.3.0",
     "istanbul": "^0.4.5",

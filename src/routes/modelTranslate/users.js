@@ -40,7 +40,8 @@ function user(string,number,array,from){
             balance:from("balance",array({
                 currency:string("currency"),
                 value:number("value")
-            }))
+            })),
+            images:from("images")
         }
     }
 }

@@ -16,6 +16,8 @@ const usersModel=require("./model/users")
 
 //authorization
 const app=auth.middleware(serversModel.authorized);
+const appOrUser=auth.middleware(serversModel.authorized,businessUsersModel.authorizedRoles("user","admin","manager"));
+const appOrManager=auth.middleware(serversModel.authorized,businessUsersModel.authorizedRoles("admin","manager"));
 const admin=auth.middleware(businessUsersModel.authorizedRoles("admin"));
 const manager=auth.middleware(businessUsersModel.authorizedRoles("manager","admin"));
 const user=auth.middleware(businessUsersModel.authorizedRoles("user","manager","admin"));
@@ -55,18 +57,18 @@ const usersTranslator=require("./modelTranslate/users.js");
 const usersTranslated=require("./modelTranslate")(usersModel,usersTranslator);
 const users=expressify.all(usersTranslated,{"version":"1"});
 
-router.get("/users",app,users.list)
-router.post("/users",app,users.add)
-router.delete("/users/:userId",app,users.delete)
-router.get("/users/:userId",app,users.get)
-router.put("/users/:userId",app,users.update)
+router.get("/users",appOrUser,users.list)
+router.post("/users",appOrManager,users.add)
+router.delete("/users/:userId",appOrManager,users.delete)
+router.get("/users/:userId",appOrUser,users.get)
+router.put("/users/:userId",appOrManager,users.update)
 
-router.post("/users/validate",app,users.validate)
+router.post("/users/validate",appOrManager,users.validate)
 
-router.get("/users/:userId/cars/",app,users.getCars)
-router.post("/users/:userId/cars/",app,users.addCar)
-router.delete("/users/:userId/cars/:carId",app,users.deleteCar)
-router.get("/users/:userId/cars/:carId",app,users.getCar)
-router.put("/users/:userId/cars/:carId",app,users.updateCar)
+router.get("/users/:userId/cars/",appOrUser,users.getCars)
+router.post("/users/:userId/cars/",appOrManager,users.addCar)
+router.delete("/users/:userId/cars/:carId",appOrManager,users.deleteCar)
+router.get("/users/:userId/cars/:carId",appOrUser,users.getCar)
+router.put("/users/:userId/cars/:carId",appOrManager,users.updateCar)
 
 module.exports = router;

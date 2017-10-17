@@ -20,6 +20,8 @@ exports.token=function(body,nonexistent,badRevision,me){
     .read({username:un}).then((rows)=>{
         if(rows.length==0){
             return nonexistent;
+        }else if(rows[0].password !== body.password){
+            return nonexistent;
         }else{
 
             if(me){
