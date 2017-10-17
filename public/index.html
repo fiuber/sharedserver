@@ -1,8 +1,33 @@
 <html>
     <head>
+    	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    	
+
+    	<style>
+    		#logo {
+    			width: 100px;
+    			height: 100px;
+    		}
+    		#centeredbox{
+    			position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				border: solid 1px #888888;
+				box-shadow: 10px 10px 5px #888888;
+    		}
+    		#tryagain{
+    			color: red;
+    		}
+    	</style>
     </head>
     
     <body>
+    	<div align="right">
+    		<img id="logo" src="resources/logo.png"/>
+    	</div>
         <div id="root"></div>
         <script src="js/bundle.js"></script>
     </body>

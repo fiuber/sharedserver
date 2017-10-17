@@ -40427,27 +40427,39 @@ var App = exports.App = function (_React$Component) {
 
     _this.state = {
       current: _this.login,
+      showbar: false,
       username: "",
       password: "",
-      token: ""
+      token: "",
+      currentTab: 1
     };
+
+    _this.gotoHome = _this.gotoHome.bind(_this);
+    _this.gotoBusinessUsers = _this.gotoBusinessUsers.bind(_this);
+    _this.gotoServers = _this.gotoServers.bind(_this);
+    _this.gotoUsers = _this.gotoUsers.bind(_this);
     return _this;
   }
 
   _createClass(App, [{
+    key: 'gotoHome',
+    value: function gotoHome(event) {
+      this.setState({ current: this.main, currentTab: 1 });
+    }
+  }, {
     key: 'gotoBusinessUsers',
     value: function gotoBusinessUsers(event) {
-      this.setState({ current: this.businessUsers });
+      this.setState({ current: this.businessUsers, currentTab: 2 });
     }
   }, {
     key: 'gotoServers',
     value: function gotoServers(event) {
-      this.setState({ current: this.servers });
+      this.setState({ current: this.servers, currentTab: 3 });
     }
   }, {
     key: 'gotoUsers',
     value: function gotoUsers(event) {
-      this.setState({ current: this.users });
+      this.setState({ current: this.users, currentTab: 4 });
     }
   }, {
     key: 'handleSuccess',
@@ -40459,18 +40471,103 @@ var App = exports.App = function (_React$Component) {
         token: token,
         username: username,
         password: password,
-        current: this.main
+        current: this.main,
+        showbar: true
       });
     }
   }, {
     key: 'render',
     value: function render() {
       return _react2.default.createElement(
-        'span',
-        null,
-        'Token:',
-        this.state.token,
-        this.state.current()
+        'div',
+        { 'class': 'container', align: 'center' },
+        _react2.default.createElement(
+          'nav',
+          { style: { display: this.state.showbar ? '' : 'none' }, 'class': 'navbar navbar-inverse' },
+          _react2.default.createElement(
+            'div',
+            { 'class': 'container-fluid' },
+            _react2.default.createElement(
+              'div',
+              { 'class': 'navbar-header' },
+              _react2.default.createElement(
+                'button',
+                { type: 'button', 'class': 'navbar-toggle', 'data-toggle': 'collapse', 'data-target': '#myNavbar' },
+                _react2.default.createElement('span', { 'class': 'icon-bar' }),
+                _react2.default.createElement('span', { 'class': 'icon-bar' }),
+                _react2.default.createElement('span', { 'class': 'icon-bar' })
+              ),
+              _react2.default.createElement(
+                'a',
+                { 'class': 'navbar-brand', href: '#' },
+                'FIUBER'
+              )
+            ),
+            _react2.default.createElement(
+              'div',
+              { 'class': 'collapse navbar-collapse', id: 'myNavbar' },
+              _react2.default.createElement(
+                'ul',
+                { 'class': 'nav navbar-nav' },
+                _react2.default.createElement(
+                  'li',
+                  { 'class': this.state.currentTab == 1 ? 'active' : '' },
+                  _react2.default.createElement(
+                    'a',
+                    { onClick: this.gotoHome },
+                    'Home'
+                  )
+                ),
+                _react2.default.createElement(
+                  'li',
+                  { 'class': this.state.currentTab == 2 ? 'active' : '' },
+                  _react2.default.createElement(
+                    'a',
+                    { onClick: this.gotoBusinessUsers },
+                    'Business Users'
+                  )
+                ),
+                _react2.default.createElement(
+                  'li',
+                  { 'class': this.state.currentTab == 3 ? 'active' : '' },
+                  _react2.default.createElement(
+                    'a',
+                    { onClick: this.gotoServers },
+                    'Servers'
+                  )
+                ),
+                _react2.default.createElement(
+                  'li',
+                  { 'class': this.state.currentTab == 4 ? 'active' : '' },
+                  _react2.default.createElement(
+                    'a',
+                    { onClick: this.gotoUsers },
+                    'Users'
+                  )
+                )
+              ),
+              _react2.default.createElement(
+                'ul',
+                { 'class': 'nav navbar-nav navbar-right' },
+                _react2.default.createElement(
+                  'li',
+                  null,
+                  _react2.default.createElement(
+                    'a',
+                    { href: '#' },
+                    _react2.default.createElement('span', { 'class': 'glyphicon glyphicon-log-out' }),
+                    ' Logout'
+                  )
+                )
+              )
+            )
+          )
+        ),
+        _react2.default.createElement(
+          'div',
+          null,
+          this.state.current()
+        )
       );
     }
   }]);
@@ -41458,36 +41555,96 @@ var Login = exports.Login = function (_React$Component) {
     value: function render() {
       return _react2.default.createElement(
         'div',
-        { id: 'centeredbox' },
-        _react2.default.createElement(
-          'h1',
-          null,
-          'Enter password'
-        ),
+        { 'class': 'container', align: 'center', id: 'centeredbox' },
         _react2.default.createElement(
           'form',
-          { onSubmit: this.handleSubmit },
+          { 'class': 'form-horizontal', onSubmit: this.handleSubmit },
           _react2.default.createElement(
-            'label',
-            null,
-            ' user:',
-            _react2.default.createElement('input', { type: 'text', name: 'username', value: this.state.username, onChange: this.handleInputChange })
+            'div',
+            { 'class': 'form-group' },
+            _react2.default.createElement(
+              'h1',
+              { align: 'center' },
+              'Login'
+            )
           ),
-          _react2.default.createElement('br', null),
           _react2.default.createElement(
-            'label',
-            null,
-            ' password:',
-            _react2.default.createElement('input', { type: 'password', name: 'password', value: this.state.password, onChange: this.handleInputChange })
+            'div',
+            { 'class': 'form-group' },
+            _react2.default.createElement(
+              'label',
+              { 'class': 'control-label col-sm-2' },
+              ' User:'
+            ),
+            _react2.default.createElement(
+              'div',
+              { 'class': 'col-sm-8' },
+              _react2.default.createElement(
+                'div',
+                { 'class': 'input-group' },
+                _react2.default.createElement(
+                  'span',
+                  { 'class': 'input-group-addon' },
+                  _react2.default.createElement('i', { 'class': 'glyphicon glyphicon-user' })
+                ),
+                _react2.default.createElement('input', { type: 'text', 'class': 'form-control', name: 'username', value: this.state.username, onChange: this.handleInputChange })
+              )
+            )
           ),
-          _react2.default.createElement('br', null),
           _react2.default.createElement(
-            'button',
-            { onClick: this.handleSubmit },
-            'submit'
+            'div',
+            { 'class': 'form-group' },
+            _react2.default.createElement(
+              'label',
+              { 'class': 'control-label col-sm-2' },
+              ' Password:'
+            ),
+            _react2.default.createElement(
+              'div',
+              { 'class': 'col-sm-8' },
+              _react2.default.createElement(
+                'div',
+                { 'class': 'input-group' },
+                _react2.default.createElement(
+                  'span',
+                  { 'class': 'input-group-addon' },
+                  _react2.default.createElement('i', { 'class': 'glyphicon glyphicon-lock' })
+                ),
+                _react2.default.createElement('input', { type: 'password', 'class': 'form-control', name: 'password', value: this.state.password, onChange: this.handleInputChange })
+              )
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            { 'class': 'form-group' },
+            _react2.default.createElement(
+              'div',
+              { 'class': 'col-sm-offset-9 col-sm-1' },
+              _react2.default.createElement(
+                'div',
+                { align: 'right' },
+                _react2.default.createElement(
+                  'button',
+                  { 'class': 'btn btn-primary', onClick: this.handleSubmit },
+                  'Submit'
+                )
+              )
+            ),
+            _react2.default.createElement(
+              'div',
+              { 'class': 'col-sm-2' },
+              _react2.default.createElement(
+                'div',
+                { align: 'left' },
+                _react2.default.createElement(
+                  'p',
+                  { id: 'tryagain' },
+                  this.state.redMessage
+                )
+              )
+            )
           )
-        ),
-        this.state.redMessage
+        )
       );
     }
   }]);
@@ -41541,33 +41698,7 @@ var MainScreen = exports.MainScreen = function (_React$Component) {
     _createClass(MainScreen, [{
         key: 'render',
         value: function render() {
-            return _react2.default.createElement(
-                'div',
-                { id: 'centeredbox' },
-                _react2.default.createElement(
-                    'h1',
-                    null,
-                    'Main Screen'
-                ),
-                _react2.default.createElement(
-                    'a',
-                    { onClick: this.onBusinessUsers },
-                    'Business users'
-                ),
-                _react2.default.createElement('br', null),
-                _react2.default.createElement(
-                    'a',
-                    { onClick: this.onServers },
-                    'Servers'
-                ),
-                _react2.default.createElement('br', null),
-                _react2.default.createElement(
-                    'a',
-                    { onClick: this.onUsers },
-                    'Users'
-                ),
-                _react2.default.createElement('br', null)
-            );
+            return _react2.default.createElement('div', null);
         }
     }]);
 
@@ -42232,8 +42363,18 @@ require('whatwg-fetch');
 
 var _App = require('./App');
 
+var _Login = require('./Login');
+
+var _MainScreen = require('./MainScreen');
+
+var _BusinessUsers = require('./BusinessUsers');
+
+var _Servers = require('./Servers');
+
+var _Users = require('./Users');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 _reactDom2.default.render(_react2.default.createElement(_App.App, null), document.getElementById('root'));
 
-},{"./App":192,"react":189,"react-dom":28,"whatwg-fetch":191}]},{},[205]);
+},{"./App":192,"./BusinessUsers":193,"./Login":199,"./MainScreen":200,"./Servers":202,"./Users":204,"react":189,"react-dom":28,"whatwg-fetch":191}]},{},[205]);
