@@ -38,3 +38,36 @@ exports.getRule=function(ruleId,nonexistent){
         })
     })
 }
+
+exports.getRules=function(){
+    return lastCommits.read().then((all)=>{
+        let promises=all.map((r)=>exports.getRule(r.ruleId))
+        return Promise.all(promises);
+    });
+}
+
+exports.deleteRule=function(ruleId,nonexistent){
+    return lastCommits.delete({ruleId:ruleId});
+}
+
+exports.modifyRule=function(rule,ruleId,nonexistent,badRevision,me){
+    return lastCommits.readOne({ruleId},nonexistent).then((read)=>{
+        if(read==nonexistent){
+            return nonexistent;
+        }
+        if(read._ref!=rule._ref){
+            return badRevision;
+        }
+        rule.message="nomessage";
+        rule.timestamp=new Date().getTime();
+        rule.businessUsername=me.username;
+        return commits.create(rule).then((created)=>{
+            let o={
+                commitId:created.id,
+                _ref:Math.random()*1000+""
+            }
+            return lastCommits.update({ruleId},o);
+        });
+    })
+    
+}
