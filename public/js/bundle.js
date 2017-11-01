@@ -40498,9 +40498,14 @@ var App = exports.App = function (_React$Component) {
                 _react2.default.createElement('span', { 'class': 'icon-bar' })
               ),
               _react2.default.createElement(
-                'a',
-                { 'class': 'navbar-brand', href: '#' },
-                'FIUBER'
+                'div',
+                null,
+                _react2.default.createElement('img', { id: 'logo', align: 'left', src: 'resources/logo.png' }),
+                _react2.default.createElement(
+                  'a',
+                  { 'class': 'navbar-brand', href: '#' },
+                  'FIUBER'
+                )
               )
             ),
             _react2.default.createElement(
@@ -40673,16 +40678,16 @@ var Strategy = function () {
                 'span',
                 null,
                 _react2.default.createElement('br', null),
-                'username:',
+                'Username: ',
                 row.username,
                 _react2.default.createElement('br', null),
-                'name:',
+                'Name: ',
                 row.name,
                 _react2.default.createElement('br', null),
-                'surname:',
+                'Surname: ',
                 row.surname,
                 _react2.default.createElement('br', null),
-                'roles:',
+                'Roles: ',
                 row.roles.map(function (x) {
                     return _react2.default.createElement(
                         'span',
@@ -40699,7 +40704,7 @@ var Strategy = function () {
             return _react2.default.createElement(
                 'span',
                 null,
-                'username:',
+                ' Username: ',
                 row.username
             );
         }
@@ -40712,10 +40717,10 @@ var Strategy = function () {
         key: 'defaults',
         value: function defaults(row) {
             return {
-                password: row.password,
-                name: row.name,
-                surname: row.surname,
-                role: row.roles[0]
+                Password: row.password,
+                Name: row.name,
+                Surname: row.surname,
+                Role: row.roles[0]
             };
         }
     }, {
@@ -41081,13 +41086,13 @@ var CreationDialogOpener = exports.CreationDialogOpener = function (_React$Compo
 
         _this.onSubmitCallback = props.onSubmit;
         _this.noPopup = _react2.default.createElement(
-            'a',
-            { onClick: _this.openPopup.bind(_this) },
-            'Create'
+            'button',
+            { id: 'buttonNew', type: 'button', 'class': 'btn btn-primary', onClick: _this.openPopup.bind(_this) },
+            'New'
         );
         _this.yesPopup = _react2.default.createElement(
             _reactPopout2.default,
-            { title: 'Window title', onClosing: _this.closePopup.bind(_this) },
+            { title: 'Creation', onClosing: _this.closePopup.bind(_this) },
             _react2.default.createElement(_Dialog.Dialog, { content: props.content, onSubmit: _this.onSubmit.bind(_this) })
         );
         _this.state = {
@@ -41304,11 +41309,6 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
             return _react2.default.createElement(
                 'div',
                 { id: 'listContainer' },
-                _react2.default.createElement(
-                    'h1',
-                    null,
-                    ' Listing: '
-                ),
                 _react2.default.createElement(_CreateDialog.CreationDialogOpener, {
                     content: this.strategy.defaultCreationContent(),
                     onSubmit: function onSubmit(o) {
@@ -41327,17 +41327,17 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
                             _react2.default.createElement(
                                 'th',
                                 null,
-                                'content'
+                                'Content'
                             ),
                             _react2.default.createElement(
                                 'th',
                                 null,
-                                'edit'
+                                'Edit'
                             ),
                             _react2.default.createElement(
                                 'th',
                                 null,
-                                'remove'
+                                'Remove'
                             )
                         ),
                         this.state.renderedRows
@@ -41410,13 +41410,30 @@ var Dialog = exports.Dialog = function (_React$Component) {
                 return typeof o[key] === "string" || typeof o[key] === "number";
             });
             var parts = keys.map(function (key) {
-                return _react2.default.createElement('input', {
-                    key: key,
-                    name: key,
-                    type: 'text',
-                    value: o[key],
-                    onChange: _this2.onChange
-                });
+                console.log("asdasdasd");
+                console.log(key.toUpperCase());
+                return _react2.default.createElement(
+                    'div',
+                    { 'class': 'form-group' },
+                    _react2.default.createElement(
+                        'label',
+                        { 'class': 'control-label col-sm-2', 'for': 'pwd' },
+                        key,
+                        '.charAt(0).toUpperCase() + ',
+                        key,
+                        '.slice(1);:'
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { 'class': 'col-sm-10' },
+                        _react2.default.createElement('input', {
+                            key: key,
+                            name: key,
+                            type: key.toUpperCase() == "PASSWORD" ? key : "text",
+                            onChange: _this2.onChange
+                        })
+                    )
+                );
             });
             console.log(parts);
             return parts;
@@ -41445,12 +41462,24 @@ var Dialog = exports.Dialog = function (_React$Component) {
         value: function render() {
             return _react2.default.createElement(
                 'div',
-                { onSubmit: this.onSubmit },
-                this.state.renderedParts,
+                { 'class': 'container', id: 'formNew', onSubmit: this.onSubmit },
                 _react2.default.createElement(
-                    'button',
-                    { onClick: this.onSubmit },
-                    'submit'
+                    'form',
+                    { 'class': 'form-horizontal' },
+                    this.state.renderedParts,
+                    _react2.default.createElement(
+                        'div',
+                        { 'class': 'form-group' },
+                        _react2.default.createElement(
+                            'div',
+                            { 'class': 'col-sm-offset-2 col-sm-10' },
+                            _react2.default.createElement(
+                                'button',
+                                { 'class': 'btn btn-default', onClick: this.onSubmit },
+                                'Submit'
+                            )
+                        )
+                    )
                 )
             );
         }
@@ -41816,7 +41845,7 @@ var Row = exports.Row = function (_React$Component) {
                     _react2.default.createElement(
                         'a',
                         { onClick: this.onClose },
-                        '(less)'
+                        '(-)'
                     ),
                     this.renderOpened()
                 );
@@ -41827,7 +41856,7 @@ var Row = exports.Row = function (_React$Component) {
                     _react2.default.createElement(
                         'a',
                         { onClick: this.onOpen },
-                        '(more)'
+                        '(+)'
                     ),
                     this.renderClosed()
                 );
@@ -41963,19 +41992,19 @@ var Strategy = function () {
                 'span',
                 null,
                 _react2.default.createElement('br', null),
-                'id:',
+                'Id: ',
                 row.id,
                 _react2.default.createElement('br', null),
-                'createdBy:',
+                'CreatedBy: ',
                 row.createdBy,
                 _react2.default.createElement('br', null),
-                'createdTime:',
+                'CreatedTime: ',
                 row.createdTime,
                 _react2.default.createElement('br', null),
-                'name:',
+                'Name: ',
                 row.name,
                 _react2.default.createElement('br', null),
-                'lastConnection:',
+                'LastConnection: ',
                 row.lastConnection,
                 _react2.default.createElement('br', null),
                 _react2.default.createElement(_TokenCreatorButton.TokenCreatorButton, { token: this.token, id: row.id })
@@ -41987,7 +42016,7 @@ var Strategy = function () {
             return _react2.default.createElement(
                 'span',
                 null,
-                'name:',
+                ' Name: ',
                 row.name
             );
         }
@@ -42000,7 +42029,8 @@ var Strategy = function () {
         key: 'defaults',
         value: function defaults(row) {
             return {
-                name: row.name
+                Name: row.name
+
             };
         }
     }, {

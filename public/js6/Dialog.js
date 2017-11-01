@@ -24,13 +24,19 @@ export class Dialog extends React.Component {
             return typeof o[key] === "string" || typeof o[key] === "number"
         })
         let parts= keys.map((key)=>{
-            return <input 
-                key={key} 
-                name={key} 
-                type="text" 
-                value={o[key]} 
-                onChange={this.onChange} 
-            />
+            console.log("asdasdasd")
+            console.log(key.toUpperCase())
+            return <div class="form-group">
+                        <label class="control-label col-sm-2" for="pwd">{key}:</label>        
+                        <div class="col-sm-10">
+                            <input 
+                                key={key} 
+                                name={key} 
+                                type={key.toUpperCase() == "PASSWORD" ? key : "text"}
+                                onChange={this.onChange} 
+                            />
+                        </div>
+                    </div>
 
         })
         console.log(parts);
@@ -53,9 +59,15 @@ export class Dialog extends React.Component {
        this.exteriorOnSubmit(this.state.content);
     }
     render(){
-        return <div  onSubmit={this.onSubmit}>
-            {this.state.renderedParts}
-            <button onClick={this.onSubmit}>submit</button>
+        return <div  class="container" id="formNew" onSubmit={this.onSubmit}>
+            <form class="form-horizontal">
+                {this.state.renderedParts}
+                <div class="form-group">        
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <button class="btn btn-default" onClick={this.onSubmit}>Submit</button>
+                    </div>
+                </div>
+            </form>
         </div>
     }
 }

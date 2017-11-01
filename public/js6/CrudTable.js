@@ -96,7 +96,6 @@ export class CrudTable extends React.Component{
 
     render(){
         return <div id="listContainer">
-            <h1> Listing: </h1>
             <CreationDialogOpener 
                 content={this.strategy.defaultCreationContent()} 
                 onSubmit={(o)=>this.onCreate(o)}
@@ -105,9 +104,9 @@ export class CrudTable extends React.Component{
             <table>
                 <tbody>
                 <tr>
-                    <th>content</th>
-                    <th>edit</th>
-                    <th>remove</th>
+                    <th>Content</th>
+                    <th>Edit</th>
+                    <th>Remove</th>
                 </tr>
                 {this.state.renderedRows}
                 </tbody>

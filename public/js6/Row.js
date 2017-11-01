@@ -58,9 +58,9 @@ export class Row extends React.Component{
         let renderedRowData=<span></span>;
         let row=this.state.row;
         if(this.state.expanded){
-            renderedRowData=<span><a onClick={this.onClose}>(less)</a>{this.renderOpened()}</span>;
+            renderedRowData=<span><a onClick={this.onClose}>(-)</a>{this.renderOpened()}</span>;
         }else{
-            renderedRowData=<span><a onClick={this.onOpen }>(more)</a>{this.renderClosed()}</span>;
+            renderedRowData=<span><a onClick={this.onOpen }>(+)</a>{this.renderClosed()}</span>;
         }
 
         return <tr>

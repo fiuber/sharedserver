@@ -56,20 +56,20 @@ class Strategy {
     renderOpened(row){
         return (<span>
             <br/>
-            username:{row.username}
+            Username: {row.username}
             <br/>
-            name:{row.name}
+            Name: {row.name}
             <br/>
-            surname:{row.surname}
+            Surname: {row.surname}
             <br/>
-            roles:{row.roles.map((x)=>
+            Roles: {row.roles.map((x)=>
                 <span key={x}>{x}<br/></span>
             )}
         </span>);
     }
 
     renderClosed(row){
-        return (<span>username:{row.username}</span>);
+        return (<span> Username: {row.username}</span>);
     }
 
     createKey(row){
@@ -78,10 +78,10 @@ class Strategy {
 
     defaults(row){
         return {
-            password:row.password,
-            name:row.name,
-            surname:row.surname,
-            role:row.roles[0]
+            Password: row.password,
+            Name: row.name,
+            Surname: row.surname,
+            Role: row.roles[0]
         }
     }
 

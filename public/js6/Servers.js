@@ -56,15 +56,15 @@ class Strategy{
     renderOpened(row){
         return (<span>
             <br/>
-            id:{row.id}
+            Id: {row.id}
             <br/>
-            createdBy:{row.createdBy}
+            CreatedBy: {row.createdBy}
             <br/>
-            createdTime:{row.createdTime}
+            CreatedTime: {row.createdTime}
             <br/>
-            name:{row.name}
+            Name: {row.name}
             <br/>
-            lastConnection:{row.lastConnection}
+            LastConnection: {row.lastConnection}
             <br/>
             <TokenCreatorButton token={this.token} id={row.id} />
             
@@ -72,7 +72,7 @@ class Strategy{
     }
 
     renderClosed(row){
-        return (<span>name:{row.name}</span>);
+        return (<span> Name: {row.name}</span>);
     }
 
     createKey(row){
@@ -81,7 +81,8 @@ class Strategy{
 
     defaults(row){
         return {
-            name:row.name,
+            Name: row.name,
+
         }
     }
 
