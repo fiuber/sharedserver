@@ -89,7 +89,10 @@ exports.modifyRule=function(rule,ruleId,nonexistent,badRevision,me){
             }
             return lastCommits.update({ruleId},o);
         });
-    })
+    }).then(()=>{
+        return exports.getRule(ruleId);
+
+    });
 }
 
 
