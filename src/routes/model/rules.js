@@ -35,14 +35,14 @@ exports.getRule=function(ruleId,nonexistent){
         if(read==nonexistent){
             return nonexistent;
         }
-        return getCommit(0,read.commitId,nonexistent).then((readCommit)=>{
+        return getCommit(read.commitId,nonexistent).then((readCommit)=>{
             readCommit.lastCommit=read;
             return readCommit;
         })
     })
 }
 
-function getCommit(ruleId,commitId,nonexistent){
+function getCommit(commitId,nonexistent){
     return commits
     .readOne({id:commitId},nonexistent)
     .then((readCommit)=>{
@@ -93,4 +93,22 @@ exports.modifyRule=function(rule,ruleId,nonexistent,badRevision,me){
 }
 
 
-//exports.getCommits=function()
+exports.getCommit=function(ruleId,commitId,nonexistent){
+    return exports.getRule(ruleId,nonexistent).then((rule)=>{
+        if(rule==nonexistent){
+            return nonexistent;
+        }
+        return getCommit(commitId,nonexistent).then((commit)=>{
+            rule.businessUser=commit.businessUser;
+            rule.commit=commit.commit;
+            return rule;
+        })
+    })
+}
+
+exports.getCommits=function(ruleId,nonexistent){
+    return commits.read({ruleId:ruleId}).then((selectedCommits)=>{
+        let promises = selectedCommits.map((c)=>getCommit(c.id,nonexistent))
+        return Promise.all(promises)
+    })
+}

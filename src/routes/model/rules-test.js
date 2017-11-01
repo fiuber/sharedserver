@@ -114,6 +114,21 @@ describe.only("Usage of rules",function(){
         })
     })
 
+    it("getting an older state of a rule",()=>{
+        return rules.getCommit(law2.lastCommit.ruleId,law2.commit.id,"NOPE").then((oldLaw)=>{
+            assert.equal(oldLaw.commit.blob,"E=m*C^2");
+        })
+    })
+
+    it("getting all states of a rule",()=>{
+        return rules.getCommits(law2.lastCommit.ruleId,"NOPE").then((commits)=>{
+            let oldOne=commits.some((c)=>c.commit.blob=="E=m*C^2");
+            let newOne=commits.some((c)=>c.commit.blob=="bigote");
+            assert.isTrue(oldOne,"The old one doesn't exist");
+            assert.isTrue(newOne,"The new one doesn't exist");
+        })
+    })
+
     
 
 
