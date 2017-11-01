@@ -78,6 +78,7 @@ const commitsSchema={
     message:"text",
     timestamp:"bigint",
     businessUsername:"varchar(40)",
+    ruleId:"bigint"
 }
 
 const tables={

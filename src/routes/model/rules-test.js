@@ -102,7 +102,7 @@ describe.only("Usage of rules",function(){
             _ref:law2.lastCommit._ref,
             language:"wachiturro",
             blob:"bigote",
-            active:true
+            active:"true"
         },law2.lastCommit.ruleId, "NOPE", "BADREF",{username:"Newton"});
     })
 

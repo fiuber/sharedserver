@@ -5,15 +5,25 @@ exports.addRule=function(rule,nonexistent,badRevision,me){
     rule.message="asd";
     rule.timestamp=new Date().getTime();
     rule.businessUsername=me.username;
+    rule.ruleId=0;
 
-
+    let createdCommitId=0;
     return commits.create(rule)
     .then((created)=>{
+        createdCommitId=created.id;
+        
         let o={
             commitId:created.id,
             _ref:Math.random()*1000+""
         }
-        return lastCommits.create(o)
+        return lastCommits.create(o);
+    }).then((createdRule)=>{
+        
+
+        return commits
+            .update({id:createdCommitId},{ruleId:createdRule.ruleId})
+            .then(()=>createdRule);
+
     }).then((created)=>{
         return exports.getRule(created.ruleId);
     })
@@ -25,18 +35,28 @@ exports.getRule=function(ruleId,nonexistent){
         if(read==nonexistent){
             return nonexistent;
         }
-        return commits.readOne({id:read.commitId},nonexistent).then((res)=>{
-            return {lastCommit:read,commit:res}
-        });
-    }).then((read)=>{
-        if(read==nonexistent){
-            return nonexistent;
-        }
-        return businessUsers.get(read.commit.businessUsername,"UNKNOWN AUTHOR").then((businessUser)=>{
-            read.businessUser=businessUser;
-            return read;
+        return getCommit(0,read.commitId,nonexistent).then((readCommit)=>{
+            readCommit.lastCommit=read;
+            return readCommit;
         })
     })
+}
+
+function getCommit(ruleId,commitId,nonexistent){
+    return commits
+    .readOne({id:commitId},nonexistent)
+    .then((readCommit)=>{
+        if(readCommit==nonexistent){
+            return nonexistent;
+        }
+        return businessUsers.get(readCommit.businessUsername,"UNKNOWN AUTHOR").then((businessUser)=>{
+            return {
+                commit:readCommit,
+                businessUser:businessUser
+            }
+        })
+    })
+
 }
 
 exports.getRules=function(){
@@ -61,6 +81,7 @@ exports.modifyRule=function(rule,ruleId,nonexistent,badRevision,me){
         rule.message="nomessage";
         rule.timestamp=new Date().getTime();
         rule.businessUsername=me.username;
+        rule.ruleId=ruleId;
         return commits.create(rule).then((created)=>{
             let o={
                 commitId:created.id,
@@ -69,5 +90,7 @@ exports.modifyRule=function(rule,ruleId,nonexistent,badRevision,me){
             return lastCommits.update({ruleId},o);
         });
     })
-    
 }
+
+
+//exports.getCommits=function()
