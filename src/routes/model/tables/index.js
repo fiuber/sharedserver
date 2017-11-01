@@ -64,6 +64,22 @@ const carPropertiesSchema={
     value:"varchar(40)"
 }
 
+const lastCommitsSchema={
+    ruleId:"serial",
+    commitId:"bigint",
+    _ref:"varchar(40)"
+}
+
+const commitsSchema={
+    id:"serial",
+    language:"varchar(40)",
+    active:"varchar(40)",//"true" or "false"
+    blob:"text",
+    message:"text",
+    timestamp:"bigint",
+    businessUsername:"varchar(40)",
+}
+
 const tables={
     servers:new EasyTable("servers",serversSchema,  ["id"]),
     
@@ -73,7 +89,11 @@ const tables={
     users:  new EasyTable("users",  usersSchema,    ["id"]),
     userImages:  new EasyTable("userImages",  userImagesSchema,    ["id","image"]),
     cars:  new EasyTable("cars", carsSchema,    ["id","owner"]),
-    carProperties:  new EasyTable("carProperties", carPropertiesSchema,    ["id","name"])
+    carProperties:  new EasyTable("carProperties", carPropertiesSchema,    ["id","name"]),
+
+
+    lastCommits: new EasyTable("lastCommits", lastCommitsSchema,    ["ruleId"]),
+    commits: new EasyTable("commits", commitsSchema, ["id"])
 }
 
 for (let t in tables){

@@ -38,6 +38,18 @@ function SimpleTable(name,fields,primaryKeys){
         }
     }
 
+    this.readOne=function(filter,nonexistent){
+        return this.read(filter).then((read)=>{
+            if (read.length==0){
+                nonexistent.then=function(){
+                    return nonexistent;
+                }
+                return nonexistent;
+            }else{
+                return Promise.resolve(read[0]);
+            }
+        });
+    }
 }
 
 module.exports=SimpleTable;
