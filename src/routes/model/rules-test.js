@@ -11,7 +11,7 @@ const defaultUser={
     roles:["admin","manager"]
 }
 
-describe.only("Usage of rules",function(){
+describe("Usage of rules",function(){
     this.timeout(5000);
     
     before(function(){

@@ -1,4 +1,3 @@
-
 let businessUser=require("./business-users").get;
 
 function rule(string,number,array,from){
@@ -10,7 +9,8 @@ function rule(string,number,array,from){
             lastCommit:{
                 author:from("businessUser",businessUser(string,number,array,from).businessUser),
                 message:from("commit",string("blob")),
-                timestamp:from("commit",number("timestamp"))
+                timestamp:from("commit",number("timestamp")),
+                id:from("commit",number("id"))
             },
             blob:from("commit",string("blob")),
             active:from("commit",string("active"))

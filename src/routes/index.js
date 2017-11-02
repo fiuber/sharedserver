@@ -13,6 +13,7 @@ router.get('/', (req, res) => {
 const serversModel=require("./model/servers.js");
 const businessUsersModel=require("./model/business-users")
 const usersModel=require("./model/users")
+const rulesModel=require("./model/rules")
 
 //authorization
 const app=auth.middleware(serversModel.authorized);
@@ -70,5 +71,22 @@ router.post("/users/:userId/cars/",appOrManager,users.addCar)
 router.delete("/users/:userId/cars/:carId",appOrManager,users.deleteCar)
 router.get("/users/:userId/cars/:carId",appOrUser,users.getCar)
 router.put("/users/:userId/cars/:carId",appOrManager,users.updateCar)
+
+
+//rules CRUD
+const rulesTranslator=require("./modelTranslate/rules.js");
+const rulesTranslated=require("./modelTranslate")(rulesModel,rulesTranslator);
+const rules=expressify.all(rulesTranslated,{"version":"1"});
+router.get("/rules",manager,rules.getRules);
+router.post("/rules",manager,rules.addRule);
+
+router.get("/rules/:ruleId",manager,rules.getRule);
+router.delete("/rules/:ruleId",manager,rules.deleteRule);
+router.put("/rules/:ruleId",manager,rules.modifyRule);
+
+router.get("/rules/:ruleId/commits",manager,rules.getCommits);
+router.get("/rules/:ruleId/commits/:commitId",manager,rules.getCommit);
+
+
 
 module.exports = router;
