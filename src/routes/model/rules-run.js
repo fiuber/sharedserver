@@ -24,7 +24,7 @@ exports.runMany=function(body,nonexistent){
             return nonexistent;
         }
 
-        let strFacts=body.map((f)=>f.blob);
+        let strFacts=body.facts.map((f)=>f.blob);
         return runner.runStrings(strings,strFacts).then((result)=>{
             return JSON.stringify(result);
         });

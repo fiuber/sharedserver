@@ -32,6 +32,7 @@ exports.addRule=function(rule,nonexistent,badRevision,me){
 exports.getRule=function(ruleId,nonexistent){
     return lastCommits.readOne({ruleId:ruleId},nonexistent)
     .then((read)=>{
+        //console.log("Tengo el coso!")
         if(read==nonexistent){
             return nonexistent;
         }
@@ -117,7 +118,8 @@ exports.getCommits=function(ruleId,nonexistent){
 }
 
 exports.getRuleString=function(ruleId){
-    return exports.getRule(ruleId,null).then((rule)=>{
+    return exports.getRule(ruleId,{nope:"nope"}).then((rule)=>{
+        //console.log("%%%%estoy en getRuleString, sale:",rule);
         if(rule.commit.active==="true"){
             return rule.commit.blob;
         }else{

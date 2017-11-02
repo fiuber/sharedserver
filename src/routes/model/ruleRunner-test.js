@@ -1,7 +1,7 @@
 const assert=require("chai").assert;
 const ruleRunner=require("./ruleRunner");
 
-describe.only("how ruleRunner works",()=>{
+describe("how ruleRunner works",()=>{
     it("example from the wiki",()=>{
         let ruleStr=JSON.stringify(
             {
