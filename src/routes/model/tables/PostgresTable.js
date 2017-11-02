@@ -37,12 +37,13 @@ PostgresTable.prototype.rowToArray=function(row){
 PostgresTable.prototype.restart=function(){
     return db.none(this.drop()).then(()=>db.none(this.create()))
 }
-
 /**
  * Adds a row.
  */
 PostgresTable.prototype.add=function(row){
-    return db.one(this.insert(),this.rowToArray(row).noSerials())
+    return db.one(this.insert(),this.rowToArray(row).noSerials()).catch((e)=>{
+        return Promise.reject({error:e,in:this.insert()});
+    });
 }
 
 /**
