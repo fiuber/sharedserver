@@ -115,3 +115,14 @@ exports.getCommits=function(ruleId,nonexistent){
         return Promise.all(promises)
     })
 }
+
+exports.getRuleString=function(ruleId){
+    return exports.getRule(ruleId,null).then((rule)=>{
+        if(rule.commit.active==="true"){
+            return rule.commit.blob;
+        }else{
+            return null;
+        }
+        
+    });
+}
