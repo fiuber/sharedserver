@@ -14,6 +14,7 @@ const serversModel=require("./model/servers.js");
 const businessUsersModel=require("./model/business-users")
 const usersModel=require("./model/users")
 const rulesModel=require("./model/rules")
+const rulesRunModel=require("./model/rules-run")
 
 //authorization
 const app=auth.middleware(serversModel.authorized);
@@ -86,6 +87,13 @@ router.put("/rules/:ruleId",manager,rules.modifyRule);
 
 router.get("/rules/:ruleId/commits",manager,rules.getCommits);
 router.get("/rules/:ruleId/commits/:commitId",manager,rules.getCommit);
+
+//running rules
+const rulesRunTranslator=require("./modelTranslate/rules-run.js");
+const rulesRunTranslated=require("./modelTranslate")(rulesRunModel,rulesRunTranslator);
+const rulesRun=expressify.all(rulesRunTranslated,{"version":"1"});
+router.post("/rules/run",admin,rulesRun.runMany);
+router.post("/rules/:ruleId/run",admin,rulesRun.runOne);
 
 
 

@@ -1,6 +1,7 @@
 const lastCommits  =require("./tables").lastCommits;
-const commits       =require("./tables").commits;
+const commits      =require("./tables").commits;
 const businessUsers=require("./business-users");
+
 exports.addRule=function(rule,nonexistent,badRevision,me){
     rule.message="asd";
     rule.timestamp=new Date().getTime();
@@ -32,6 +33,7 @@ exports.addRule=function(rule,nonexistent,badRevision,me){
 exports.getRule=function(ruleId,nonexistent){
     return lastCommits.readOne({ruleId:ruleId},nonexistent)
     .then((read)=>{
+        //console.log("Tengo el coso!")
         if(read==nonexistent){
             return nonexistent;
         }
@@ -114,4 +116,16 @@ exports.getCommits=function(ruleId,nonexistent){
         let promises = selectedCommits.map((c)=>getCommit(c.id,nonexistent))
         return Promise.all(promises)
     })
+}
+
+exports.getRuleString=function(ruleId){
+    return exports.getRule(ruleId,{nope:"nope"}).then((rule)=>{
+        //console.log("%%%%estoy en getRuleString, sale:",rule);
+        if(rule.commit.active==="true"){
+            return rule.commit.blob;
+        }else{
+            return null;
+        }
+        
+    });
 }

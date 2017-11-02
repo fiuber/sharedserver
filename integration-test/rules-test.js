@@ -1,7 +1,7 @@
 let assert=require("chai").assert;
 var request = require('supertest');
 
-describe.only("using users",function(){
+describe("using users",function(){
     var app;
     let agent=null;
     let authValue="";
@@ -155,6 +155,96 @@ describe.only("using users",function(){
             assert.equal(res.body.rule.lastCommit.message,"f=m*a");
         })
     })
+
+    //--------------------------------running the rules
+
+
+    let law=null;
+    it("add a rule",function(){
+        return agent
+        .post("/rules")
+        .set("authorization", authValue)
+        .send({
+                "id": "string",
+                "_ref": "string",
+                "language": "node-rules",
+                "lastCommit": null,
+                "blob": JSON.stringify(
+                    {
+                        condition: 'function (R) {R.when(this && (this.transactionTotal < 500));}',
+                        consequence: 'function (R) {this.result = false;R.next();}',
+                        on: true
+                    }
+                ),
+                "active": true            
+        }).expect((res)=>{
+            law=res.body.rule;
+            assert.equal(res.body.rule.lastCommit.author.username,"admin");
+        })
+    })
+
+    let law2=null;
+    it("add a rule",function(){
+        return agent
+        .post("/rules")
+        .set("authorization", authValue)
+        .send({
+                "id": "string",
+                "_ref": "string",
+                "language": "node-rules",
+                "lastCommit": null,
+                "blob": JSON.stringify(
+                    {
+                        condition: 'function (R) {R.when(this && (this.transactionTotal < 200));}',
+                        consequence: 'function (R) {this.discount = true;R.next();}',
+                        on: true
+                    }
+                ),
+                "active": true            
+        }).expect((res)=>{
+            law2=res.body.rule;
+            assert.equal(res.body.rule.lastCommit.author.username,"admin");
+        })
+    })
+
+    it("run one rule",function(){
+        return agent
+        .post("/rules/"+law.id+"/run")
+        .set("authorization", authValue)
+        .send([{
+            language:"node-rules-fact",
+            blob:JSON.stringify({
+                transactionTotal:100
+            })
+        }]).expect((res)=>{
+            assert.equal(res.body.facts[0].language,"node-rules-fact");
+            let json = JSON.parse(res.body.facts[0].blob);
+            assert.isFalse(json.result);
+            assert.isUndefined(json.discount);
+        })
+    })
+
+    it("run many rules",function(){
+        return agent
+        .post("/rules/run")
+        .set("authorization", authValue)
+        .send({
+            rules:[law.id,law2.id],
+            facts:[{
+                language:"node-rules-fact",
+                blob:JSON.stringify({
+                    transactionTotal:100
+                })
+            }]
+        
+        }).expect((res)=>{
+            assert.equal(res.body.facts[0].language,"node-rules-fact");
+            let json = JSON.parse(res.body.facts[0].blob);
+            assert.isFalse(json.result);
+            assert.isTrue(json.discount);
+        })
+    })
+
 
 
 
