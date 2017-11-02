@@ -8,7 +8,7 @@ exports.runOne=function(body,ruleId,nonexistent){
         }
         let strFacts=body.map((f)=>f.blob);
         return runner.runStrings([str],strFacts).then((result)=>{
-            return JSON.stringify(result);
+            return {result:JSON.stringify(result)};
         });
     })
 }
@@ -26,7 +26,7 @@ exports.runMany=function(body,nonexistent){
 
         let strFacts=body.facts.map((f)=>f.blob);
         return runner.runStrings(strings,strFacts).then((result)=>{
-            return JSON.stringify(result);
+            return {result:JSON.stringify(result)};
         });
     })
 }

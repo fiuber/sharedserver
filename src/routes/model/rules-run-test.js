@@ -74,8 +74,8 @@ describe("Rules are run",()=>{
                 transactionTotal:100
             })
         }],law.lastCommit.ruleId,{}).then((result)=>{
-            assert.isFalse(JSON.parse(result).result);
-            assert.isUndefined(JSON.parse(result).discount)
+            assert.isFalse(JSON.parse(result.result).result);
+            assert.isUndefined(JSON.parse(result.result).discount)
         });
     }).timeout(5000);
 
@@ -89,9 +89,9 @@ describe("Rules are run",()=>{
                 })
             }]
         
-        },law.lastCommit.ruleId,{}).then((result)=>{
-            assert.isFalse(JSON.parse(result).result);
-            assert.isTrue(JSON.parse(result).discount);
+        },{}).then((result)=>{
+            assert.isFalse(JSON.parse(result.result).result);
+            assert.isTrue(JSON.parse(result.result).discount);
         });
     }).timeout(5000);
 })

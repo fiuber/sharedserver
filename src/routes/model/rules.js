@@ -1,6 +1,7 @@
 const lastCommits  =require("./tables").lastCommits;
-const commits       =require("./tables").commits;
+const commits      =require("./tables").commits;
 const businessUsers=require("./business-users");
+
 exports.addRule=function(rule,nonexistent,badRevision,me){
     rule.message="asd";
     rule.timestamp=new Date().getTime();
