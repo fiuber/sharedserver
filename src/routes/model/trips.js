@@ -3,15 +3,16 @@ let steps=require("./tables").steps;
 const usersModel=require("./users");
 //const payer=require("./payer");
 
-
-exports.addTrip=function(payer,costCalculator){
-    return function(body,nonexistent,badRevision,me){
-        return exports.addTripWithPayer(body,nonexistent,badRevision,me,payer,costCalculator);
-    }
+let payer=null;
+let costCalculator=null;
+exports.addTrip=function(newPayer,newCostCalculator){
+    payer=newPayer;
+    costCalculator=newCostCalculator;
+    return exports.addTripWithPayer;
 }
 
 
-exports.addTripWithPayer=function(body,nonexistent,badRevision,me,payer,costCalculator){
+exports.addTripWithPayer=function(body,nonexistent,badRevision,me){
     return require("./servers").serverIdFromToken(me.token)
     .then((serverId)=>{
         let trip=body.trip;
@@ -87,7 +88,10 @@ exports.getUserTrips=function(userId,nonexistent,badRevision,me){
                 return tripsAsPassenger.concat(tripsAsDriver);
             })
         }).then((trips)=>{
-            return trips;
+            let promises=trips.map((t)=>{
+                return exports.getTrip(t.id);
+            })
+            return Promise.all(promises);
         })
     })
 }

@@ -11,10 +11,11 @@ router.get('/', (req, res) => {
 
 //models
 const serversModel=require("./model/servers.js");
-const businessUsersModel=require("./model/business-users")
-const usersModel=require("./model/users")
-const rulesModel=require("./model/rules")
-const rulesRunModel=require("./model/rules-run")
+const businessUsersModel=require("./model/business-users");
+const usersModel=require("./model/users");
+const rulesModel=require("./model/rules");
+const rulesRunModel=require("./model/rules-run");
+const tripsModel=require("./model/trips");
 
 //authorization
 const app=auth.middleware(serversModel.authorized);
@@ -95,6 +96,28 @@ const rulesRun=expressify.all(rulesRunTranslated,{"version":"1"});
 router.post("/rules/run",admin,rulesRun.runMany);
 router.post("/rules/:ruleId/run",admin,rulesRun.runOne);
 
+
+//trips
+
+const payer={
+    pay:function(asd,efg){
+        return Promise.resolve(true);
+    }
+}
+
+const costCalculator={
+    calculateCost:function(o){
+        return Promise.resolve(35);
+    }
+}
+
+const tripsTranslator=require("./modelTranslate/trips.js");
+const tripsTranslated=require("./modelTranslate")(tripsModel,tripsTranslator);
+const trips=expressify.all(tripsTranslated,{"version":"1"});
+tripsModel.addTrip(payer,costCalculator)
+router.post("/trips",app,trips.addTripWithPayer);
+router.get("/users/:userId/trips",app,trips.getUserTrips);
+router.get("/trips/:tripId",app,trips.getTrip);
 
 
 module.exports = router;
