@@ -81,6 +81,40 @@ const commitsSchema={
     ruleId:"bigint"
 }
 
+const tripSchema={
+    id:"serial",
+    applicationOwner:"varchar(40)",
+    driver:"varchar(40)",
+    passenger:"varchar(40)",
+
+    startTimestamp:"bigint",
+    startStreet:"varchar(100)",
+    startLat:"real",
+    startLon:"real",
+
+    endTimestamp:"bigint",
+    endStreet:"varchar(100)",
+    endLat:"real",
+    endLon:"real",
+
+    totalTime:"bigint",
+    waitTime:"bigint",
+    travelTime:"bigint",
+    distance:"bigint",
+
+    costCurrency:"varchar(100)",
+    costValue:"decimal(10,2)"
+
+
+}
+
+const stepSchema={
+    tripId:"bigint",
+    timestamp:"bigint",
+    lat:"real",
+    lon:"real"
+}
+
 const tables={
     servers:new EasyTable("servers",serversSchema,  ["id"]),
     
@@ -94,7 +128,10 @@ const tables={
 
 
     lastCommits: new EasyTable("lastCommits", lastCommitsSchema,    ["ruleId"]),
-    commits: new EasyTable("commits", commitsSchema, ["id"])
+    commits: new EasyTable("commits", commitsSchema, ["id"]),
+
+    trips: new EasyTable("trips", tripSchema, ["id"]),
+    steps: new EasyTable("steps", stepSchema, ["tripId","timestamp","lat","lon"])
 }
 
 for (let t in tables){

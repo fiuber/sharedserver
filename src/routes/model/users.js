@@ -97,7 +97,7 @@ exports.list=function(){
 }
 exports.list.shape={};
 
-exports.get=function(userId){
+exports.get=function(userId,nonexistent){
     return users.read({id:userId}).then((got)=>{
         if(got.length==0){
             return nonexistent;
