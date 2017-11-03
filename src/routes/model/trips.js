@@ -4,14 +4,14 @@ const usersModel=require("./users");
 //const payer=require("./payer");
 
 
-exports.addTrip=function(payer){
+exports.addTrip=function(payer,costCalculator){
     return function(body,nonexistent,badRevision,me){
-        return exports.addTripWithPayer(body,nonexistent,badRevision,me,payer);
+        return exports.addTripWithPayer(body,nonexistent,badRevision,me,payer,costCalculator);
     }
 }
 
 
-exports.addTripWithPayer=function(body,nonexistent,badRevision,me,payer){
+exports.addTripWithPayer=function(body,nonexistent,badRevision,me,payer,costCalculator){
     return require("./servers").serverIdFromToken(me.token)
     .then((serverId)=>{
         let trip=body.trip;
@@ -21,14 +21,14 @@ exports.addTripWithPayer=function(body,nonexistent,badRevision,me,payer){
             passenger:trip.passenger,
 
             startTimestamp:trip.start.timestamp,
-            startStreet:trip.start.street,
-            startLat:trip.start.lat,
-            startLon:trip.start.lon,
+            startStreet:trip.start.address.street,
+            startLat:trip.start.address.location.lat,
+            startLon:trip.start.address.location.lon,
 
             endTimestamp:trip.end.timestamp,
-            endStreet:trip.end.street,
-            endLat:trip.end.lat,
-            endLon:trip.end.lon,
+            endStreet:trip.end.address.street,
+            endLat:trip.end.address.location.lat,
+            endLon:trip.end.address.location.lon,
 
             totalTime:trip.totalTime,
             waitTime:trip.waitTime,
@@ -36,9 +36,9 @@ exports.addTripWithPayer=function(body,nonexistent,badRevision,me,payer){
             distance:trip.distance,
         }
 
-        return alguien.calculateCost(o).then((cost)=>{
+        return costCalculator.calculateCost(o).then((value)=>{
             o.costCurrency="pesos";
-            o.costValue=cost.value;
+            o.costValue=value;
             return o;
         })
     }).then((trip)=>{
@@ -57,7 +57,9 @@ exports.addTripWithPayer=function(body,nonexistent,badRevision,me,payer){
                 lon:s.location.lon
             });
         });
-        return Promise.all(addPromises);
+        return Promise.all(addPromises).then(()=>created);
+    }).then((created)=>{
+        return exports.getTrip(created.id);
     })
 }
 

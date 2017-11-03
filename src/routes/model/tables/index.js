@@ -84,18 +84,18 @@ const commitsSchema={
 const tripSchema={
     id:"serial",
     applicationOwner:"varchar(40)",
-    driver:"varchar(40)",
-    passenger:"varchar(40)",
+    driver:"bigint",
+    passenger:"bigint",
 
     startTimestamp:"bigint",
     startStreet:"varchar(100)",
-    startLat:"real",
-    startLon:"real",
+    startLat:"double precision",
+    startLon:"double precision",
 
     endTimestamp:"bigint",
     endStreet:"varchar(100)",
-    endLat:"real",
-    endLon:"real",
+    endLat:"double precision",
+    endLon:"double precision",
 
     totalTime:"bigint",
     waitTime:"bigint",
@@ -111,8 +111,8 @@ const tripSchema={
 const stepSchema={
     tripId:"bigint",
     timestamp:"bigint",
-    lat:"real",
-    lon:"real"
+    lat:"double precision",
+    lon:"double precision"
 }
 
 const tables={
