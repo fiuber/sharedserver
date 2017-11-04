@@ -36,12 +36,26 @@ exports.addTripWithPayer=function(body,nonexistent,badRevision,me){
             travelTime:trip.travelTime,
             distance:trip.distance,
         }
-
-        return costCalculator.calculateCost(o).then((value)=>{
-            o.costCurrency="pesos";
-            o.costValue=value;
-            return o;
+        return Promise.resolve(true).then(()=>{
+            return fullDataFrom(body.trip.passenger).then((fd)=>{
+                body.trip.passenger=fd;
+                return Promise.resolve(true);
+            });
+        }).then(()=>{
+            return fullDataFrom(body.trip.driver).then((fd)=>{
+                body.trip.driver=fd;
+                return Promise.resolve(true);
+            });
+        }).then(()=>{
+            let calc=body.trip;
+            calc.paymethod=body.paymethod;
+            return costCalculator.calculateCost(calc).then((value)=>{
+                o.costCurrency="ARS";
+                o.costValue=value;
+                return o;
+            })
         })
+        
     }).then((trip)=>{
         //si no hay éxito, PAY TIRA ERROR, 500 Y NOS VAMOS
         return payer.pay(body.payMethod,trip.costValue).then((success)=>{
@@ -96,44 +110,68 @@ exports.getUserTrips=function(userId,nonexistent,badRevision,me){
     })
 }
 
-exports.estimate=function(body,nonexistent,badRevision,me){
+exports.estimate=function(trip,nonexistent,badRevision,me){
+    console.log("ENTRA A ESTIMATE")
+    console.log(trip);
+    let o={
+        //applicationOwner:serverId,
+        driver:trip.driver,
+        passenger:trip.passenger,
+
+        startTimestamp:trip.start.timestamp,
+        startStreet:trip.start.address.street,
+        startLat:trip.start.address.location.lat,
+        startLon:trip.start.address.location.lon,
+
+        endTimestamp:trip.end.timestamp,
+        endStreet:trip.end.address.street,
+        endLat:trip.end.address.location.lat,
+        endLon:trip.end.address.location.lon,
+
+        totalTime:trip.totalTime,
+        waitTime:trip.waitTime,
+        travelTime:trip.travelTime,
+        distance:trip.distance,
+
+        steps:[]
+    }
     /*
     {
-        "id": "string",
-        "applicationOwner": "string",
-        "driver": "string",
-        "passenger": "string",
-        "start": null,
-        "end": null,
-        "totalTime": 0,
-        "waitTime": 0,
-        "travelTime": 0,
-        "distance": 0,
-        "route": null,
-        "cost": null
+        "id": "string", [NO]
+        "applicationOwner": "string",[NO]
+        "driver": "string",[SI] (!!!!!) esto lo debería agregar el shared
+        "passenger": "string",[SI]
+        "start": null, [SI]
+        "end": null, [SI]
+        "totalTime": 0, [OPCIONAL]
+        "waitTime": 0, [OPCIONAL]
+        "travelTime": 0, [OPCIONAL]
+        "distance": 0, [OPCIONAL]
+        "route": null, [NO]
+        "cost": null [NO]
     }
     */
     //Características del conductor (viajes en el día, viajes en el mes, antigüedad)
     //Cantidad de viajes que se realizaron en la última ventana temporal (Hora, 30 mins, 10 mins)
     return Promise.resolve(true)
     .then(()=>{
-        return fullDataFrom(body.driver)
+        return fullDataFrom(trip.driver,nonexistent)
     }).then((fd)=>{
-        body.driver=fd;
+        trip.driver=fd;
     })
     //Características del pasajero (viajes en el día, viajes en el mes, antigüedad, saldo)
     //Cantidad de viajes que se realizaron en la última ventana temporal (Hora, 30 mins, 10 mins)
     .then(()=>{
-        return fullDataFrom(body.passenger)
+        return fullDataFrom(trip.passenger,nonexistent)
     }).then((fd)=>{
-        body.passenger=fd;
+        trip.passenger=fd;
         return Promise.resolve(true)
     })
     //Método de pago
     .then(()=>{
         return payer.paymentMethods();
     }).then((methods)=>{
-        body.paymentMethod=methods[0].paymethod;
+        trip.paymethod=methods[0].paymethod;
         return Promise.resolve(true)
     })
     //Características del viaje (duración, distancia, posición geográfica, fecha y hora)[CAMBIA]
@@ -142,25 +180,31 @@ exports.estimate=function(body,nonexistent,badRevision,me){
     //(Que un conductor le confirme el viaje) [CAMBIA]
     //(Que el conductor llegue a buscarlo) [CAMBIA]
     .then(()=>{
-        body.travelTime=48*60;//48 min siempre
-        body.waitTime=5*60;//5 min siempre
-        body.totalTime=40*60;//40 min siempre
+        trip.travelTime=48*60;//48 min siempre
+        trip.waitTime=5*60;//5 min siempre
+        trip.totalTime=40*60;//40 min siempre
         //quedan 3 de espera a que el driver confirme
 
-        body.distance=body.distance || 1200;//1200 siempre
-        body.date=new Date();
+        trip.distance=trip.distance || 1200;//1200 siempre
+        trip.date=new Date();
         return Promise.resolve(true)
     })
     //Application server que realiza la cotización
     .then(()=>{
         return require("./servers").serverIdFromToken(me.token);  
     }).then((serverId)=>{
-        body.serverId=serverId;
+        o.applicationOwner=serverId;
+        trip.applicationOwner=serverId;
         return Promise.resolve(true)
     })
     //CONCLUSION
     .then(()=>{
-        return body;
+        
+        return costCalculator.calculateCost(trip)
+    }).then((cost)=>{
+        o.costValue=cost;
+        o.costCurrency="ARS";
+        return o;
     })
 
 
@@ -171,6 +215,9 @@ function fullDataFrom(userId,nonexistent){
     let user=null;
     return usersModel.get(userId,nonexistent).then((u)=>{
         user=u;
+        if(u==nonexistent){
+            return Promise.reject(nonexistent);
+        }
         return Promise.resolve(true);
     }).then(()=>{
         return tripsThisMonth(userId).then((thisMonth)=>{
@@ -203,6 +250,17 @@ function fullDataFrom(userId,nonexistent){
             return Promise.resolve(true);
         })
     })
+
+    .then(()=>{
+        //console.log("####################");
+        //console.log(user);
+        return user;
+    })
+
+
+    .catch((nonexistent)=>{
+        return Promise.resolve(nonexistent);
+    })
 }
 
 function tripsThisMonth(userId){
@@ -225,7 +283,7 @@ function antiqueness(userId){//hay que empezar a guardar esto en la tabla
     let y=date.getFullYear();
     let m=date.getMonth();
     let beginningOfMonth=new Date(y,m,0);
-    return (new Date()).getTime()-beginningOfMonth.getTime();
+    return Promise.resolve((new Date()).getTime()-beginningOfMonth.getTime());
 }
 
 function tripsLastHour(userId){
@@ -237,20 +295,20 @@ function tripsLastHour(userId){
 function tripsLast30m(userId){
     let date=new Date();
     date.setMinutes(date.getMinutes()-30);
-    return tripsSice(userId,date);
+    return tripsSince(userId,date);
 }
 
 function tripsLast10m(userId){
     let date=new Date();
     date.setMinutes(date.getMinutes()-10);
-    return tripsSice(userId,date);
+    return tripsSince(userId,date);
 }
 
 
 function tripsSince(userId,date){
-    return tripsModel.getUserTrips(userId,{},{},{}).then((trips)=>{
+    return exports.getUserTrips(userId,[],[],{}).then((trips)=>{
         return trips.filter((trip)=>{
             return trip.endTimestamp>date.getTime();
-        })
+        }).length;
     })
 }

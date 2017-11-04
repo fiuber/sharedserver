@@ -147,7 +147,7 @@ describe("Using the trips model",function(){
         {token:createdServerToken}).then((added)=>{
             assert.equal(added.startLat,348.15162342);
             assert.equal(added.passenger,piruloId);
-            assert.equal(added.costCurrency,"pesos");
+            assert.equal(added.costCurrency,"ARS");
             assert.equal(added.costValue,35);
             addedTrip=added;
         })
@@ -158,7 +158,7 @@ describe("Using the trips model",function(){
         return trips.getTrip(addedTrip.id).then((added)=>{
             assert.equal(added.startLat,348.15162342);
             assert.equal(added.passenger,piruloId);
-            assert.equal(added.costCurrency,"pesos");
+            assert.equal(added.costCurrency,"ARS");
             assert.equal(added.costValue,35);
         })
     })
@@ -168,7 +168,7 @@ describe("Using the trips model",function(){
             let good=got.some((s)=>{
                 return s.startLat==348.15162342 &&
                 s.passenger == piruloId &&
-                s.costCurrency == "pesos" &&
+                s.costCurrency == "ARS" &&
                 s.costValue == 35
             })
             assert.isTrue(good,"that trip is not included")
@@ -180,7 +180,7 @@ describe("Using the trips model",function(){
             let good=got.some((s)=>{
                 return s.startLat==348.15162342 &&
                 s.passenger == piruloId &&
-                s.costCurrency == "pesos" &&
+                s.costCurrency == "ARS" &&
                 s.costValue == 35
             })
             assert.isTrue(good,"that trip is not included")
