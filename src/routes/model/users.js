@@ -177,7 +177,7 @@ function getImages(userId){
 }
 
 function getBalance(userId){
-    return Promise.resolve([]);
+    return require("./transactions").getBalance(userId);
 }
 
 function addProperties(id,properties){

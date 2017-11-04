@@ -115,6 +115,16 @@ const stepSchema={
     lon:"double precision"
 }
 
+const transactionSchema={
+    id:"serial",
+    userId:"bigint",
+    tripId:"bigint",
+    timestamp:"bigint",
+    costCurrency:"varchar(40)",
+    costValue:"varchar(40)",
+    description:"text",
+    data:"text"//vendria a ser json
+}
 const tables={
     servers:new EasyTable("servers",serversSchema,  ["id"]),
     
@@ -131,7 +141,9 @@ const tables={
     commits: new EasyTable("commits", commitsSchema, ["id"]),
 
     trips: new EasyTable("trips", tripSchema, ["id"]),
-    steps: new EasyTable("steps", stepSchema, ["tripId","timestamp","lat","lon"])
+    steps: new EasyTable("steps", stepSchema, ["tripId","timestamp","lat","lon"]),
+
+    transactions:new EasyTable("transactions", transactionSchema, ["id"])
 }
 
 for (let t in tables){

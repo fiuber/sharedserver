@@ -1,6 +1,7 @@
 let trips=require("./tables").trips;
 let steps=require("./tables").steps;
 const usersModel=require("./users");
+const transactionsModel=require("./transactions")
 //const payer=require("./payer");
 
 let payer=null;
@@ -58,10 +59,36 @@ exports.addTripWithPayer=function(body,nonexistent,badRevision,me){
         
     }).then((trip)=>{
         //si no hay éxito, PAY TIRA ERROR, 500 Y NOS VAMOS
-        return payer.pay(body.payMethod,trip.costValue).then((success)=>{
-            //HAY QUE HACER ALGUN ALTA AL SALDO DEL USUARIO ACA
-            return trips.create(trip)
+        
+        return trips.create(trip).then((createdTrip)=>{
+            return transactionsModel.addDebt({//PONGO LA DEUDA
+                id:"asd",
+                trip:createdTrip.id,
+                timestamp:createdTrip.timestamp,
+                cost:{
+                    currency: - trip.costCurrency,//NEGATIVO!!
+                    value:trip.costValue
+                },
+                description:"Debt of a trip",
+                data:{}//el paymethod que viene en el POSt este
+            },body.trip.passenger.id,nonexistent).then(()=>{//PONGO EL PAGO
+                return transactionsModel.addTransaction({
+                    id:"asd",
+                    trip:createdTrip.id,
+                    timestamp:createdTrip.timestamp,
+                    cost:{
+                        currency:trip.costCurrency,
+                        value:trip.costValue
+                    },
+                    description:"Payment of a trip",
+                    data:body.paymethod//el paymethod que viene en el POSt este
+                },body.trip.passenger.id,nonexistent)
+
+            }).then(()=>createdTrip);
+
+            
         })
+        
     }).then((created)=>{
         let steps=body.trip.route;
         let addPromises=steps.map((s)=>{
@@ -74,7 +101,7 @@ exports.addTripWithPayer=function(body,nonexistent,badRevision,me){
         });
         return Promise.all(addPromises).then(()=>created);
     }).then((created)=>{
-        return exports.getTrip(created.id);
+        return exports.getTrip(created.id,nonexistent);
     })
 }
 
@@ -111,8 +138,6 @@ exports.getUserTrips=function(userId,nonexistent,badRevision,me){
 }
 
 exports.estimate=function(trip,nonexistent,badRevision,me){
-    console.log("ENTRA A ESTIMATE")
-    console.log(trip);
     let o={
         //applicationOwner:serverId,
         driver:trip.driver,
@@ -252,8 +277,6 @@ function fullDataFrom(userId,nonexistent){
     })
 
     .then(()=>{
-        //console.log("####################");
-        //console.log(user);
         return user;
     })
 

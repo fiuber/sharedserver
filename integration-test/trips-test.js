@@ -1,7 +1,7 @@
 let assert=require("chai").assert;
 var request = require('supertest');
 
-describe.only("using /trips",function(){
+describe("using /trips",function(){
     var app;
     let agent=null;
     let authValue="";
@@ -59,8 +59,6 @@ describe.only("using /trips",function(){
             "blob": JSON.stringify(
                 {
                     condition: 'function (R) { \
-                        console.log("################################333");\
-                        console.log(this);\
                         R.when(this && (this.driver.username === "soyyo5159"));\
                     }',
                     consequence: 'function (R) {this.cost = 1000;R.next();}',
@@ -195,6 +193,7 @@ describe.only("using /trips",function(){
             },
             "paymethod": null
         }).expect((res)=>{
+            
             trip=res.body.trip;
             assert.equal(trip.start.address.location.lat,348.15162342);
             assert.equal(trip.passenger,fayo5159.id);
