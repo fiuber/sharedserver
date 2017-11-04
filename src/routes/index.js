@@ -102,14 +102,20 @@ router.post("/rules/:ruleId/run",admin,rulesRun.runOne);
 const payer={
     pay:function(asd,efg){
         return Promise.resolve(true);
+    },
+    paymentMethods:function(){
+        return Promise.resolve(["cheque"]);
     }
 }
 
-const costCalculator={
+const costCalculator=rulesRunModel;
+/*
+{
     calculateCost:function(o){
         return Promise.resolve(35);
     }
 }
+*/
 
 const tripsTranslator=require("./modelTranslate/trips.js");
 const tripsTranslated=require("./modelTranslate")(tripsModel,tripsTranslator);
@@ -118,6 +124,7 @@ tripsModel.addTrip(payer,costCalculator)
 router.post("/trips",app,trips.addTripWithPayer);
 router.get("/users/:userId/trips",app,trips.getUserTrips);
 router.get("/trips/:tripId",app,trips.getTrip);
+router.post("/trips/estimate",app,trips.estimate);
 
 
 module.exports = router;

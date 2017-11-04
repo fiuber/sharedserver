@@ -1,7 +1,7 @@
 let assert=require("chai").assert;
 var request = require('supertest');
 
-describe.only("using users",function(){
+describe.only("using /trips",function(){
     var app;
     let agent=null;
     let authValue="";
@@ -9,6 +9,7 @@ describe.only("using users",function(){
     let soyyo5159=null;
     let fayo5159=null;
     let trip=null;
+    let adminAuthValue="";
     before(function(){
         this.timeout(5000);
         app =require("../server.js");
@@ -20,6 +21,7 @@ describe.only("using users",function(){
             .post("/token")
             .send({username:"admin",password:"admin"}).then((res)=>{
                 authValue="api-key "+res.body.token.token;
+                adminAuthValue="api-key "+res.body.token.token;
                 //hago request.set("authorization",authValue) todo el tiempo
                 assert.equal(res.statusCode,201);
             })
@@ -44,6 +46,54 @@ describe.only("using users",function(){
             })
         })
     });
+
+    it("add a rule that checks for soyyo5159 as driver",()=>{
+        return agent
+        .post("/rules")
+        .set("authorization", adminAuthValue)
+        .send({
+            "id": "string",
+            "_ref": "string",
+            "language": "node-rules",
+            "lastCommit": "what",
+            "blob": JSON.stringify(
+                {
+                    condition: 'function (R) { \
+                        console.log("################################333");\
+                        console.log(this);\
+                        R.when(this && (this.driver.username === "soyyo5159"));\
+                    }',
+                    consequence: 'function (R) {this.cost = 1000;R.next();}',
+                    on: true
+                }
+            ),
+            "active": "true"
+        }).expect(201);
+    })
+
+    it("add a rule that checks for NOT soyyo5159 as driver",()=>{
+        return agent
+        .post("/rules")
+        .set("authorization", adminAuthValue)
+        .send({
+            "id": "string",
+            "_ref": "string",
+            "language": "node-rules",
+            "lastCommit": "what",
+            "blob": JSON.stringify(
+                {
+                    condition: 'function (R) {R.when(this && (this.driver.username !== "soyyo5159"));}',
+                    consequence: 'function (R) {this.cost = 1;R.next();}',
+                    on: true
+                }
+            ),
+            "active": "true"
+        }).expect(201);
+    })
+
+
+
+
 
     it("add a not-fb user",function(){
         return agent
@@ -148,11 +198,44 @@ describe.only("using users",function(){
             trip=res.body.trip;
             assert.equal(trip.start.address.location.lat,348.15162342);
             assert.equal(trip.passenger,fayo5159.id);
-            assert.equal(trip.cost.currency,"pesos");
+            assert.equal(trip.cost.currency,"ARS");
+            assert.equal(trip.cost.value,1000,"the rule was used");
+        }).expect(201)
+    })
+
+
+    it("estimate a trip that is opposite",()=>{
+        return agent
+        .post("/trips/estimate")
+        .set("authorization", authValue)
+        .send({
+            "id": "string",
+            "applicationOwner": "admin",
+            "driver": soyyo5159.id,
+            "passenger": fayo5159.id,
+            "start":endPoint,
+            "end": startPoint,
+            "totalTime": 0,
+            "waitTime": 0,
+            "travelTime": 0,
+            "distance": 0,
+            "route": [],
+            "cost": {
+                "currency":"platita",
+                "value":193
+            },
+            "paymethod": null
+        }).expect((res)=>{
+            let trip=res.body.trip;
+            assert.equal(trip.start.address.location.lat,123.456789);
+            assert.equal(trip.passenger,fayo5159.id);
+            assert.equal(trip.cost.currency,"ARS");
+            assert.equal(trip.cost.value,1000,"the rule was used");
         }).expect(201)
     })
 
     it("that trip is obtained",()=>{
+        
         return agent
         .get("/trips/"+trip.id)
         .set("authorization", authValue)
@@ -160,7 +243,7 @@ describe.only("using users",function(){
             trip=res.body.trip;
             assert.equal(trip.start.address.location.lat,348.15162342);
             assert.equal(trip.passenger,fayo5159.id);
-            assert.equal(trip.cost.currency,"pesos");
+            assert.equal(trip.cost.currency,"ARS");
         }).expect(200)
     })
 

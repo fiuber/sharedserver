@@ -51,6 +51,6 @@ exports.getUserTrips=function(string,number,array,from){
     return {
         trips:array(shape)
     }
-
-
 }
+
+exports.estimate=trip;

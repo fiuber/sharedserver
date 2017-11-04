@@ -30,3 +30,21 @@ exports.runMany=function(body,nonexistent){
         });
     })
 }
+
+exports.calculateCost=function(fact){
+    return rulesModel.getRules().then((rules)=>{
+        let ruleStrings=rules.map((rule)=>{
+            return rule.commit.blob;
+        })
+        return ruleStrings;
+    }).then((strings)=>{
+        if(strings.some((s)=>s==null)){
+            return nonexistent;
+        }
+
+        let strFacts=[JSON.stringify(fact)];
+        return runner.runStrings(strings,strFacts).then((result)=>{
+            return result.cost || 0;//{result:JSON.stringify(result)};
+        });
+    });
+}
