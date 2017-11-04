@@ -66,8 +66,8 @@ exports.addTripWithPayer=function(body,nonexistent,badRevision,me){
                 trip:createdTrip.id,
                 timestamp:createdTrip.timestamp,
                 cost:{
-                    currency: - trip.costCurrency,//NEGATIVO!!
-                    value:trip.costValue
+                    currency:trip.costCurrency,
+                    value:-trip.costValue//NEGATIVO!!
                 },
                 description:"Debt of a trip",
                 data:{}//el paymethod que viene en el POSt este

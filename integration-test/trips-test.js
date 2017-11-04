@@ -270,4 +270,21 @@ describe("using /trips",function(){
         }).expect(200)
     })
 
+    it("the balance of fayo5159 is 0",()=>{
+        return agent
+        .get("/users/"+fayo5159.id)
+        .set("authorization", authValue)
+        .expect((res)=>{
+            let balance = res.body.user.balance;
+            assert.equal(balance[0].value,0);
+            assert.equal(balance[0].currency,"ARS");
+            assert.equal(balance.length,1);
+        })
+    })
+
+    it.skip("fayo5159 has two transactions")
+    it.skip("fayo5159 pays a trip (again)")
+    it.skip("fayo5159 has 3 transactions")
+    it.skip("the balance of fayo5159 is positive")
+
 })

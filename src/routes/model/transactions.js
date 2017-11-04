@@ -60,9 +60,12 @@ exports.getBalance=function(userId){
     }).then((costs)=>{
         let o={};
         for(let cost of costs){
-            o[cost.currency] = o[cost.currency] || 0;
-            o[cost.currency]+=cost.value;
+            o[cost.currency] =0;
         }
+        for(let cost of costs){
+            o[cost.currency]+=(new Number(cost.value)).valueOf();
+        }
+        
         return Object.keys(o).map((k)=>{
             return {value:o[k],currency:k};
         })
