@@ -43,11 +43,6 @@ function apify(shape,fun){
 
             return Promise.resolve(fun.apply(undefined,argumentsToApply))
             .then(function(result){
-                /*
-                console.log("EL RESULT EN APIFY ES:", result);
-                console.log("Estoy aplicandole",argumentsToApply);
-                console.log("A LA SGTE FUNCION", fun.toString());
-                */
 
                 if(result==inexistent){
                     //console.log("mando bad resource")
@@ -64,10 +59,6 @@ function apify(shape,fun){
                     }
                 }
             }).catch(function(e){
-                /*
-                console.log("-------EL ERROR QUE ME LLEGA ES ------")
-                console.log(e);
-                */
                 send(ERROR,e.stack);
             });
         }else{

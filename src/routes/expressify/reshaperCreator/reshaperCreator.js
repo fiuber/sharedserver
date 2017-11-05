@@ -1,9 +1,11 @@
+const util=require("util");
+
 function reshaperCreator(shape){
     if(shape){
         return reshape.bind(null,shape);
     }else{
         return (x)=>{
-            throw new Error("cant reshape"+x)
+            throw new Error("cant reshape"+util.inspect(x,false,null))
         };
     }
 }
@@ -14,7 +16,6 @@ function reshape(shapeCreator,data){
 }
 
 function reshapeFromShape(shape,data){
-    
     if(shape instanceof FromSignal){
         return reshapeFromShape(shape.innerShape,data[shape.key]);
     }else if(shape instanceof StringSignal){//key

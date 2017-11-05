@@ -11,10 +11,12 @@ router.get('/', (req, res) => {
 
 //models
 const serversModel=require("./model/servers.js");
-const businessUsersModel=require("./model/business-users")
-const usersModel=require("./model/users")
-const rulesModel=require("./model/rules")
-const rulesRunModel=require("./model/rules-run")
+const businessUsersModel=require("./model/business-users");
+const usersModel=require("./model/users");
+const rulesModel=require("./model/rules");
+const rulesRunModel=require("./model/rules-run");
+const tripsModel=require("./model/trips");
+const transactionsModel=require("./model/transactions");
 
 //authorization
 const app=auth.middleware(serversModel.authorized);
@@ -94,6 +96,39 @@ const rulesRunTranslated=require("./modelTranslate")(rulesRunModel,rulesRunTrans
 const rulesRun=expressify.all(rulesRunTranslated,{"version":"1"});
 router.post("/rules/run",admin,rulesRun.runMany);
 router.post("/rules/:ruleId/run",admin,rulesRun.runOne);
+
+
+//trips
+
+const payer={
+    pay:function(asd,efg){
+        return Promise.resolve(true);
+    },
+    paymentMethods:function(){
+        return Promise.resolve(["cheque"]);
+    }
+}
+
+const costCalculator=rulesRunModel;
+
+const tripsTranslator=require("./modelTranslate/trips.js");
+const tripsTranslated=require("./modelTranslate")(tripsModel,tripsTranslator);
+const trips=expressify.all(tripsTranslated,{"version":"1"});
+tripsModel.addTrip(payer,costCalculator)
+router.post("/trips",app,trips.addTripWithPayer);
+router.get("/users/:userId/trips",app,trips.getUserTrips);
+router.get("/trips/:tripId",app,trips.getTrip);
+router.post("/trips/estimate",app,trips.estimate);
+
+
+
+//running rules
+transactionsModel.setPayer(payer);
+const transactionsTranslator=require("./modelTranslate/transactions.js");
+const transactionsTranslated=require("./modelTranslate")(transactionsModel,transactionsTranslator);
+const transactions=expressify.all(transactionsTranslated,{"version":"1"});
+router.post("/users/:userId/transactions",app,transactions.addTransaction);
+router.get("/users/:userId/transactions",appOrUser,transactions.getTransactions);
 
 
 
