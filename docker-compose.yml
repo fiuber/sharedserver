@@ -36,7 +36,7 @@ services:
       - "8080:8080"
     environment:
       PAYMENT_SERVER: http://json-server:3000
-    command: ["./wait-for-it.sh", "db:5432", "json-server:80", "--", "sh", "test-cover-enviar-en-docker.sh"]
+    command: ["./wait-for-it.sh", "db:5432", "json-server:3000", "--", "sh", "test-cover-enviar-en-docker.sh"]
     #command: ["sh &&", "npm", "start"]
     #command: ["./wait-for-it.sh", "postgres:5432", "--", "npm", "start"]
     #command: ["ls", "postgres:5432", "--", "npm", "start"]
