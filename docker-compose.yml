@@ -1,5 +1,13 @@
 version: '2'
 services:
+  json-server:
+    image: vimagick/json-server
+    command: -w db.json
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./json-server/db.json:/app/db.json
+
   db:
     image: "postgres:9.4"
     ports:
@@ -18,13 +26,16 @@ services:
     build: .
     depends_on:
       - db
+      - json-server
     #volumes:
     #  - ./:/app/
     volumes:
       - ./coverage:/app/coverage
     ports:
       - "8080:8080"
-    command: ["./wait-for-it.sh", "db:5432", "--", "sh", "test-cover-enviar-en-docker.sh"]
+    environment:
+      PAYMENT_SERVER: http://json-server:3000
+    command: ["./wait-for-it.sh", "db:5432", "json-server:80", "--", "sh", "test-cover-enviar-en-docker.sh"]
     #command: ["sh &&", "npm", "start"]
     #command: ["./wait-for-it.sh", "postgres:5432", "--", "npm", "start"]
     #command: ["ls", "postgres:5432", "--", "npm", "start"]
