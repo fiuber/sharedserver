@@ -16,7 +16,7 @@ const fakeCalculator={
 }
 
 
-describe.only("Using the trips model",function(){
+describe("Using the trips model",function(){
     let firstId=null;
     let secondId=null;
     let firstRef=null;
@@ -177,11 +177,11 @@ describe.only("Using the trips model",function(){
         },pirulo.id).then((paid)=>{//desdoblar este assert
             assert.equal(paid.userId,pirulo.id);
             assert.equal(paid.tripId,addedTrip.id);
-            assert.equal(paid.timestamp,300);
+            assert.notEqual(paid.timestamp,300);
             assert.equal(paid.costCurrency,"USS");
             assert.equal(paid.costValue,2);
             assert.equal(paid.description,"I pay again cuz i got money");
-            assert.equal(paid.data,'{"creditCard":"inifnityForever"}' );
+            assert.deepEqual(paid.data,{"creditCard":"inifnityForever"});
         })
     })
 

@@ -22,12 +22,13 @@ exports.addTransaction=function(body,userId,nonexistent){
         return transactions.create({
             userId:userId,
             tripId:body.trip,
-            timestamp:body.timestamp,
+            timestamp:(new Date()).getTime(),
             costCurrency:body.cost.currency,
             costValue:body.cost.value,
             description:body.description,
             data:JSON.stringify(body.data)
         }).then((added)=>{
+            added.data=JSON.parse(added.data);
             return added;
         })
     })
@@ -40,12 +41,13 @@ exports.addDebt=function(body,userId,nonexistent){
     return transactions.create({
         userId:userId,
         tripId:body.trip,
-        timestamp:body.timestamp,
+        timestamp:(new Date()).getTime(),
         costCurrency:body.cost.currency,
         costValue:body.cost.value,
         description:body.description,
         data:JSON.stringify(body.data)
     }).then((added)=>{
+        added.data=JSON.parse(added.data);
         return added;
     })
     

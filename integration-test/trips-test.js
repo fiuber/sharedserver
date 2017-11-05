@@ -191,7 +191,10 @@ describe("using /trips",function(){
                     "value":193
                 }
             },
-            "paymethod": null
+            "paymethod":{
+                paymethod:"some",
+                parameters:{a:30,b:72}
+            }
         }).expect((res)=>{
             
             trip=res.body.trip;
@@ -282,9 +285,67 @@ describe("using /trips",function(){
         })
     })
 
-    it.skip("fayo5159 has two transactions")
-    it.skip("fayo5159 pays a trip (again)")
-    it.skip("fayo5159 has 3 transactions")
-    it.skip("the balance of fayo5159 is positive")
+    it("fayo5159 has two transactions",()=>{
+        return agent
+        .get("/users/"+fayo5159.id+"/transactions")
+        .set("authorization", authValue)
+        .expect((res)=>{
+            assert.equal(res.body.transactions.length,2);
+        })
+    })
+
+    it("fayo5159 pays a trip (again)",()=>{
+        return agent
+        .post("/users/"+fayo5159.id+"/transactions")
+        .set("authorization", authValue)
+        .send({
+            id:"a",
+            trip: trip.id,
+            timestamp: 51,
+            cost: {
+                currency:"ARS",
+                value:"48"
+            },
+            description: 'I pay again cuz I got money',
+            data: {"paymethod":"some","parameters":{"a":30,"b":72}}
+        })
+        .expect((res)=>{
+            let transaction=res.body.transaction;
+            
+            assert.notEqual(transaction.id,"a");
+            assert.equal(transaction.trip,trip.id);
+            assert.notEqual(transaction.timestamp,51);
+            assert.deepEqual(transaction.cost,{
+                currency:"ARS",
+                value:48
+            });
+            assert.equal(transaction.description,'I pay again cuz I got money');
+            assert.deepEqual(transaction.data,{
+                "paymethod":"some",
+                "parameters":{"a":30,"b":72}
+            });
+
+        })
+    })
+    it("fayo5159 has two transactions",()=>{
+        return agent
+        .get("/users/"+fayo5159.id+"/transactions")
+        .set("authorization", authValue)
+        .expect((res)=>{
+            assert.equal(res.body.transactions.length,3);
+        })
+    })
+    
+    it("the balance of fayo5159 is positive",()=>{
+        return agent
+        .get("/users/"+fayo5159.id)
+        .set("authorization", authValue)
+        .expect((res)=>{
+            let balance = res.body.user.balance;
+            assert.equal(balance[0].value,48);
+            assert.equal(balance[0].currency,"ARS");
+            assert.equal(balance.length,1);
+        })
+    })
 
 })

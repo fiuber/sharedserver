@@ -16,6 +16,7 @@ const usersModel=require("./model/users");
 const rulesModel=require("./model/rules");
 const rulesRunModel=require("./model/rules-run");
 const tripsModel=require("./model/trips");
+const transactionsModel=require("./model/transactions");
 
 //authorization
 const app=auth.middleware(serversModel.authorized);
@@ -109,13 +110,6 @@ const payer={
 }
 
 const costCalculator=rulesRunModel;
-/*
-{
-    calculateCost:function(o){
-        return Promise.resolve(35);
-    }
-}
-*/
 
 const tripsTranslator=require("./modelTranslate/trips.js");
 const tripsTranslated=require("./modelTranslate")(tripsModel,tripsTranslator);
@@ -125,6 +119,17 @@ router.post("/trips",app,trips.addTripWithPayer);
 router.get("/users/:userId/trips",app,trips.getUserTrips);
 router.get("/trips/:tripId",app,trips.getTrip);
 router.post("/trips/estimate",app,trips.estimate);
+
+
+
+//running rules
+transactionsModel.setPayer(payer);
+const transactionsTranslator=require("./modelTranslate/transactions.js");
+const transactionsTranslated=require("./modelTranslate")(transactionsModel,transactionsTranslator);
+const transactions=expressify.all(transactionsTranslated,{"version":"1"});
+router.post("/users/:userId/transactions",app,transactions.addTransaction);
+router.get("/users/:userId/transactions",appOrUser,transactions.getTransactions);
+
 
 
 module.exports = router;
