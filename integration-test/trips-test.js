@@ -1,7 +1,7 @@
 let assert=require("chai").assert;
 var request = require('supertest');
 
-describe("using /trips",function(){
+describe.only("using /trips",function(){
     var app;
     let agent=null;
     let authValue="";
@@ -229,6 +229,7 @@ describe("using /trips",function(){
             "paymethod": null
         }).expect((res)=>{
             let trip=res.body.trip;
+            console.log(res.body);
             assert.equal(trip.start.address.location.lat,123.456789);
             assert.equal(trip.passenger,fayo5159.id);
             assert.equal(trip.cost.currency,"ARS");
@@ -345,6 +346,15 @@ describe("using /trips",function(){
             assert.equal(balance[0].value,48);
             assert.equal(balance[0].currency,"ARS");
             assert.equal(balance.length,1);
+        })
+    })
+
+    it("get paymethods",()=>{
+        return agent
+        .get("/paymethods")
+        .set("authorization", authValue)
+        .expect((res)=>{
+            console.log(res.body);
         })
     })
 
