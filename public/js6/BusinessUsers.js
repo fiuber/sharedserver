@@ -107,7 +107,7 @@ class Strategy {
                 password:content.password,
                 name:content.name,
                 surname:content.surname,
-                roles:[content.role]
+                roles:content.role
             })
         })
         

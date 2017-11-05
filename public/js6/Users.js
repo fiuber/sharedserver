@@ -48,25 +48,25 @@ class Strategy{
     renderOpened(row){
         return (<span>
             <br/>
-            id:{row.id}
+            Id: {row.id}
             <br/>
-            applicationOwner:{row.applicationOwner}
+            ApplicationOwner: {row.applicationOwner}
             <br/>
-            type:{row.type}
+            Type: {row.type}
             <br/>
-            username:{row.username}
+            Username: {row.username}
             <br/>
-            name:{row.name}
+            Name: {row.name}
             <br/>
-            surname:{row.surname}
+            Surname: {row.surname}
             <br/>
-            country:{row.country}
+            Country: {row.country}
             <br/>
-            email:{row.email}
+            Email: {row.email}
             <br/>
-            birthdate:{row.birthdate}
+            Birthdate: {row.birthdate}
             <br/>
-            image:{row.images[0]}
+            Image: {row.images[0]}
             <br/>
             <CarEditorButton token={this.token} id={row.id}/>
             
@@ -76,7 +76,7 @@ class Strategy{
     }
 
     renderClosed(row){
-        return (<span>username:{row.username}</span>);
+        return (<span>Username: {row.username}</span>);
     }
 
     createKey(row){
@@ -91,12 +91,43 @@ class Strategy{
 
     defaultCreationContent(){
         return {
-            username:"CANT CREATE"
+            type:"type",
+            username:"username",
+            password:"password",
+            firstName:"firstName",
+            lastName:"lastName",
+            country:"country",
+            email:"email",
+            birthdate:"birthdate"
         };
     }
 
     doCreate(content){
-        return Promise.resolve(1);
+        return fetch("/users/",{
+            method:"POST",
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'api-key '+this.token
+            },
+            body:JSON.stringify({
+                "_ref": "string",
+                "type": "string",
+                "username": "string",
+                "password": "string",
+                "fb": {
+                  "userId": "string",
+                  "authToken": "string"
+                },
+                "firstName": "string",
+                "lastName": "string",
+                "country": "string",
+                "email": "string",
+                "birthdate": "string",
+                "images": [
+                  "string"
+                ]
+            })
+        })
     }
 }
 
