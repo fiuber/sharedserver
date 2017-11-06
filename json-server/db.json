@@ -20,5 +20,12 @@
             }
         ]
     },
-    "payments": []
+    "payments": [],
+    "user":{
+        "oauth":{
+            "authorize":{
+                
+            }
+        }
+    }
 }

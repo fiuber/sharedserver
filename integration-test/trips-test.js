@@ -196,6 +196,7 @@ describe("using /trips",function(){
                 parameters:{a:30,b:72}
             }
         }).expect((res)=>{
+            console.log(res.body);
             
             trip=res.body.trip;
             assert.equal(trip.start.address.location.lat,348.15162342);
@@ -243,6 +244,7 @@ describe("using /trips",function(){
         .get("/trips/"+trip.id)
         .set("authorization", authValue)
         .expect((res)=>{
+            console.log(res.body);
             trip=res.body.trip;
             assert.equal(trip.start.address.location.lat,348.15162342);
             assert.equal(trip.passenger,fayo5159.id);
