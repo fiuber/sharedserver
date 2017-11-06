@@ -1,7 +1,7 @@
 let assert=require("chai").assert;
 var request = require('supertest');
 
-describe("using /trips",function(){
+describe.only("using /trips",function(){
     var app;
     let agent=null;
     let authValue="";
@@ -67,7 +67,7 @@ describe("using /trips",function(){
             ),
             "active": "true"
         }).expect(201);
-    })
+    }).timeout(5000);
 
     it("add a rule that checks for NOT soyyo5159 as driver",()=>{
         return agent
@@ -87,7 +87,7 @@ describe("using /trips",function(){
             ),
             "active": "true"
         }).expect(201);
-    })
+    }).timeout(5000);
 
 
 
@@ -115,7 +115,7 @@ describe("using /trips",function(){
         }).expect((res)=>{
             soyyo5159=res.body.user;
         })
-    })
+    }).timeout(5000);
     
     it("add a fb user",function(){
         return agent
@@ -142,7 +142,7 @@ describe("using /trips",function(){
         }).expect((res)=>{
             fayo5159=res.body.user;
         }).expect(201)
-    })
+    }).timeout(5000);
 
 
 
@@ -191,9 +191,15 @@ describe("using /trips",function(){
                     "value":193
                 }
             },
-            "paymethod":{
-                paymethod:"some",
-                parameters:{a:30,b:72}
+            paymethod:{
+                parameters: {
+                    "ccvv": 123,
+                    "expiration_month": 11,
+                    "expiration_year": 2019,
+                    "number": "12145687",
+                    "type": "credit"
+                },
+                "paymethod": "card"
             }
         }).expect((res)=>{
             console.log(res.body);
@@ -204,7 +210,7 @@ describe("using /trips",function(){
             assert.equal(trip.cost.currency,"ARS");
             assert.equal(trip.cost.value,1000,"the rule was used");
         }).expect(201)
-    })
+    }).timeout(5000);
 
 
     it("estimate a trip that is opposite",()=>{
@@ -227,7 +233,16 @@ describe("using /trips",function(){
                 "currency":"platita",
                 "value":193
             },
-            "paymethod": null
+            paymethod:{
+                parameters: {
+                    "ccvv": 123,
+                    "expiration_month": 11,
+                    "expiration_year": 2019,
+                    "number": "12145687",
+                    "type": "credit"
+                },
+                "paymethod": "card"
+            }
         }).expect((res)=>{
             let trip=res.body.trip;
             console.log(res.body);
@@ -236,7 +251,7 @@ describe("using /trips",function(){
             assert.equal(trip.cost.currency,"ARS");
             assert.equal(trip.cost.value,1000,"the rule was used");
         }).expect(201)
-    })
+    }).timeout(5000);
 
     it("that trip is obtained",()=>{
         
@@ -250,7 +265,7 @@ describe("using /trips",function(){
             assert.equal(trip.passenger,fayo5159.id);
             assert.equal(trip.cost.currency,"ARS");
         }).expect(200)
-    })
+    }).timeout(5000);
 
     it("that trip is obtained through the driver",()=>{
         return agent
@@ -262,7 +277,7 @@ describe("using /trips",function(){
             })
             assert.isTrue(good,"the trip was not found")
         }).expect(200)
-    })
+    }).timeout(5000);
 
     it("that trip is obtained through the driver",()=>{
         return agent
@@ -274,7 +289,7 @@ describe("using /trips",function(){
             })
             assert.isTrue(good,"the trip was not found")
         }).expect(200)
-    })
+    }).timeout(5000);
 
     it("the balance of fayo5159 is 0",()=>{
         return agent
@@ -310,7 +325,16 @@ describe("using /trips",function(){
                 value:"48"
             },
             description: 'I pay again cuz I got money',
-            data: {"paymethod":"some","parameters":{"a":30,"b":72}}
+            data: {
+                parameters: {
+                    "ccvv": 123,
+                    "expiration_month": 11,
+                    "expiration_year": 2019,
+                    "number": "12145687",
+                    "type": "credit"
+                },
+                "paymethod": "card"
+            }
         })
         .expect((res)=>{
             let transaction=res.body.transaction;
@@ -324,12 +348,18 @@ describe("using /trips",function(){
             });
             assert.equal(transaction.description,'I pay again cuz I got money');
             assert.deepEqual(transaction.data,{
-                "paymethod":"some",
-                "parameters":{"a":30,"b":72}
+                parameters: {
+                    "ccvv": 123,
+                    "expiration_month": 11,
+                    "expiration_year": 2019,
+                    "number": "12145687",
+                    "type": "credit"
+                },
+                "paymethod": "card"
             });
 
         })
-    })
+    }).timeout(5000);
     it("fayo5159 has two transactions",()=>{
         return agent
         .get("/users/"+fayo5159.id+"/transactions")
@@ -358,6 +388,6 @@ describe("using /trips",function(){
         .expect((res)=>{
             console.log(res.body);
         })
-    })
+    }).timeout(5000);
 
 })
