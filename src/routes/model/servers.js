@@ -26,12 +26,11 @@ exports.serverIdFromToken=function(token){
                 return servers[0].id;
             })
         }
-        
     })
-    
 }
 
 function ifExists(id,fun,nonexistent){
+    
     return sdb.exists({id:id}).then((exists)=>{
         if(exists){
             return fun();
@@ -45,9 +44,20 @@ function ifExists(id,fun,nonexistent){
  * No se agrega porque no se sabe cuál es el server 
  * que me está pegando porque no están implementadas las autorizaciones
  */
-exports.ping=function(){
-    return "pong";
+exports.ping=function(nonexistent,badRevision,me){
+    console.log("ENTRA")
+    let expiresAtDate = new Date();
+    expiresAtDate.setDate(expiresAtDate.getDate()+3);
+    let expiresAt = expiresAtDate.getTime();
+
+    let newToken=Math.random()*1000+"";
+    
+
+    return sdb.update({id:me.id},{token:newToken,expiresAt:expiresAt}).then((up)=>{
+        return exports.get(me.id,nonexistent);
+    })
 }
+exports.ping.shape={};
 
 function base64Token(row){
     row.token=new Buffer(row.token).toString("base64");
