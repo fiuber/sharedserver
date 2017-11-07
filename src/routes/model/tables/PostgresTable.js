@@ -1,5 +1,7 @@
 const db=require("./localdatabase").db;
 const QueryBuilder=require("./QueryBuilder");
+const log=require("debug")("fiuber:low:PostgresTable");
+const error=require("debug")("fiuber:error:PostgresTable");
 /**
  * Creates a new PostgresTable object, so it's 
  * not necessary to write queries everywhere
@@ -35,15 +37,27 @@ PostgresTable.prototype.rowToArray=function(row){
  * Drops the PostgresTable and empties it
  */
 PostgresTable.prototype.restart=function(){
-    return db.none(this.drop()).then(()=>db.none(this.create()))
+    return db.none(this.drop()).then(()=>db.none(this.create())).then(()=>{
+        log(this.drop(),this.create());
+    }).catch((e)=>{
+        error(e,this.drop(),this.create());
+        return Promise.reject(e);
+    })
 }
 /**
  * Adds a row.
  */
 PostgresTable.prototype.add=function(row){
     return db.one(this.insert(),this.rowToArray(row).noSerials()).catch((e)=>{
+        
         return Promise.reject({error:e,in:this.insert()});
-    });
+    }).then((e)=>{
+        log(this.insert(),this.rowToArray(row).noSerials());
+        return Promise.resolve(e);
+    }).catch((e)=>{
+        error(e,this.insert(),this.rowToArray(row).noSerials());
+        return Promise.reject(e);
+    })
 }
 
 /**
@@ -52,9 +66,21 @@ PostgresTable.prototype.add=function(row){
 PostgresTable.prototype.get=function(partialRow){
     let select=this.select();
     if(partialRow){
-        return db.any(select.where(partialRow),this.rowToArray(partialRow));
+        return db.any(select.where(partialRow),this.rowToArray(partialRow)).then((e)=>{
+            log(select.where(partialRow),this.rowToArray(partialRow));
+            return e;
+        }).catch((e)=>{
+            error(e,select.where(partialRow),this.rowToArray(partialRow));
+            return Promise.reject(e);
+        })
     }else{
-        return db.any(select.all());
+        return db.any(select.all()).then((e)=>{
+            log(select.all());
+            return e;
+        }).catch((e)=>{
+            error(e,select.all());
+            return Promise.reject(e);
+        });
     }
     
 }
@@ -66,6 +92,13 @@ PostgresTable.prototype.exists=function(partialRow){
     return db
     .any(this.select().where(partialRow),this.rowToArray(partialRow))
     .then(function(data){return data.length>0})
+    .then((e)=>{
+        log("exists:",e);
+        return e;
+    }).catch((e)=>{
+        error(e,this.select().where(partialRow),this.rowToArray(partialRow));
+        return Promise.reject(e);
+    });
 }
 
 /**
@@ -76,12 +109,25 @@ PostgresTable.prototype.exists=function(partialRow){
 PostgresTable.prototype.modify=function(partialRowSelection,partialRowUpdate){
     let array = this.rowToArray(partialRowUpdate).concat(this.rowToArray(partialRowSelection))
     return db
-    .none(this.update(partialRowUpdate).where(partialRowSelection),array)
+    .none(this.update(partialRowUpdate).where(partialRowSelection),array).then((e)=>{
+        log(this.update(partialRowUpdate).where(partialRowSelection),array);
+        return e;
+    }).catch((e)=>{
+        error(e,this.update(partialRowUpdate).where(partialRowSelection),array);
+        return Promise.reject(e);
+    });
 }
 
 PostgresTable.prototype.remove=function(partialRowSelection){
     return db
     .none(this.delete().where(partialRowSelection),this.rowToArray(partialRowSelection))
+    .then((e)=>{
+        log(this.delete().where(partialRowSelection),this.rowToArray(partialRowSelection));
+        return e;
+    }).catch((e)=>{
+        error(e,this.delete().where(partialRowSelection),this.rowToArray(partialRowSelection));
+        return Promise.reject(e);
+    });
 }
 
 
