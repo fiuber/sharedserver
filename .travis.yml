@@ -16,6 +16,9 @@ script:
   - docker-compose pull
   - docker-compose build
   - docker-compose up --abort-on-container-exit
+  - docker images
+  - docker ps --filter "status=exited"
+  - docker ps
   #- docker-compose up -d db
   #- docker ps
   #- docker-compose run -v "$PWD/coverage:/app/coverage" $ci_env web sh test-cover-enviar-en-docker.sh

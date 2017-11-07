@@ -1,0 +1,31 @@
+{
+
+    "paymethods":{
+        "items": [
+            {
+                "parameters": {
+                    "ccvv": "number",
+                    "expiration_month": "number",
+                    "expiration_year": "number",
+                    "number": "string",
+                    "type": "string"
+                },
+                "paymethod": "card"
+            },
+            {
+                "parameters": {
+                    "type": "string"
+                },
+                "paymethod": "cash"
+            }
+        ]
+    },
+    "payments": [],
+    "user":{
+        "oauth":{
+            "authorize":{
+                
+            }
+        }
+    }
+}

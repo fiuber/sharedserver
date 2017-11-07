@@ -180,13 +180,16 @@ exports.estimate=function(trip,nonexistent,badRevision,me){
     //Cantidad de viajes que se realizaron en la última ventana temporal (Hora, 30 mins, 10 mins)
     return Promise.resolve(true)
     .then(()=>{
+        console.log("A");
         return fullDataFrom(trip.driver,nonexistent)
     }).then((fd)=>{
         trip.driver=fd;
     })
+    
     //Características del pasajero (viajes en el día, viajes en el mes, antigüedad, saldo)
     //Cantidad de viajes que se realizaron en la última ventana temporal (Hora, 30 mins, 10 mins)
     .then(()=>{
+        console.log("B");
         return fullDataFrom(trip.passenger,nonexistent)
     }).then((fd)=>{
         trip.passenger=fd;
@@ -194,8 +197,10 @@ exports.estimate=function(trip,nonexistent,badRevision,me){
     })
     //Método de pago
     .then(()=>{
+        console.log("C");
         return payer.paymentMethods();
     }).then((methods)=>{
+        console.log("D");
         trip.paymethod=methods[0].paymethod;
         return Promise.resolve(true)
     })
@@ -205,6 +210,7 @@ exports.estimate=function(trip,nonexistent,badRevision,me){
     //(Que un conductor le confirme el viaje) [CAMBIA]
     //(Que el conductor llegue a buscarlo) [CAMBIA]
     .then(()=>{
+        console.log("E");
         trip.travelTime=48*60;//48 min siempre
         trip.waitTime=5*60;//5 min siempre
         trip.totalTime=40*60;//40 min siempre
@@ -216,17 +222,21 @@ exports.estimate=function(trip,nonexistent,badRevision,me){
     })
     //Application server que realiza la cotización
     .then(()=>{
+        console.log("F");
         return require("./servers").serverIdFromToken(me.token);  
     }).then((serverId)=>{
+        console.log("G");
         o.applicationOwner=serverId;
         trip.applicationOwner=serverId;
         return Promise.resolve(true)
     })
     //CONCLUSION
     .then(()=>{
+        console.log("H");
         
         return costCalculator.calculateCost(trip)
     }).then((cost)=>{
+        console.log("I");
         o.costValue=cost;
         o.costCurrency="ARS";
         return o;

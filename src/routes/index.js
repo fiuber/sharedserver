@@ -17,6 +17,7 @@ const rulesModel=require("./model/rules");
 const rulesRunModel=require("./model/rules-run");
 const tripsModel=require("./model/trips");
 const transactionsModel=require("./model/transactions");
+const payer = require("./model/payer.js");
 
 //authorization
 const app=auth.middleware(serversModel.authorized);
@@ -99,16 +100,6 @@ router.post("/rules/:ruleId/run",admin,rulesRun.runOne);
 
 
 //trips
-
-const payer={
-    pay:function(asd,efg){
-        return Promise.resolve(true);
-    },
-    paymentMethods:function(){
-        return Promise.resolve(["cheque"]);
-    }
-}
-
 const costCalculator=rulesRunModel;
 
 const tripsTranslator=require("./modelTranslate/trips.js");
@@ -122,13 +113,19 @@ router.post("/trips/estimate",app,trips.estimate);
 
 
 
-//running rules
+//transactions
 transactionsModel.setPayer(payer);
 const transactionsTranslator=require("./modelTranslate/transactions.js");
 const transactionsTranslated=require("./modelTranslate")(transactionsModel,transactionsTranslator);
 const transactions=expressify.all(transactionsTranslated,{"version":"1"});
 router.post("/users/:userId/transactions",app,transactions.addTransaction);
 router.get("/users/:userId/transactions",appOrUser,transactions.getTransactions);
+
+// paymethods
+const payerTranslator=require("./modelTranslate/payer.js");
+const payerTranslated=require("./modelTranslate")(payer,payerTranslator);
+const actualPayer=expressify.all(payerTranslated,{"version":"1"});
+router.get("/paymethods",app,actualPayer.paymentMethods);
 
 
 
