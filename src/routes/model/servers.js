@@ -130,9 +130,13 @@ exports.authorized=function(credentials,identifyAs){
         if(rows.length==0){
             return false;
         }else{
-            identifyAs(rows[0]);
-            let expiresAt=rows[0].expiresAt;
-            return expiresAt > (new Date()).getTime();
+            let now = (new Date()).getTime();
+            return sdb.update({token:token},{lastConnection:now}).then((updated)=>{
+                identifyAs(rows[0]);
+                let expiresAt=rows[0].expiresAt;
+                return expiresAt > (new Date()).getTime();
+            })
+            
         }
     });
 }
