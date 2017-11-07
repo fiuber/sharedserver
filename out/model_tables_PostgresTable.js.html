@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: model/tables/PostgresTable.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: model/tables/PostgresTable.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const db=require("./localdatabase").db;
+const QueryBuilder=require("./QueryBuilder");
+const log=require("debug")("fiuber:low:PostgresTable");
+const error=require("debug")("fiuber:error:PostgresTable");
+/**
+ * Creates a new PostgresTable object, so it's 
+ * not necessary to write queries everywhere
+ * @param {String} name the name of the PostgresTable
+ * @param {Object} fields An Object containing the fields as keys and the
+ *  types as values. The order is inferred from this map
+ * @param {Array} primaryKeys An array of primarykeys
+ */
+function PostgresTable(name,fields,primaryKeys){
+    QueryBuilder.call(this,name,fields,primaryKeys)
+}
+PostgresTable.prototype=Object.create(QueryBuilder.prototype);
+PostgresTable.prototype.constructor=PostgresTable;
+
+/**
+ * Transforms the row in an Array that can be used to call pg-promise
+ */
+PostgresTable.prototype.rowToArray=function(row){
+    let ordered=this.fields.filter((f)=>{
+        return Object.keys(row).includes(f)
+    });
+    let values=ordered.map((field)=>row[field]);
+    values.noSerials=()=>{
+        let filteredAndOrdered=ordered.filter((field)=>{
+            return ! this.isSerial(field);
+        });
+        return filteredAndOrdered.map((field)=>row[field]);
+    }
+    return values;
+}
+
+/**
+ * Drops the PostgresTable and empties it
+ */
+PostgresTable.prototype.restart=function(){
+    return db.none(this.drop()).then(()=>db.none(this.create())).then(()=>{
+        log(this.drop(),this.create());
+    }).catch((e)=>{
+        error(e,this.drop(),this.create());
+        return Promise.reject(e);
+    })
+}
+/**
+ * Adds a row.
+ */
+PostgresTable.prototype.add=function(row){
+    return db.one(this.insert(),this.rowToArray(row).noSerials()).catch((e)=>{
+        
+        return Promise.reject({error:e,in:this.insert()});
+    }).then((e)=>{
+        log(this.insert(),this.rowToArray(row).noSerials());
+        return Promise.resolve(e);
+    }).catch((e)=>{
+        error(e,this.insert(),this.rowToArray(row).noSerials());
+        return Promise.reject(e);
+    })
+}
+
+/**
+ * Finds the row by checking equality the properties and values of the passed object
+ */
+PostgresTable.prototype.get=function(partialRow){
+    let select=this.select();
+    if(partialRow){
+        return db.any(select.where(partialRow),this.rowToArray(partialRow)).then((e)=>{
+            log(select.where(partialRow),this.rowToArray(partialRow));
+            return e;
+        }).catch((e)=>{
+            error(e,select.where(partialRow),this.rowToArray(partialRow));
+            return Promise.reject(e);
+        })
+    }else{
+        return db.any(select.all()).then((e)=>{
+            log(select.all());
+            return e;
+        }).catch((e)=>{
+            error(e,select.all());
+            return Promise.reject(e);
+        });
+    }
+    
+}
+
+/**
+ * Finds the row by checking equality the properties and values of the passed object
+ */
+PostgresTable.prototype.exists=function(partialRow){
+    return db
+    .any(this.select().where(partialRow),this.rowToArray(partialRow))
+    .then(function(data){return data.length>0})
+    .then((e)=>{
+        log("exists:",e);
+        return e;
+    }).catch((e)=>{
+        error(e,this.select().where(partialRow),this.rowToArray(partialRow));
+        return Promise.reject(e);
+    });
+}
+
+/**
+ * Finds the row by checking equality the properties and values of the passed partialRowSelection,
+ * sets the values of the row to be partialRowUpdate
+ */
+
+PostgresTable.prototype.modify=function(partialRowSelection,partialRowUpdate){
+    let array = this.rowToArray(partialRowUpdate).concat(this.rowToArray(partialRowSelection))
+    return db
+    .none(this.update(partialRowUpdate).where(partialRowSelection),array).then((e)=>{
+        log(this.update(partialRowUpdate).where(partialRowSelection),array);
+        return e;
+    }).catch((e)=>{
+        error(e,this.update(partialRowUpdate).where(partialRowSelection),array);
+        return Promise.reject(e);
+    });
+}
+
+PostgresTable.prototype.remove=function(partialRowSelection){
+    return db
+    .none(this.delete().where(partialRowSelection),this.rowToArray(partialRowSelection))
+    .then((e)=>{
+        log(this.delete().where(partialRowSelection),this.rowToArray(partialRowSelection));
+        return e;
+    }).catch((e)=>{
+        error(e,this.delete().where(partialRowSelection),this.rowToArray(partialRowSelection));
+        return Promise.reject(e);
+    });
+}
+
+
+module.exports=PostgresTable;</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="model.module_servers.html">servers</a></li><li><a href="module-auth.html">auth</a></li></ul><h3>Global</h3><ul><li><a href="global.html#EasyTable">EasyTable</a></li><li><a href="global.html#expressify">expressify</a></li><li><a href="global.html#FastPromiser">FastPromiser</a></li><li><a href="global.html#PostgresTable">PostgresTable</a></li><li><a href="global.html#QueryBuilder">QueryBuilder</a></li><li><a href="global.html#SimpleTable">SimpleTable</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Nov 07 2017 15:40:24 GMT-0300 (ART)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

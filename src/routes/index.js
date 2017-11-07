@@ -26,7 +26,7 @@ const appOrManager=auth.middleware(serversModel.authorized,businessUsersModel.au
 const admin=auth.middleware(businessUsersModel.authorizedRoles("admin"));
 const manager=auth.middleware(businessUsersModel.authorizedRoles("manager","admin"));
 const user=auth.middleware(businessUsersModel.authorizedRoles("user","manager","admin"));
-const public=auth.middleware(auth.any);
+const publicAccess=auth.middleware(auth.any);
 
 //servers
 const sTranslator=require("./modelTranslate/servers.js");
@@ -46,7 +46,7 @@ const buTranslator=require("./modelTranslate/business-users.js");
 const buTranslated=require("./modelTranslate")(businessUsersModel,buTranslator);
 const businessUsers=expressify.all(buTranslated,{"version":"1"});
 
-router.post("/token", public,businessUsers.token);
+router.post("/token", publicAccess,businessUsers.token);
 
 router.get("/business-users/me", user, businessUsers.getMe);
 router.put("/business-users/me", user, businessUsers.updateMe);

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: model/tables/EasyTable.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,33 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: model/tables/EasyTable.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const SimpleTable=require("./SimpleTable");
+const CapsKeeper=require("./CapsKeeper");
+const FastPromiser=require("./FastPromiser");
+/**
+ * A SimpleTable that is easy to use.
+ * @param {String} name 
+ * @param {Object} fields 
+ * @param {Array} primaryKeys 
+ */
+function EasyTable(name,fields,primaryKeys){
+    let simpleTable=new SimpleTable(name,fields,primaryKeys);
+    let fixedCaps=new CapsKeeper(simpleTable,Object.keys(fields));
+    FastPromiser.call(this,fixedCaps);
+}
 
-
-    <h3> </h3>
-
-
-
-
-
-
-
-
-
-
-    
-
-
-
-
-
+module.exports=EasyTable;</code></pre>
+        </article>
+    </section>
 
 
 
