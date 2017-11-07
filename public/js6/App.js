@@ -6,6 +6,7 @@ import {MainScreen} from "./MainScreen";
 import {BusinessUsers} from "./BusinessUsers";
 import {Servers} from "./Servers";
 import {Users} from "./Users";
+import {Trips} from "./Trips";
 
 
 export class App extends React.Component {
@@ -24,6 +25,7 @@ export class App extends React.Component {
       this.businessUsers=()=><BusinessUsers token={this.state.token}/>
       this.servers=()=><Servers token={this.state.token} />
       this.users=()=><Users token={this.state.token} />
+      this.trips=()=><Trips token={this.state.token} />
 
       
       this.state={
@@ -35,11 +37,23 @@ export class App extends React.Component {
         currentTab: 1
       }
 
+      this.gotoLogin = this.gotoLogin.bind(this);
       this.gotoHome = this.gotoHome.bind(this);
       this.gotoBusinessUsers = this.gotoBusinessUsers.bind(this);
       this.gotoServers = this.gotoServers.bind(this);
       this.gotoUsers = this.gotoUsers.bind(this);
+      this.gotoTrips = this.gotoTrips.bind(this);
     }
+    gotoLogin(event){
+      this.setState({
+        current:this.login,
+        showbar:false,
+        username:"",
+        password:"",
+        token:"",
+        currentTab: 1});
+    }
+
     gotoHome(event){
       this.setState({current:this.main, currentTab: 1});
     }
@@ -52,6 +66,9 @@ export class App extends React.Component {
     }
     gotoUsers(event){
         this.setState({current:this.users, currentTab: 4});
+    }
+    gotoTrips(event){
+        this.setState({current:this.trips, currentTab: 5});
     }
 
 
@@ -91,9 +108,10 @@ export class App extends React.Component {
                   <li class={this.state.currentTab == 2 ? 'active' : ''}><a onClick={this.gotoBusinessUsers}>Business Users</a></li>
                   <li class={this.state.currentTab == 3 ? 'active' : ''}><a onClick={this.gotoServers}>Servers</a></li>
                   <li class={this.state.currentTab == 4 ? 'active' : ''}><a onClick={this.gotoUsers}>Users</a></li>
+                  <li class={this.state.currentTab == 5 ? 'active' : ''}><a onClick={this.gotoTrips}>Trips</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                  <li><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                  <li><a onClick={this.gotoLogin}><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
                 </ul>
               </div>
             </div>

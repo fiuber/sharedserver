@@ -1,11 +1,8 @@
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import "whatwg-fetch";
 import Popout from 'react-popout';
 import {CrudTable} from "./CrudTable";
-import {CarEditorButton} from "./CarEditorButton";
-//import {TokenCreatorButton} from "./TokenCreatorButton"
 
 class Strategy{
     constructor(token){
@@ -13,7 +10,7 @@ class Strategy{
     }
     getAll(){
         console.log("Iam getting all the things")
-        return fetch("/users",{
+        return fetch("/trips",{
             method:"GET",
 
             headers:{
@@ -23,10 +20,10 @@ class Strategy{
         })
         .then((res)=>res.json())
         .then((jsn)=>{
-            console.log("LOS USERS:")
-            console.log(jsn.users)
+            console.log("LOS Trips:")
+            console.log(jsn.trips)
 
-            return jsn.users;
+            return jsn.trips;
         });
     }
 
@@ -35,7 +32,7 @@ class Strategy{
     }
 
     doDelete(row){
-        return fetch("/users/"+row.id,{
+        return fetch("/trips/"+row.id,{
             method:"DELETE",
             headers: {
               'Content-Type': 'application/json',
@@ -53,31 +50,19 @@ class Strategy{
             <br/>
             ApplicationOwner: {row.applicationOwner}
             <br/>
-            Type: {row.type}
+            Driver: {row.driver}
             <br/>
-            Username: {row.username}
+            Passenger: {row.passenger}
             <br/>
-            Name: {row.name}
+            Cost: {row.cost}
             <br/>
-            Surname: {row.surname}
-            <br/>
-            Country: {row.country}
-            <br/>
-            Email: {row.email}
-            <br/>
-            Birthdate: {row.birthdate}
-            <br/>
-            Image: {row.images[0]}
-            <br/>
-            <CarEditorButton token={this.token} id={row.id}/>
-            
             
         </span>);
         
     }
 
     renderClosed(row){
-        return (<span>Username: {row.username}</span>);
+        return (<span>Passenger: {row.passenger}</span>);
     }
 
     createKey(row){
@@ -133,7 +118,7 @@ class Strategy{
 }
 
 
-export class Users extends CrudTable{
+export class Trips extends CrudTable{
     constructor(props){
         let strategy=new Strategy(props.token);
         super(props,strategy);
