@@ -33,6 +33,17 @@ exports.addTransaction=function(body,userId,nonexistent){
         })
     })
 }
+exports.addTransaction.shape={
+    id:"string",
+    trip:"string",
+    timestamp:0,
+    cost:{
+        currency:"string",
+        value:0
+    },
+    description:"string",
+    data:{}
+};
 
 exports.addDebt=function(body,userId,nonexistent){
     //entra un Transaction
