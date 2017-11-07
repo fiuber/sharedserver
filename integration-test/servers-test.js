@@ -2,7 +2,7 @@ let assert=require("chai").assert;
 var request = require('supertest');
 const run=require("./run");
 
-describe("POST en /servers", function(){
+describe.only("POST en /servers", function(){
     var app;
     var db;
     let agent=null;
@@ -26,6 +26,7 @@ describe("POST en /servers", function(){
     });
 
     it("Si es correcto, entra lo que sale",function(){
+        let now = (new Date()).getTime();
         var datosEnviados={
             "id":"asder",
             "_ref" :"asder",
@@ -41,8 +42,8 @@ describe("POST en /servers", function(){
         .expect(function(res){
             assert.equal(res.statusCode,201,res.error);
 
-            assert.equal(res.body.server.server.createdBy,datosEnviados.createdBy);
-            assert.equal(res.body.server.server.createdTime,datosEnviados.createdTime);
+            assert.equal(res.body.server.server.createdBy,"admin");
+            assert.isAbove(res.body.server.server.createdTime,now);
             assert.equal(res.body.server.server.name,datosEnviados.name);
 
             var tok = res.body.server.token;

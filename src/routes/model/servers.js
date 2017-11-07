@@ -64,10 +64,15 @@ function base64Token(row){
     return row;
 }
 
-exports.add=function(server){
+exports.add=function(server,nonexistent,badRevision,me){
     server.token=0;
     server.expiresAt=0;
     server._ref=Math.random()*1000+"";
+    
+    server.createdTime=(new Date()).getTime();
+    console.log(me);
+    server.createdBy=me.username;
+    
     return sdb.create(server).then(function(created){
         return exports.updateToken(created.id,"id not found, how's that possible?");
     });
