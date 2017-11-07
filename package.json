@@ -21,7 +21,8 @@
     "tcompose": "docker-compose build && docker-compose up --abort-on-container-exit",
     "outsidebuild": "node_modules/.bin/browserify public/js6/main.js -o public/js/bundle.js -t  babelify",
     "outsidetest": "docker-compose run -v $PWD'/src:/app/src' -v $PWD'/integration-test:/app/integration-test' web npm test",
-    "outsiderun": "docker-compose run --service-ports -v $PWD'/src:/app/src' -v $PWD'/public:/app/public' -v $PWD'/integration-test:/app/integration-test' web npm start"
+    "outsiderun": "docker-compose run --service-ports -v $PWD'/src:/app/src' -v $PWD'/public:/app/public' -v $PWD'/integration-test:/app/integration-test' web npm start",
+    "docs": "jsdoc  -r src -d docs"
   },
   "dependencies": {
     "auth-header": "^0.3.1",
@@ -46,6 +47,7 @@
     "chai": "^4.1.1",
     "codecov": "^2.3.0",
     "istanbul": "^0.4.5",
+    "jsdoc": "^3.5.5",
     "mocha": "^3.5.0",
     "supertest": "^3.0.0"
   }
