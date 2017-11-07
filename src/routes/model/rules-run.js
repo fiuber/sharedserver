@@ -13,6 +13,13 @@ exports.runOne=function(body,ruleId,nonexistent){
     })
 }
 
+exports.runOne.shape=[
+    {
+        language:"string",
+        blob:"string"
+    }
+]
+
 exports.runMany=function(body,nonexistent){
     let ruleIds=body.rules;
     let ruleStrings=ruleIds.map((ruleId)=>{
@@ -29,6 +36,15 @@ exports.runMany=function(body,nonexistent){
             return {result:JSON.stringify(result)};
         });
     })
+}
+exports.runMany.shape={
+    rules:["string"],
+    facts:[
+        {
+            language:"string",
+            blob:"string"
+        }
+    ]
 }
 
 exports.calculateCost=function(fact){

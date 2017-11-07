@@ -12,6 +12,55 @@ exports.addTrip=function(newPayer,newCostCalculator){
     return exports.addTripWithPayer;
 }
 
+const tripShape={
+    "trip": {
+      "id": "string",
+      "applicationOwner": "string",
+      "driver": "string",
+      "passenger": "string",
+      "start": {
+          address:{
+              location:{
+                  lat:0,
+                  lon:0
+              }
+          },
+          timestamp:0
+      },
+      "end": {
+        address:{
+            location:{
+                lat:0,
+                lon:0
+            }
+        },
+        timestamp:0
+      },
+      "totalTime": 0,
+      "waitTime": 0,
+      "travelTime": 0,
+      "distance": 0,
+      "route": [
+          {
+              location:{
+                  lat:0,
+                  lon:0
+              },
+              timestamp:0
+          }
+      ],
+      "cost": {
+          currency:"string",
+          value:0
+      }
+    },
+    "paymethod": {
+        paymethod:"string",
+        parameters:{}
+    }
+  }
+  exports.addTrip.shape=tripShape;
+
 
 exports.addTripWithPayer=function(body,nonexistent,badRevision,me){
     return require("./servers").serverIdFromToken(me.token)
@@ -104,6 +153,7 @@ exports.addTripWithPayer=function(body,nonexistent,badRevision,me){
         return exports.getTrip(created.id,nonexistent);
     })
 }
+exports.addTripWithPayer.shape=tripShape;
 
 exports.getTrip=function(tripId,nonexistent,badRevision,me){
     return trips.readOne({id:tripId},nonexistent).then((readTrip)=>{
@@ -117,6 +167,7 @@ exports.getTrip=function(tripId,nonexistent,badRevision,me){
         })
     })
 }
+exports.getTrip.shape={};
 
 exports.getUserTrips=function(userId,nonexistent,badRevision,me){
     return usersModel.get(userId,nonexistent).then((user)=>{
@@ -136,6 +187,7 @@ exports.getUserTrips=function(userId,nonexistent,badRevision,me){
         })
     })
 }
+exports.getUserTrips.shape={};
 
 exports.estimate=function(trip,nonexistent,badRevision,me){
     let o={
@@ -344,4 +396,26 @@ function tripsSince(userId,date){
             return trip.endTimestamp>date.getTime();
         }).length;
     })
+}
+
+exports.estimate.shape={
+    "driver": "string",
+    "passenger": "string",
+    "start": {
+        address:{
+            location:{
+                lat:0,
+                lon:0
+            }
+        },
+        timestamp:0
+    }, 
+    "end": {
+        address:{
+            location:{
+                lat:0,
+                lon:0
+            }
+        },
+    },
 }
