@@ -1,3 +1,5 @@
+echo "EMPEZANDO ESPERA"
+sleep 20
 echo "ESTO SOLO VA A ENVIAR EL COVERAGE SI SE CORRE ADENTRO DE TRAVIS jejejeje"
 pwd
 ./node_modules/.bin/istanbul cover ./node_modules/mocha/bin/_mocha -R spec $(find src -name *-test.js )
