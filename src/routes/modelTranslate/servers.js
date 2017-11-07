@@ -48,3 +48,10 @@ exports.update=getShape;
 exports.updateToken=wTokenOutputShape;
 exports.list=listShape;
 exports.get=getShape;
+
+exports.ping=function(string,number,array,from){
+    let serverShape=wTokenOutputShape(string,number,array,from).server;
+    return {
+        ping:serverShape
+    }
+};

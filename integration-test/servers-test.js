@@ -26,6 +26,7 @@ describe("POST en /servers", function(){
     });
 
     it("Si es correcto, entra lo que sale",function(){
+        let now = (new Date()).getTime();
         var datosEnviados={
             "id":"asder",
             "_ref" :"asder",
@@ -41,8 +42,8 @@ describe("POST en /servers", function(){
         .expect(function(res){
             assert.equal(res.statusCode,201,res.error);
 
-            assert.equal(res.body.server.server.createdBy,datosEnviados.createdBy);
-            assert.equal(res.body.server.server.createdTime,datosEnviados.createdTime);
+            assert.equal(res.body.server.server.createdBy,"admin");
+            assert.isAbove(res.body.server.server.createdTime,now);
             assert.equal(res.body.server.server.name,datosEnviados.name);
 
             var tok = res.body.server.token;
@@ -94,6 +95,7 @@ describe("POST en /servers", function(){
         )
     })
 
+
     it("A server is added, modified and then requested (thorugh http)",function(){
         var s={
             "id":"asder",
@@ -136,6 +138,46 @@ describe("POST en /servers", function(){
                 assert.equal(res.body.server.createdTime,added.createdTime);
                 assert.equal(res.body.server.name,s.name);
             })
+        )
+    })
+
+    it("A server is added, pinged and then requested (thorugh http)",function(){
+        var s={
+            "id":"asder",
+            "_ref" :"asder",
+            "createdBy":"jiji",
+            "createdTime":50,
+            "name":"serviji",
+            "lastConnection":1998
+        };
+        var added=s;
+        let serverAuth="";
+        
+        return run(
+            ()=>agent
+            .post("/servers")
+            .set("Authorization",authValue)
+            .send(s)
+            .expect((e)=>{
+                added=e.body.server
+                serverAuth="api-key "+e.body.server.token.token;
+            })
+            .expect(201),
+            
+            ()=>agent
+            .post("/servers/ping")
+            .set("Authorization",serverAuth)
+            .send({})
+            .expect(function (res){
+                console.log(res.body.ping.token);
+                console.log(added.token);
+                assert.isAbove(res.body.ping.token.expiresAt,added.token.expiresAt)
+                assert.equal(res.body.ping.server.createdBy,added.server.createdBy);
+                assert.equal(res.body.ping.server.createdTime,added.server.createdTime);
+                assert.equal(res.body.ping.server.name,s.name);
+            })
+            .expect(201),
+            
         )
     })
 

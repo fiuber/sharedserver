@@ -19,7 +19,7 @@ describe("Using the users model",function(){
                 "createdTime":15,
                 "name":"pepeserver",
                 "lastConnection":45
-            }).then((added)=>{
+            },"nonexistent","badRevision",{username:"pepe"}).then((added)=>{
                 
                 createdServerToken=added.token;
                 //console.log("------- CREATED SERVE TOKEN -------")

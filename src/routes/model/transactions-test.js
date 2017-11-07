@@ -35,7 +35,7 @@ describe("Using the trips model",function(){
                 "createdTime":15,
                 "name":"pepeserver",
                 "lastConnection":45
-            }).then((added)=>{
+            },"nonexistent","badRevision",{username:"pepe"}).then((added)=>{
                 
                 createdServerToken=added.token;
                 //console.log("------- CREATED SERVE TOKEN -------")

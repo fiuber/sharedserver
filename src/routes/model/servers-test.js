@@ -18,7 +18,7 @@ describe("CRUD servers list", function(){
         return require("./tables").restart();
     });
     it("A server is added and then requested",function(done){
-        servers.add(s)
+        servers.add(s,"nonexistent","badRevision",{username:"pepe"})
         .then((q)=>servers.get(q.id,"nope"))
         .then(function (result){
             assert.equal(result.createdBy,s.createdBy);
@@ -35,7 +35,7 @@ describe("CRUD servers list", function(){
         let identity=null;
         let added=null;
         return servers
-        .add(s)
+        .add(s,"nonexistent","badRevision",{username:"pepe"})
         .then((actual)=>added=actual)
         .then(()=>servers.authorized({token:b64d(added.token)},(e)=>identity=e))
         .then((a)=>{
@@ -65,7 +65,7 @@ describe("CRUD servers list", function(){
         };
         var sResult=null;
         
-        servers.add(s)
+        servers.add(s,"nonexistent","badRevision",{username:"pepe"})
         .then((res)=>{sResult=res;return res;})
         .then(()=>{
             sRenamed._ref=sResult._ref;
@@ -93,7 +93,7 @@ describe("CRUD servers list", function(){
         };
         var sResult=null;
         
-        servers.add(s)
+        servers.add(s,"nonexistent","badRevision",{username:"pepe"})
         .then((res)=>{sResult=res;return res;})
         .then(()=>{
             sRenamed._ref="juancito";
@@ -123,12 +123,13 @@ describe("CRUD servers list", function(){
             "lastConnection":45
         };
         var added=[]
-        servers.add(s).then(function(e){
+        servers.add(s,"nonexistent","badRevision",{username:"pepe"})
+        .then(function(e){
             added.push(e.id);
-            return servers.add(s);
+            return servers.add(s,"nonexistent","badRevision",{username:"pepe"});
         }).then(function(e){
             added.push(e.id);
-            return servers.add(s);
+            return servers.add(s,"nonexistent","badRevision",{username:"pepe"});
         }).then(function(e){
             added.push(e.id);
             return servers.list()
@@ -153,13 +154,13 @@ describe("CRUD servers list", function(){
             "lastConnection":45
         };
         var added=[];
-                   servers.add(s)
+                   servers.add(s,"nonexistent","badRevision",{username:"pepe"})
           .then(function(e){
             added.push(e.id)
-            return servers.add(s);
+            return servers.add(s,"nonexistent","badRevision",{username:"pepe"});
         }).then(function(e){
             added.push(e.id)
-            return servers.add(s);
+            return servers.add(s,"nonexistent","badRevision",{username:"pepe"});
         }).then(function(e){
             added.push(e.id)
             return servers.delete(added[2])
