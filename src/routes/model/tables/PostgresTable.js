@@ -2,6 +2,10 @@ const db=require("./localdatabase").db;
 const QueryBuilder=require("./QueryBuilder");
 const log=require("debug")("fiuber:low:PostgresTable");
 const error=require("debug")("fiuber:error:PostgresTable");
+
+/**
+ * @module 
+ */
 /**
  * Creates a new PostgresTable object, so it's 
  * not necessary to write queries everywhere

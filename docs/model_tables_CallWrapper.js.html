@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: model/tables/EasyTable.js</title>
+    <title>JSDoc: Source: model/tables/CallWrapper.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: model/tables/EasyTable.js</h1>
+    <h1 class="page-title">Source: model/tables/CallWrapper.js</h1>
 
     
 
@@ -26,27 +26,40 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const SimpleTable=require("./SimpleTable");
-const CapsKeeper=require("./CapsKeeper");
-const FastPromiser=require("./FastPromiser");
-/**
+            <pre class="prettyprint source linenums"><code>/**
  * @module 
- * @description A SimpleTable that is easy to use.
- */
+ * @description CallWrapper tiene todos los miebros de keep pero 
+ * al resultado de todas las funciones le aplica la función fun
+ * */
 
-/**
- * A SimpleTable that is easy to use.
- * @param {String} name 
- * @param {Object} fields 
- * @param {Array} primaryKeys 
- */
-function EasyTable(name,fields,primaryKeys){
-    let simpleTable=new SimpleTable(name,fields,primaryKeys);
-    let fixedCaps=new CapsKeeper(simpleTable,Object.keys(fields));
-    FastPromiser.call(this,fixedCaps);
+function wrap(fun,wrapper){
+    return function(){
+        let ret = fun.apply(null,arguments);
+        return wrapper(ret);
+    }
 }
 
-module.exports=EasyTable;</code></pre>
+
+/**
+ * CallWrapper tiene todos los miebros de keep pero 
+ * al resultado de todas las funciones le aplica la función fun
+ * @param {*} keep 
+ * @param {*} fun 
+ */
+function CallWrapper(keep,fun){
+    let protoKeys=[];
+    if(keep.prototype){
+        protoKeys=Object.keys(keep.prototype);
+    }
+
+    let allKeys=protoKeys.concat(Object.keys(keep));
+    let funKeys=allKeys.filter((k)=>keep[k] instanceof Function);
+    for(let field of funKeys){
+        this[field]=wrap(keep[field].bind(keep),fun);
+    }
+}
+
+module.exports=CallWrapper;</code></pre>
         </article>
     </section>
 

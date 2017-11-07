@@ -1,4 +1,7 @@
 const CallWrapper = require("./CallWrapper");
+/**
+ * @module 
+ */
 
 function addThenMethods(promise,source,keys){
     for(let k of keys){
