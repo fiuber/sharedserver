@@ -2,7 +2,7 @@ let assert=require("chai").assert;
 var request = require('supertest');
 const run=require("./run");
 
-describe.only("POST en /servers", function(){
+describe("POST en /servers", function(){
     var app;
     var db;
     let agent=null;
