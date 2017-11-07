@@ -20,25 +20,27 @@ function updateCredentials(){
             credentials=res.body;
             console.log("Las credntials las tengoooooooooo")
             console.log(credentials);
-        })
+        }).catch((e)=>{
+            console.log("--------ERROR-----");
+            console.log(e);
+        });
     }
 }
 
 exports.pay=function(paymethod,value){
     return updateCredentials().then(()=>{
-        let o=paymethod.parameters;
+        let o=Object.assign({},paymethod.parameters);
         o.method=paymethod.paymethod;
         return request
         .post(serverUrl+"/payments")
-        //.set("Authorize",credentials.token_type+" "+credentials.access_token)
-        .set("Authorization","bearer "+credentials.access_token)
+        .set("Authorization",credentials.token_type+" "+credentials.access_token)
         .send({
             transaction_id:1,
             currency:"ARS",
             value:value,
             paymentMethod:o
         })
-        /*
+        
         .catch((e)=>{
             console.log(e)
             console.log("2222222222222222222222222222222222222222222")
@@ -50,7 +52,7 @@ exports.pay=function(paymethod,value){
                 paymentMethod:o
             });
         })
-        */
+        
     }).then((res)=>{
         if(res.status!=201){
             return Promise.reject("The payment on the external API was unsuccessful");
@@ -59,7 +61,19 @@ exports.pay=function(paymethod,value){
 
 }
 exports.paymentMethods=function(){
-    return request.get(serverUrl+"/paymethods").then((res)=>{
-        return res.body.items;
-    })
+    console.log("GG")
+    return updateCredentials().then((e)=>{
+        return request
+        .get(serverUrl+"/paymethods")
+        .set("Authorization",credentials.token_type+" "+credentials.access_token)
+        .then((res)=>{
+            console.log("HH")
+            return res.body.items;
+        }).catch((e)=>{
+            console.log("ACAAAAAAAAAAAAAAAAAAAAAAAA")
+            console.log(e);
+            return Promise.reject(e);
+        })
+    });
+    
 }

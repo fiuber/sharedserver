@@ -11,7 +11,7 @@ describe.only("using /trips",function(){
     let trip=null;
     let adminAuthValue="";
     before(function(){
-        this.timeout(5000);
+        this.timeout(25000);
         app =require("../server.js");
         agent=request.agent(app);
         
@@ -67,7 +67,7 @@ describe.only("using /trips",function(){
             ),
             "active": "true"
         }).expect(201);
-    }).timeout(5000);
+    }).timeout(25000);
 
     it("add a rule that checks for NOT soyyo5159 as driver",()=>{
         return agent
@@ -87,7 +87,7 @@ describe.only("using /trips",function(){
             ),
             "active": "true"
         }).expect(201);
-    }).timeout(5000);
+    }).timeout(25000);
 
 
 
@@ -115,7 +115,7 @@ describe.only("using /trips",function(){
         }).expect((res)=>{
             soyyo5159=res.body.user;
         })
-    }).timeout(5000);
+    }).timeout(25000);
     
     it("add a fb user",function(){
         return agent
@@ -142,7 +142,7 @@ describe.only("using /trips",function(){
         }).expect((res)=>{
             fayo5159=res.body.user;
         }).expect(201)
-    }).timeout(5000);
+    }).timeout(25000);
 
 
 
@@ -197,7 +197,8 @@ describe.only("using /trips",function(){
                     "expiration_month": 11,
                     "expiration_year": 2019,
                     "number": "12145687",
-                    "type": "credit"
+                    "type": "credit",
+                    
                 },
                 "paymethod": "card"
             }
@@ -210,7 +211,7 @@ describe.only("using /trips",function(){
             assert.equal(trip.cost.currency,"ARS");
             assert.equal(trip.cost.value,1000,"the rule was used");
         }).expect(201)
-    }).timeout(5000);
+    }).timeout(25000);
 
 
     it("estimate a trip that is opposite",()=>{
@@ -251,7 +252,7 @@ describe.only("using /trips",function(){
             assert.equal(trip.cost.currency,"ARS");
             assert.equal(trip.cost.value,1000,"the rule was used");
         }).expect(201)
-    }).timeout(5000);
+    }).timeout(25000);
 
     it("that trip is obtained",()=>{
         
@@ -265,7 +266,7 @@ describe.only("using /trips",function(){
             assert.equal(trip.passenger,fayo5159.id);
             assert.equal(trip.cost.currency,"ARS");
         }).expect(200)
-    }).timeout(5000);
+    }).timeout(25000);
 
     it("that trip is obtained through the driver",()=>{
         return agent
@@ -277,7 +278,7 @@ describe.only("using /trips",function(){
             })
             assert.isTrue(good,"the trip was not found")
         }).expect(200)
-    }).timeout(5000);
+    }).timeout(25000);
 
     it("that trip is obtained through the driver",()=>{
         return agent
@@ -289,7 +290,7 @@ describe.only("using /trips",function(){
             })
             assert.isTrue(good,"the trip was not found")
         }).expect(200)
-    }).timeout(5000);
+    }).timeout(25000);
 
     it("the balance of fayo5159 is 0",()=>{
         return agent
@@ -359,7 +360,8 @@ describe.only("using /trips",function(){
             });
 
         })
-    }).timeout(5000);
+    }).timeout(25000);
+    
     it("fayo5159 has two transactions",()=>{
         return agent
         .get("/users/"+fayo5159.id+"/transactions")
@@ -388,6 +390,6 @@ describe.only("using /trips",function(){
         .expect((res)=>{
             console.log(res.body);
         })
-    }).timeout(5000);
+    }).timeout(25000);
 
 })
