@@ -104,7 +104,7 @@
     
 
     
-    <h4 class="name" id="expressify"><span class="type-signature"></span>expressify<span class="signature">(shape, metadata, fun)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="reshapeFromShape"><span class="type-signature"></span>reshapeFromShape<span class="signature">(shape, data)</span><span class="type-signature"></span></h4>
     
 
     
@@ -112,7 +112,7 @@
 
 
 <div class="description">
-    Decouples apify.js and express.
+    This is the function that actually reshapes the data.
 </div>
 
 
@@ -154,213 +154,6 @@
             <td class="type">
             
                 
-<span class="param-type">shape</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">an object representing the 
-shape of the json objects accepted</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>metadata</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">an object that will be inserted 
-in the successful response under the "metadata" 
-property</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>fun</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">fn</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">the function to expressify</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="expressify_index.js.html">expressify/index.js</a>, <a href="expressify_index.js.html#line14">line 14</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    
-    <h4 class="name" id="SimpleTable"><span class="type-signature"></span>SimpleTable<span class="signature">(name, fields, primaryKeys)</span><span class="type-signature"></span></h4>
-    
-
-    
-
-
-
-<div class="description">
-    A PostgresTable with a much simpler interface.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>name</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>fields</code></td>
-            
-
-            <td class="type">
-            
-                
 <span class="param-type">Object</span>
 
 
@@ -371,20 +164,20 @@ property</td>
 
             
 
-            <td class="description last"></td>
+            <td class="description last">the target shape</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>primaryKeys</code></td>
+                <td class="name"><code>data</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Array</span>
+<span class="param-type">Objectt</span>
 
 
             
@@ -394,19 +187,7 @@ property</td>
 
             
 
-            <td class="description last">INTERFACE:
-create: adds a new record/row 
-read: gets a list of all rows whose properties match those of the json object.
-If no filter is specified, all rows are returned.
-
-exists: returns true or false depending on wether the 
-corresponding read would return any row.
-
-update: searches rows according to the first JSON safe object 
-and modifies the fields of the second argument
-
-delete: deletes all rows matching the JSON object. 
-If no parameter is passed, deletes all rows.</td>
+            <td class="description last">the data to reshape</td>
         </tr>
 
     
@@ -447,7 +228,7 @@ If no parameter is passed, deletes all rows.</td>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="model_tables_SimpleTable.js.html">model/tables/SimpleTable.js</a>, <a href="model_tables_SimpleTable.js.html#line24">line 24</a>
+        <a href="expressify_reshaperCreator_reshaperCreator.js.html">expressify/reshaperCreator/reshaperCreator.js</a>, <a href="expressify_reshaperCreator_reshaperCreator.js.html#line25">line 25</a>
     </li></ul></dd>
     
 
@@ -470,6 +251,16 @@ If no parameter is passed, deletes all rows.</td>
 
 
 
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    the reshaped data
+</div>
+
+
+
+    
 
 
 
@@ -491,13 +282,13 @@ If no parameter is passed, deletes all rows.</td>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="model.module_servers.html">servers</a></li><li><a href="module-auth.html">auth</a></li><li><a href="module-routes_model_tables_CallWrapper.html">routes/model/tables/CallWrapper</a></li><li><a href="module-routes_model_tables_EasyTable.html">routes/model/tables/EasyTable</a></li><li><a href="module-routes_model_tables_FastPromiser.html">routes/model/tables/FastPromiser</a></li><li><a href="module-routes_model_tables_PostgresTable.html">routes/model/tables/PostgresTable</a></li><li><a href="module-routes_model_tables_QueryBuilder.html">routes/model/tables/QueryBuilder</a></li></ul><h3>Global</h3><ul><li><a href="global.html#expressify">expressify</a></li><li><a href="global.html#SimpleTable">SimpleTable</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-routes_auth.html">routes/auth</a></li><li><a href="module-routes_expressify.html">routes/expressify</a></li><li><a href="module-routes_expressify_apify.html">routes/expressify/apify</a></li><li><a href="module-routes_expressify_reshaperCreator.html">routes/expressify/reshaperCreator</a></li><li><a href="module-routes_index.html">routes/index</a></li><li><a href="module-routes_model_business-users.html">routes/model/business-users</a></li><li><a href="module-routes_model_payer.html">routes/model/payer</a></li><li><a href="module-routes_model_ruleRunner.html">routes/model/ruleRunner</a></li><li><a href="module-routes_model_rules.html">routes/model/rules</a></li><li><a href="module-routes_model_rules-run.html">routes/model/rules-run</a></li><li><a href="module-routes_model_servers.html">routes/model/servers</a></li><li><a href="module-routes_model_tables_CallWrapper.html">routes/model/tables/CallWrapper</a></li><li><a href="module-routes_model_tables_EasyTable.html">routes/model/tables/EasyTable</a></li><li><a href="module-routes_model_tables_FastPromiser.html">routes/model/tables/FastPromiser</a></li><li><a href="module-routes_model_tables_PostgresTable.html">routes/model/tables/PostgresTable</a></li><li><a href="module-routes_model_tables_QueryBuilder.html">routes/model/tables/QueryBuilder</a></li><li><a href="module-routes_model_tables_SimpleTable.html">routes/model/tables/SimpleTable</a></li><li><a href="module-routes_model_transactions.html">routes/model/transactions</a></li><li><a href="module-routes_model_trips.html">routes/model/trips</a></li><li><a href="module-routes_model_users.html">routes/model/users</a></li></ul><h3>Global</h3><ul><li><a href="global.html#reshapeFromShape">reshapeFromShape</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Nov 07 2017 16:28:01 GMT-0300 (ART)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Nov 08 2017 10:31:50 GMT-0300 (ART)
 </footer>
 
 <script> prettyPrint(); </script>

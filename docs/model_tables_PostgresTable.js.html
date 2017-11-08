@@ -49,7 +49,9 @@ PostgresTable.prototype=Object.create(QueryBuilder.prototype);
 PostgresTable.prototype.constructor=PostgresTable;
 
 /**
- * Transforms the row in an Array that can be used to call pg-promise
+ * @method rowToArray
+ * @description Transforms the row in an Array that can be used to call pg-promise
+ * @param {Object} row row to be transformed
  */
 PostgresTable.prototype.rowToArray=function(row){
     let ordered=this.fields.filter((f)=>{
@@ -66,7 +68,8 @@ PostgresTable.prototype.rowToArray=function(row){
 }
 
 /**
- * Drops the PostgresTable and empties it
+ * @method restart
+ * @description Drops the PostgresTable and empties it
  */
 PostgresTable.prototype.restart=function(){
     return db.none(this.drop()).then(()=>db.none(this.create())).then(()=>{
@@ -77,7 +80,9 @@ PostgresTable.prototype.restart=function(){
     })
 }
 /**
- * Adds a row.
+ * @method add
+ * @description Adds a row.
+ * @param {Object} row
  */
 PostgresTable.prototype.add=function(row){
     return db.one(this.insert(),this.rowToArray(row).noSerials()).catch((e)=>{
@@ -93,7 +98,9 @@ PostgresTable.prototype.add=function(row){
 }
 
 /**
- * Finds the row by checking equality the properties and values of the passed object
+ * @method get
+ * @description Finds the row by checking equality the properties and values of the passed object
+ * @param {Object} partialRow filter by equality against this Object
  */
 PostgresTable.prototype.get=function(partialRow){
     let select=this.select();
@@ -118,7 +125,9 @@ PostgresTable.prototype.get=function(partialRow){
 }
 
 /**
- * Finds the row by checking equality the properties and values of the passed object
+ * @method exists
+ * @description Finds the row by checking equality the properties and values of the passed object
+ * @param {Object} partialRow
  */
 PostgresTable.prototype.exists=function(partialRow){
     return db
@@ -134,8 +143,11 @@ PostgresTable.prototype.exists=function(partialRow){
 }
 
 /**
- * Finds the row by checking equality the properties and values of the passed partialRowSelection,
+ * @method modify
+ * @description Finds the row by checking equality the properties and values of the passed partialRowSelection,
  * sets the values of the row to be partialRowUpdate
+ * @param {Object} partialRowSelection A selection row
+ * @param {Object} partialRowUpdate A row that says how that row will be modified
  */
 
 PostgresTable.prototype.modify=function(partialRowSelection,partialRowUpdate){
@@ -149,6 +161,12 @@ PostgresTable.prototype.modify=function(partialRowSelection,partialRowUpdate){
         return Promise.reject(e);
     });
 }
+
+/**
+ * @method remove
+ * @description Removes all matching rows
+ * @param {Object} partialRowSelection filter
+ */
 
 PostgresTable.prototype.remove=function(partialRowSelection){
     return db
@@ -173,13 +191,13 @@ module.exports=PostgresTable;</code></pre>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="model.module_servers.html">servers</a></li><li><a href="module-auth.html">auth</a></li><li><a href="module-routes_model_tables_CallWrapper.html">routes/model/tables/CallWrapper</a></li><li><a href="module-routes_model_tables_EasyTable.html">routes/model/tables/EasyTable</a></li><li><a href="module-routes_model_tables_FastPromiser.html">routes/model/tables/FastPromiser</a></li><li><a href="module-routes_model_tables_PostgresTable.html">routes/model/tables/PostgresTable</a></li><li><a href="module-routes_model_tables_QueryBuilder.html">routes/model/tables/QueryBuilder</a></li></ul><h3>Global</h3><ul><li><a href="global.html#expressify">expressify</a></li><li><a href="global.html#SimpleTable">SimpleTable</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-routes_auth.html">routes/auth</a></li><li><a href="module-routes_expressify.html">routes/expressify</a></li><li><a href="module-routes_expressify_apify.html">routes/expressify/apify</a></li><li><a href="module-routes_expressify_reshaperCreator.html">routes/expressify/reshaperCreator</a></li><li><a href="module-routes_expressify_reshaperCreator_reshaperCreator.html">routes/expressify/reshaperCreator/reshaperCreator</a></li><li><a href="module-routes_index.html">routes/index</a></li><li><a href="module-routes_model_business-users.html">routes/model/business-users</a></li><li><a href="module-routes_model_payer.html">routes/model/payer</a></li><li><a href="module-routes_model_ruleRunner.html">routes/model/ruleRunner</a></li><li><a href="module-routes_model_rules.html">routes/model/rules</a></li><li><a href="module-routes_model_rules-run.html">routes/model/rules-run</a></li><li><a href="module-routes_model_servers.html">routes/model/servers</a></li><li><a href="module-routes_model_tables_CallWrapper.html">routes/model/tables/CallWrapper</a></li><li><a href="module-routes_model_tables_EasyTable.html">routes/model/tables/EasyTable</a></li><li><a href="module-routes_model_tables_FastPromiser.html">routes/model/tables/FastPromiser</a></li><li><a href="module-routes_model_tables_PostgresTable.html">routes/model/tables/PostgresTable</a></li><li><a href="module-routes_model_tables_QueryBuilder.html">routes/model/tables/QueryBuilder</a></li><li><a href="module-routes_model_tables_SimpleTable.html">routes/model/tables/SimpleTable</a></li><li><a href="module-routes_model_transactions.html">routes/model/transactions</a></li><li><a href="module-routes_model_trips.html">routes/model/trips</a></li><li><a href="module-routes_model_users.html">routes/model/users</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Tue Nov 07 2017 16:28:01 GMT-0300 (ART)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed Nov 08 2017 10:38:31 GMT-0300 (ART)
 </footer>
 
 <script> prettyPrint(); </script>

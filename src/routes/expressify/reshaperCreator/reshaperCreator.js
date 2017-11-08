@@ -1,5 +1,7 @@
+/**
+ * @module
+ */
 const util=require("util");
-
 function reshaperCreator(shape){
     if(shape){
         return reshape.bind(null,shape);
@@ -14,6 +16,13 @@ function reshape(shapeCreator,data){
     let shape=shapeCreator(StringSignal.new,NumberSignal.new,ArraySignal.new,FromSignal.new) 
     return reshapeFromShape(shape,data)  ;
 }
+
+/**
+ * This is the function that actually reshapes the data.
+ * @param {Object} shape the target shape
+ * @param {Objectt} data the data to reshape
+ * @return the reshaped data
+ */
 
 function reshapeFromShape(shape,data){
     if(shape instanceof FromSignal){

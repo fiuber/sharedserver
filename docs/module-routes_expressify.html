@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: routes/model/tables/QueryBuilder</title>
+    <title>JSDoc: Module: routes/expressify</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: routes/model/tables/QueryBuilder</h1>
+    <h1 class="page-title">Module: routes/expressify</h1>
 
     
 
@@ -64,7 +64,7 @@
     
 
     
-    <h4 class="name" id="~QueryBuilder"><span class="type-signature">(inner) </span>QueryBuilder<span class="signature">(name, fields, primaryKeys)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="~all"><span class="type-signature">(inner) </span>all<span class="signature">(module, metadata)</span><span class="type-signature"></span></h4>
     
 
     
@@ -72,7 +72,7 @@
 
 
 <div class="description">
-    Builds queries. Determines the order of the columns.
+    Expressifies a module that was previously translated
 </div>
 
 
@@ -108,15 +108,10 @@
 
         <tr>
             
-                <td class="name"><code>name</code></td>
+                <td class="name"><code>module</code></td>
             
 
             <td class="type">
-            
-                
-<span class="param-type">String</span>
-
-
             
             </td>
 
@@ -124,22 +119,17 @@
 
             
 
-            <td class="description last">the name of the table</td>
+            <td class="description last"></td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>fields</code></td>
+                <td class="name"><code>metadata</code></td>
             
 
             <td class="type">
-            
-                
-<span class="param-type">Object</span>
-
-
             
             </td>
 
@@ -147,31 +137,7 @@
 
             
 
-            <td class="description last">An Object containing the fields as keys and the
- types as values. The order is inferred from this map</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>primaryKeys</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">An array of primarykeys</td>
+            <td class="description last"></td>
         </tr>
 
     
@@ -212,7 +178,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="model_tables_QueryBuilder.js.html">model/tables/QueryBuilder.js</a>, <a href="model_tables_QueryBuilder.js.html#line12">line 12</a>
+        <a href="expressify_index.js.html">expressify/index.js</a>, <a href="expressify_index.js.html#line65">line 65</a>
     </li></ul></dd>
     
 
@@ -235,6 +201,209 @@
 
 
 
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    expressified module
+</div>
+
+
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~expressify"><span class="type-signature">(inner) </span>expressify<span class="signature">(shape, fun, reshapeOutput)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Decouples apify and express.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>shape</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">shape</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">an object representing the 
+shape of the json objects accepted</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>fun</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">fn</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">the function to expressify</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>reshapeOutput</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">a function that 
+reshapes the json response.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="expressify_index.js.html">expressify/index.js</a>, <a href="expressify_index.js.html#line17">line 17</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    an apified function that can be used by express
+</div>
+
+
+
+    
 
 
 

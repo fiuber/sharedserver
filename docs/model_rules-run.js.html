@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Home</title>
+    <title>JSDoc: Source: model/rules-run.js</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,32 +17,88 @@
 
 <div id="main">
 
-    <h1 class="page-title">Home</h1>
+    <h1 class="page-title">Source: model/rules-run.js</h1>
 
     
 
 
 
     
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const rulesModel=require("./rules");
+const runner=require("./ruleRunner");
 
+/**
+ * @module
+ * @description The model for running rules. Interacts with ruleRunner
+ */
 
-    <h3> </h3>
+exports.runOne=function(body,ruleId,nonexistent){
+    return rulesModel.getRuleString(ruleId).then((str)=>{
+        if(str==null){
+            return nonexistent;
+        }
+        let strFacts=body.map((f)=>f.blob);
+        return runner.runStrings([str],strFacts).then((result)=>{
+            return {result:JSON.stringify(result)};
+        });
+    })
+}
 
+exports.runOne.shape=[
+    {
+        language:"string",
+        blob:"string"
+    }
+]
 
+exports.runMany=function(body,nonexistent){
+    let ruleIds=body.rules;
+    let ruleStrings=ruleIds.map((ruleId)=>{
+        return rulesModel.getRuleString(ruleId);
+    })
 
+    return Promise.all(ruleStrings).then((strings)=>{
+        if(strings.some((s)=>s==null)){
+            return nonexistent;
+        }
 
+        let strFacts=body.facts.map((f)=>f.blob);
+        return runner.runStrings(strings,strFacts).then((result)=>{
+            return {result:JSON.stringify(result)};
+        });
+    })
+}
+exports.runMany.shape={
+    rules:["string"],
+    facts:[
+        {
+            language:"string",
+            blob:"string"
+        }
+    ]
+}
 
+exports.calculateCost=function(fact){
+    return rulesModel.getRules().then((rules)=>{
+        let ruleStrings=rules.map((rule)=>{
+            return rule.commit.blob;
+        })
+        return ruleStrings;
+    }).then((strings)=>{
+        if(strings.some((s)=>s==null)){
+            return nonexistent;
+        }
 
-
-
-
-
-    
-
-
-
-
-
+        let strFacts=[JSON.stringify(fact)];
+        return runner.runStrings(strings,strFacts).then((result)=>{
+            return result.cost || 0;//{result:JSON.stringify(result)};
+        });
+    });
+}</code></pre>
+        </article>
+    </section>
 
 
 

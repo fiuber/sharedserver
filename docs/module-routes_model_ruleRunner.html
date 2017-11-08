@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Module: routes/model/tables/QueryBuilder</title>
+    <title>JSDoc: Module: routes/model/ruleRunner</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Module: routes/model/tables/QueryBuilder</h1>
+    <h1 class="page-title">Module: routes/model/ruleRunner</h1>
 
     
 
@@ -29,6 +29,8 @@
 <header>
     
         
+            
+        
     
 </header>
 
@@ -36,6 +38,82 @@
     <div class="container-overview">
     
         
+            <div class="description">This module interacts with node-rules.</div>
+        
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="model_ruleRunner.js.html">model/ruleRunner.js</a>, <a href="model_ruleRunner.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         
     
@@ -64,7 +142,7 @@
     
 
     
-    <h4 class="name" id="~QueryBuilder"><span class="type-signature">(inner) </span>QueryBuilder<span class="signature">(name, fields, primaryKeys)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="~runStrings"><span class="type-signature">(inner) </span>runStrings<span class="signature">(rules, facts)</span><span class="type-signature"> &rarr; {Object}</span></h4>
     
 
     
@@ -72,7 +150,7 @@
 
 
 <div class="description">
-    Builds queries. Determines the order of the columns.
+    Executes the passed rules with the given facts. All should be strings.
 </div>
 
 
@@ -108,13 +186,13 @@
 
         <tr>
             
-                <td class="name"><code>name</code></td>
+                <td class="name"><code>rules</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">String</span>
+<span class="param-type">Array.&lt;string></span>
 
 
             
@@ -124,20 +202,20 @@
 
             
 
-            <td class="description last">the name of the table</td>
+            <td class="description last">an array of strings, every string is a rule.</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>fields</code></td>
+                <td class="name"><code>facts</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Object</span>
+<span class="param-type">Array.&lt;string></span>
 
 
             
@@ -147,31 +225,8 @@
 
             
 
-            <td class="description last">An Object containing the fields as keys and the
- types as values. The order is inferred from this map</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>primaryKeys</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">An array of primarykeys</td>
+            <td class="description last">an array of strings, every string is a fact. 
+This means, it is a json fact. The facts are transformed to js objects and then merged.</td>
         </tr>
 
     
@@ -212,7 +267,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="model_tables_QueryBuilder.js.html">model/tables/QueryBuilder.js</a>, <a href="model_tables_QueryBuilder.js.html#line12">line 12</a>
+        <a href="model_ruleRunner.js.html">model/ruleRunner.js</a>, <a href="model_ruleRunner.js.html#line8">line 8</a>
     </li></ul></dd>
     
 
@@ -235,6 +290,28 @@
 
 
 
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    the result of the execution.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
 
 
 

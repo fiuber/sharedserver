@@ -5,7 +5,8 @@ var router = express.Router();
 const authorization=require("auth-header");
 
 /**
- * @module auth
+ * @module
+ * @description handles authentication
  */
 /**
  * A middleware generator function. 

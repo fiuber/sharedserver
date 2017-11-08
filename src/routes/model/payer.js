@@ -1,3 +1,7 @@
+/**
+ * @module
+ * @description This module interacts with the payment server.
+ */
 const serverUrl=process.env.PAYMENT_SERVER;
 const fetch=require("node-fetch");
 const request=require("superagent");

@@ -21,7 +21,9 @@ PostgresTable.prototype=Object.create(QueryBuilder.prototype);
 PostgresTable.prototype.constructor=PostgresTable;
 
 /**
- * Transforms the row in an Array that can be used to call pg-promise
+ * @method rowToArray
+ * @description Transforms the row in an Array that can be used to call pg-promise
+ * @param {Object} row row to be transformed
  */
 PostgresTable.prototype.rowToArray=function(row){
     let ordered=this.fields.filter((f)=>{
@@ -38,7 +40,8 @@ PostgresTable.prototype.rowToArray=function(row){
 }
 
 /**
- * Drops the PostgresTable and empties it
+ * @method restart
+ * @description Drops the PostgresTable and empties it
  */
 PostgresTable.prototype.restart=function(){
     return db.none(this.drop()).then(()=>db.none(this.create())).then(()=>{
@@ -49,7 +52,9 @@ PostgresTable.prototype.restart=function(){
     })
 }
 /**
- * Adds a row.
+ * @method add
+ * @description Adds a row.
+ * @param {Object} row
  */
 PostgresTable.prototype.add=function(row){
     return db.one(this.insert(),this.rowToArray(row).noSerials()).catch((e)=>{
@@ -65,7 +70,9 @@ PostgresTable.prototype.add=function(row){
 }
 
 /**
- * Finds the row by checking equality the properties and values of the passed object
+ * @method get
+ * @description Finds the row by checking equality the properties and values of the passed object
+ * @param {Object} partialRow filter by equality against this Object
  */
 PostgresTable.prototype.get=function(partialRow){
     let select=this.select();
@@ -90,7 +97,9 @@ PostgresTable.prototype.get=function(partialRow){
 }
 
 /**
- * Finds the row by checking equality the properties and values of the passed object
+ * @method exists
+ * @description Finds the row by checking equality the properties and values of the passed object
+ * @param {Object} partialRow
  */
 PostgresTable.prototype.exists=function(partialRow){
     return db
@@ -106,8 +115,11 @@ PostgresTable.prototype.exists=function(partialRow){
 }
 
 /**
- * Finds the row by checking equality the properties and values of the passed partialRowSelection,
+ * @method modify
+ * @description Finds the row by checking equality the properties and values of the passed partialRowSelection,
  * sets the values of the row to be partialRowUpdate
+ * @param {Object} partialRowSelection A selection row
+ * @param {Object} partialRowUpdate A row that says how that row will be modified
  */
 
 PostgresTable.prototype.modify=function(partialRowSelection,partialRowUpdate){
@@ -121,6 +133,12 @@ PostgresTable.prototype.modify=function(partialRowSelection,partialRowUpdate){
         return Promise.reject(e);
     });
 }
+
+/**
+ * @method remove
+ * @description Removes all matching rows
+ * @param {Object} partialRowSelection filter
+ */
 
 PostgresTable.prototype.remove=function(partialRowSelection){
     return db

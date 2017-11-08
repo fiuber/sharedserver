@@ -1,6 +1,7 @@
 const sdb=require("./tables").servers;
 /**
- * @module model.servers
+ * @module
+ * @description A model for handling the servers CRUD
  */
 exports.shape={
     "id": "string",
@@ -42,10 +43,6 @@ function ifExists(id,fun,nonexistent){
     })
 }
 
-/**
- * No se agrega porque no se sabe cuál es el server 
- * que me está pegando porque no están implementadas las autorizaciones
- */
 exports.ping=function(nonexistent,badRevision,me){
     console.log("ENTRA")
     let expiresAtDate = new Date();
@@ -80,7 +77,7 @@ exports.add=function(server,nonexistent,badRevision,me){
     });
 }
 
-/**
+/***
  * Updates only the name of the server with the received ID
  */
 exports.update=function(body,id,nonexistent,badRevision){
@@ -125,7 +122,7 @@ exports.delete=function(id,nonexistent){
 }
 exports.delete.shape={}
 
-/**
+/***
  * no pongo el METADATA correspondiente porque no entiendo qué significa
  */
 exports.list=function(){
@@ -141,7 +138,8 @@ exports.get=function(id,nonexistent){
 exports.get.shape={};
 
 /**
- * determines wether the client is authorized.
+ * @method authorized
+ * @description determines wether the client is authorized.
  * 
  * @arg credentials an object containing a "token" property
  * @arg identifyAs a function that takes an object that identifies the client

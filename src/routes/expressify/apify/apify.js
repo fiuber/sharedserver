@@ -7,6 +7,15 @@ const ERROR={"error":true}
 
 const util=require("util");
 
+/**
+ * @module routes/expressify/apify
+ * @description This is a function decorator. 
+ * The passed function doesn't know about requests or responses. 
+ * This decouples logic from communications.
+ * @param {*} shape the shape that must be satisfied by the body of the request
+ * @param {*} fun the function to be called
+ * @return a function that can be used by expressify
+ */
 function apify(shape,fun){
     
     return function(req_body,send,req_parameters,origin){

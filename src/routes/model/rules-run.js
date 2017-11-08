@@ -1,6 +1,11 @@
 const rulesModel=require("./rules");
 const runner=require("./ruleRunner");
 
+/**
+ * @module
+ * @description The model for running rules. Interacts with ruleRunner
+ */
+
 exports.runOne=function(body,ruleId,nonexistent){
     return rulesModel.getRuleString(ruleId).then((str)=>{
         if(str==null){

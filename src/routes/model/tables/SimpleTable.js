@@ -1,6 +1,10 @@
 const PostgresTable=require("./PostgresTable");
 
 /**
+ * @module
+ */
+
+/**
  * A PostgresTable with a much simpler interface.
  * @param {String} name 
  * @param {Object} fields 
