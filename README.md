@@ -38,7 +38,8 @@ El punto de intersección de todas estas tecnologías es los modelos planteados 
 Pese a que la idea es atractiva, se obtuvo una arquitectura poco conveniente y demasiado pesada, fruto de sobreingeniería. Así, el modelo tiene como principal responsabilidad el hacer joins, que es una tarea que debería estar relegada al paquete tables. Una mejor decisión habría sido relegar tanto los joins como la construcción de json a vistas de SQL, o usar un ORM, y permitir acoplamiento con Express.
 
 # Modelo de datos
-
+![alt text](./DEI.png)
+![alt text](../DEI.png)
 
 # Uso del engine de reglas
 Lo que recibe el engine de reglas es (es decir, API para el engine de reglas).
