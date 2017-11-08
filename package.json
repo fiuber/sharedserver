@@ -22,7 +22,7 @@
     "outsidebuild": "node_modules/.bin/browserify public/js6/main.js -o public/js/bundle.js -t  babelify",
     "outsidetest": "docker-compose run -v $PWD'/src:/app/src' -v $PWD'/integration-test:/app/integration-test' web npm test",
     "outsiderun": "docker-compose run --service-ports -v $PWD'/src:/app/src' -v $PWD'/public:/app/public' -v $PWD'/integration-test:/app/integration-test' web npm start",
-    "docs": "jsdoc  -r src -d docs"
+    "docs": "jsdoc  -r src -d docs --readme README.md"
   },
   "dependencies": {
     "auth-header": "^0.3.1",
