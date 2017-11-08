@@ -65,8 +65,8 @@ class Strategy{
             Name: {row.name}
             <br/>
             <span class="glyphicon glyphicon-off" 
-                style={{color: row.lastConnection < new Date().getDate() ?  "red" : "green", padding: "2px"}}></span>
-            LastConnection: {row.lastConnection}
+                style={{color: row.lastConnection < new Date().getDate() - 3600000/*1hora*/ ?  "red" : "green", padding: "2px"}}></span>
+            LastConnection: {new Date(row.lastConnection).toString()}
             <br/>
             <TokenCreatorButton token={this.token} id={row.id} />
             

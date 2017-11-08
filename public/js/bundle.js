@@ -40436,7 +40436,8 @@ var App = exports.App = function (_React$Component) {
       username: "",
       password: "",
       token: "",
-      currentTab: 1
+      currentTab: 1,
+      securityLevel: 0
     };
 
     _this.gotoLogin = _this.gotoLogin.bind(_this);
@@ -40487,9 +40488,29 @@ var App = exports.App = function (_React$Component) {
   }, {
     key: 'handleSuccess',
     value: function handleSuccess(username, password, token) {
+      var _this2 = this;
+
       console.log(username);
       console.log(password);
       console.log(token);
+      var level = 0;
+      debugger;
+      fetch("/business-users/me", {
+        method: "GET",
+
+        headers: {
+          "Authorization": "api-key " + token
+        },
+        cache: "no-store"
+      }).then(function (res) {
+        return res.json();
+      }).then(function (jsn) {
+        console.log("LOS ROLES:");
+        console.log(jsn.businessUser.roles);
+        if (jsn.businessUser.roles.indexOf('admin') > -1) level = 3;else if (jsn.businessUser.roles.indexOf('manager') > -1) level = 2;else if (jsn.businessUser.roles.indexOf('user') > -1) level = 1;
+        _this2.setState({ securityLevel: level });
+      });
+
       this.setState({
         token: token,
         username: username,
@@ -40497,6 +40518,7 @@ var App = exports.App = function (_React$Component) {
         current: this.main,
         showbar: true
       });
+      console.log(this.state);
     }
   }, {
     key: 'render',
@@ -40548,7 +40570,8 @@ var App = exports.App = function (_React$Component) {
                 ),
                 _react2.default.createElement(
                   'li',
-                  { 'class': this.state.currentTab == 2 ? 'active' : '' },
+                  { style: { display: this.state.securityLevel >= 3 ? '' : 'none' },
+                    'class': this.state.currentTab == 2 ? 'active' : '' },
                   _react2.default.createElement(
                     'a',
                     { onClick: this.gotoBusinessUsers },
@@ -40557,7 +40580,8 @@ var App = exports.App = function (_React$Component) {
                 ),
                 _react2.default.createElement(
                   'li',
-                  { 'class': this.state.currentTab == 3 ? 'active' : '' },
+                  { style: { display: this.state.securityLevel >= 2 ? '' : 'none' },
+                    'class': this.state.currentTab == 3 ? 'active' : '' },
                   _react2.default.createElement(
                     'a',
                     { onClick: this.gotoServers },
@@ -40566,7 +40590,8 @@ var App = exports.App = function (_React$Component) {
                 ),
                 _react2.default.createElement(
                   'li',
-                  { 'class': this.state.currentTab == 4 ? 'active' : '' },
+                  { style: { display: this.state.securityLevel >= 1 ? '' : 'none' },
+                    'class': this.state.currentTab == 4 ? 'active' : '' },
                   _react2.default.createElement(
                     'a',
                     { onClick: this.gotoUsers },
@@ -42086,9 +42111,9 @@ var Strategy = function () {
                 row.name,
                 _react2.default.createElement('br', null),
                 _react2.default.createElement('span', { 'class': 'glyphicon glyphicon-off',
-                    style: { color: row.lastConnection < new Date().getDate() ? "red" : "green", padding: "2px" } }),
+                    style: { color: row.lastConnection < new Date().getDate() - 3600000 /*1hora*/ ? "red" : "green", padding: "2px" } }),
                 'LastConnection: ',
-                row.lastConnection,
+                new Date(row.lastConnection).toString(),
                 _react2.default.createElement('br', null),
                 _react2.default.createElement(_TokenCreatorButton.TokenCreatorButton, { token: this.token, id: row.id })
             );

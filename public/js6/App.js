@@ -34,7 +34,8 @@ export class App extends React.Component {
         username:"",
         password:"",
         token:"",
-        currentTab: 1
+        currentTab: 1,
+        securityLevel:0
       }
 
       this.gotoLogin = this.gotoLogin.bind(this);
@@ -76,6 +77,26 @@ export class App extends React.Component {
       console.log(username)
       console.log(password)
       console.log(token)
+      let level =0;
+      debugger
+      fetch("/business-users/me",{
+            method:"GET",
+
+            headers:{
+                "Authorization":"api-key "+token,
+            },
+            cache:"no-store"
+        })
+        .then((res)=>res.json())
+        .then((jsn)=>{
+            console.log("LOS ROLES:")
+            console.log(jsn.businessUser.roles)
+            if (jsn.businessUser.roles.indexOf('admin') > -1) level = 3;
+            else if (jsn.businessUser.roles.indexOf('manager') > -1) level = 2;
+            else if (jsn.businessUser.roles.indexOf('user') > -1) level = 1;
+            this.setState({securityLevel:level})
+        });
+
       this.setState({
         token,
         username,
@@ -83,6 +104,7 @@ export class App extends React.Component {
         current: this.main,
         showbar: true
       });
+      console.log(this.state)
     }
     render(){
       return(
@@ -105,9 +127,12 @@ export class App extends React.Component {
               <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
                   <li class={this.state.currentTab == 1 ? 'active' : ''}><a onClick={this.gotoHome}>Home</a></li>
-                  <li class={this.state.currentTab == 2 ? 'active' : ''}><a onClick={this.gotoBusinessUsers}>Business Users</a></li>
-                  <li class={this.state.currentTab == 3 ? 'active' : ''}><a onClick={this.gotoServers}>Servers</a></li>
-                  <li class={this.state.currentTab == 4 ? 'active' : ''}><a onClick={this.gotoUsers}>Users</a></li>
+                  <li style={{display: this.state.securityLevel >= 3 ? '' : 'none'}}
+                      class={this.state.currentTab == 2 ? 'active' : ''}><a onClick={this.gotoBusinessUsers}>Business Users</a></li>
+                  <li style={{display: this.state.securityLevel >= 2 ? '' : 'none'}}
+                      class={this.state.currentTab == 3 ? 'active' : ''}><a onClick={this.gotoServers}>Servers</a></li>
+                  <li style={{display: this.state.securityLevel >= 1 ? '' : 'none'}}
+                      class={this.state.currentTab == 4 ? 'active' : ''}><a onClick={this.gotoUsers}>Users</a></li>
                   <li class={this.state.currentTab == 5 ? 'active' : ''}><a onClick={this.gotoTrips}>Trips</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
