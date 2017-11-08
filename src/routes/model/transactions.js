@@ -1,5 +1,9 @@
 const transactions=require("./tables").transactions;
 
+/**
+ * @module
+ * @description Model for handling the transactions CRUD
+ */
 
 exports.getTransactions=function(userId,nonexistent){
     return transactions.read({userId:userId});

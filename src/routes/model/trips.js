@@ -4,6 +4,11 @@ const usersModel=require("./users");
 const transactionsModel=require("./transactions")
 //const payer=require("./payer");
 
+/**
+ * @module
+ * @description A model for handling the CRUD of trips, payments (only addTrip) and estimation.
+ */
+
 let payer=null;
 let costCalculator=null;
 exports.addTrip=function(newPayer,newCostCalculator){

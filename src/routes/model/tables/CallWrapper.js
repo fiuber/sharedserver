@@ -1,16 +1,23 @@
+/**
+ * @module 
+ * @description CallWrapper tiene todos los miebros de keep pero 
+ * al resultado de todas las funciones le aplica la función fun
+ * */
+
 function wrap(fun,wrapper){
     return function(){
         let ret = fun.apply(null,arguments);
         return wrapper(ret);
-        /*
-        return Promise.resolve(ret).then(function(result){
-            return wrapper(result);
-        })
-        */
     }
 }
 
 
+/**
+ * CallWrapper tiene todos los miebros de keep pero 
+ * al resultado de todas las funciones le aplica la función fun
+ * @param {*} keep 
+ * @param {*} fun 
+ */
 function CallWrapper(keep,fun){
     let protoKeys=[];
     if(keep.prototype){

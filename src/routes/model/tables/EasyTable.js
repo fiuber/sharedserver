@@ -2,6 +2,11 @@ const SimpleTable=require("./SimpleTable");
 const CapsKeeper=require("./CapsKeeper");
 const FastPromiser=require("./FastPromiser");
 /**
+ * @module 
+ * @description A SimpleTable that is easy to use.
+ */
+
+/**
  * A SimpleTable that is easy to use.
  * @param {String} name 
  * @param {Object} fields 

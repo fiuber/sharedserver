@@ -1,15 +1,18 @@
 const apify=require("./apify/apify.js");
 const wrapAll= require("./wrapAll.js");
 const reshaperCreator=require("./reshaperCreator");
+/**
+ * @module routes/expressify
+ */
 
 /**
- * Decouples apify.js and express.
+ * Decouples apify and express.
  * @param {shape} shape an object representing the 
  * shape of the json objects accepted
- * @param {object} metadata an object that will be inserted 
- * in the successful response under the "metadata" 
- * property
  * @param {fn} fun the function to expressify
+ * @param {Function} reshapeOutput a function that 
+ * reshapes the json response.
+ * @return an apified function that can be used by express
  */
 function expressify(shape,fun,reshapeOutput){
     var f=apify(shape,fun);
@@ -59,6 +62,13 @@ function expressify(shape,fun,reshapeOutput){
     }
 }
 
+/**
+ * @method all
+ * @description Expressifies a module that was previously translated
+ * @param module 
+ * @param metadata
+ * @return expressified module
+ */
 expressify.all=function(module,metadata){
     return wrapAll(function(f){
         let inShape=f.shape || module.shape;

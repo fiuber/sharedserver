@@ -2,6 +2,11 @@ const lastCommits  =require("./tables").lastCommits;
 const commits      =require("./tables").commits;
 const businessUsers=require("./business-users");
 
+/**
+ * @module
+ * @description The rules model for representing the CRUD
+ */
+
 exports.addRule=function(rule,nonexistent,badRevision,me){
     rule.message="asd";
     rule.timestamp=new Date().getTime();
