@@ -40,6 +40,8 @@ Pese a que la idea es atractiva, se obtuvo una arquitectura poco conveniente y d
 # Modelo de datos
 ![alt text](./DEI.png)
 ![alt text](../DEI.png)
+![alt text](https://github.com/fiuber/sharedserver/raw/master/DEI.png)
+
 
 # Uso del engine de reglas
 Lo que recibe el engine de reglas es (es decir, API para el engine de reglas).
