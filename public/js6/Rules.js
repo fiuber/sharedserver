@@ -12,7 +12,7 @@ class Strategy{
     }
     getAll(){
         console.log("Iam getting all the things")
-        return fetch("/trips",{
+        return fetch("/rules",{
             method:"GET",
 
             headers:{
@@ -22,8 +22,8 @@ class Strategy{
         })
         .then((res)=>res.json())
         .then((jsn)=>{
-            console.log("LOS Trips:")
-            console.log(jsn.trips)
+            console.log("LOS rules:")
+            console.log(jsn.rules)
 
             return jsn.trips;
         });
@@ -34,7 +34,7 @@ class Strategy{
     }
 
     doDelete(row){
-        return Promise.resolve("Cant")
+        return Promise.resolve("cant");
     }
 
     
@@ -58,7 +58,7 @@ class Strategy{
     }
 
     renderClosed(row){
-        return (<span>Id: {row.id}</span>);
+        return (<span>Rule: {row.id}</span>);
     }
 
     createKey(row){
@@ -73,7 +73,7 @@ class Strategy{
 
     defaultCreationContent(){
         return {
-            type:"CANT CREATE"
+            rule:"string"
         };
     }
 
@@ -83,7 +83,7 @@ class Strategy{
 }
 
 
-export class Trips extends CrudTable{
+export class Rules extends CrudTable{
     constructor(props){
         debugger
         let strategy=new Strategy(props.token);

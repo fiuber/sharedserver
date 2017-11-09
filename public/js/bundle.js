@@ -40388,6 +40388,8 @@ var _Users = require('./Users');
 
 var _Trips = require('./Trips');
 
+var _Rules = require('./Rules');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -40410,24 +40412,22 @@ var App = exports.App = function (_React$Component) {
       return _react2.default.createElement(_Login.Login, { onSuccess: _this.handleSuccess });
     };
     _this.main = function () {
-      return _react2.default.createElement(_MainScreen.MainScreen, {
-        onBusinessUsers: _this.gotoBusinessUsers.bind(_this),
-        onServers: _this.gotoServers.bind(_this),
-        onUsers: _this.gotoUsers.bind(_this),
-        token: _this.state.token
-      });
+      return _react2.default.createElement(_MainScreen.MainScreen, { token: _this.state.token, securityLevel: _this.state.securityLevel });
     };
     _this.businessUsers = function () {
-      return _react2.default.createElement(_BusinessUsers.BusinessUsers, { token: _this.state.token });
+      return _react2.default.createElement(_BusinessUsers.BusinessUsers, { token: _this.state.token, securityLevel: _this.state.securityLevel });
     };
     _this.servers = function () {
-      return _react2.default.createElement(_Servers.Servers, { token: _this.state.token });
+      return _react2.default.createElement(_Servers.Servers, { token: _this.state.token, username: _this.state.username, securityLevel: _this.state.securityLevel });
     };
     _this.users = function () {
-      return _react2.default.createElement(_Users.Users, { token: _this.state.token });
+      return _react2.default.createElement(_Users.Users, { token: _this.state.token, securityLevel: _this.state.securityLevel });
     };
     _this.trips = function () {
-      return _react2.default.createElement(_Trips.Trips, { token: _this.state.token });
+      return _react2.default.createElement(_Trips.Trips, { token: _this.state.token, securityLevel: _this.state.securityLevel });
+    };
+    _this.rules = function () {
+      return _react2.default.createElement(_Rules.Rules, { token: _this.state.token, securityLevel: _this.state.securityLevel });
     };
 
     _this.state = {
@@ -40446,6 +40446,7 @@ var App = exports.App = function (_React$Component) {
     _this.gotoServers = _this.gotoServers.bind(_this);
     _this.gotoUsers = _this.gotoUsers.bind(_this);
     _this.gotoTrips = _this.gotoTrips.bind(_this);
+    _this.gotoRules = _this.gotoRules.bind(_this);
     return _this;
   }
 
@@ -40486,6 +40487,11 @@ var App = exports.App = function (_React$Component) {
       this.setState({ current: this.trips, currentTab: 5 });
     }
   }, {
+    key: 'gotoRules',
+    value: function gotoRules(event) {
+      this.setState({ current: this.rules, currentTab: 6 });
+    }
+  }, {
     key: 'handleSuccess',
     value: function handleSuccess(username, password, token) {
       var _this2 = this;
@@ -40494,7 +40500,6 @@ var App = exports.App = function (_React$Component) {
       console.log(password);
       console.log(token);
       var level = 0;
-      debugger;
       fetch("/business-users/me", {
         method: "GET",
 
@@ -40600,11 +40605,22 @@ var App = exports.App = function (_React$Component) {
                 ),
                 _react2.default.createElement(
                   'li',
-                  { 'class': this.state.currentTab == 5 ? 'active' : '' },
+                  { style: { display: this.state.securityLevel >= 1 ? '' : 'none' },
+                    'class': this.state.currentTab == 5 ? 'active' : '' },
                   _react2.default.createElement(
                     'a',
                     { onClick: this.gotoTrips },
                     'Trips'
+                  )
+                ),
+                _react2.default.createElement(
+                  'li',
+                  { style: { display: this.state.securityLevel >= 2 ? '' : 'none' },
+                    'class': this.state.currentTab == 6 ? 'active' : '' },
+                  _react2.default.createElement(
+                    'a',
+                    { onClick: this.gotoRules },
+                    'Rules'
                   )
                 )
               ),
@@ -40637,7 +40653,7 @@ var App = exports.App = function (_React$Component) {
   return App;
 }(_react2.default.Component);
 
-},{"./BusinessUsers":193,"./Login":199,"./MainScreen":200,"./Servers":202,"./Trips":204,"./Users":205,"react":189,"react-dom":28,"whatwg-fetch":191}],193:[function(require,module,exports){
+},{"./BusinessUsers":193,"./Login":199,"./MainScreen":200,"./Rules":202,"./Servers":203,"./Trips":205,"./Users":206,"react":189,"react-dom":28,"whatwg-fetch":191}],193:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -41482,6 +41498,7 @@ var Dialog = exports.Dialog = function (_React$Component) {
                             'div',
                             { 'class': 'col-sm-10' },
                             _react2.default.createElement('input', {
+                                style: { height: key.toUpperCase() == "RULE" ? '300px' : '' },
                                 'class': 'form-control',
                                 placeholder: "Enter " + key,
                                 key: key,
@@ -41830,9 +41847,6 @@ var MainScreen = exports.MainScreen = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (MainScreen.__proto__ || Object.getPrototypeOf(MainScreen)).call(this, props));
 
         _this.token = props.token;
-        _this.onBusinessUsers = props.onBusinessUsers;
-        _this.onServers = props.onServers;
-        _this.onUsers = props.onUsers;
         return _this;
     }
 
@@ -42008,6 +42022,155 @@ var Row = exports.Row = function (_React$Component) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.Rules = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+require('whatwg-fetch');
+
+var _reactPopout = require('react-popout');
+
+var _reactPopout2 = _interopRequireDefault(_reactPopout);
+
+var _CrudTable2 = require('./CrudTable');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Strategy = function () {
+    function Strategy(token) {
+        _classCallCheck(this, Strategy);
+
+        debugger;
+        this.token = token;
+    }
+
+    _createClass(Strategy, [{
+        key: 'getAll',
+        value: function getAll() {
+            console.log("Iam getting all the things");
+            return fetch("/rules", {
+                method: "GET",
+
+                headers: {
+                    "Authorization": "api-key " + this.token
+                },
+                cache: "no-store"
+            }).then(function (res) {
+                return res.json();
+            }).then(function (jsn) {
+                console.log("LOS rules:");
+                console.log(jsn.rules);
+
+                return jsn.trips;
+            });
+        }
+    }, {
+        key: 'doUpdate',
+        value: function doUpdate(row, content) {
+            return Promise.resolve("Cant");
+        }
+    }, {
+        key: 'doDelete',
+        value: function doDelete(row) {
+            return Promise.resolve("cant");
+        }
+    }, {
+        key: 'renderOpened',
+        value: function renderOpened(row) {
+            return _react2.default.createElement(
+                'span',
+                null,
+                _react2.default.createElement('br', null),
+                'Id: ',
+                row.id,
+                _react2.default.createElement('br', null),
+                'ApplicationOwner: ',
+                row.applicationOwner,
+                _react2.default.createElement('br', null),
+                'Driver: ',
+                row.driver,
+                _react2.default.createElement('br', null),
+                'Passenger: ',
+                row.passenger,
+                _react2.default.createElement('br', null),
+                'Cost: ',
+                row.cost,
+                _react2.default.createElement('br', null)
+            );
+        }
+    }, {
+        key: 'renderClosed',
+        value: function renderClosed(row) {
+            return _react2.default.createElement(
+                'span',
+                null,
+                'Rule: ',
+                row.id
+            );
+        }
+    }, {
+        key: 'createKey',
+        value: function createKey(row) {
+            return row.id + row.applicationOwner + row.type + row.username + row.name + row.surname + row.country + row.email + row.birthdate + row.images.join("");
+        }
+    }, {
+        key: 'defaults',
+        value: function defaults(row) {
+            return {
+                username: "CANT UPDATE"
+            };
+        }
+    }, {
+        key: 'defaultCreationContent',
+        value: function defaultCreationContent() {
+            return {
+                rule: "string"
+            };
+        }
+    }, {
+        key: 'doCreate',
+        value: function doCreate(content) {
+            return Promise.resolve(1);
+        }
+    }]);
+
+    return Strategy;
+}();
+
+var Rules = exports.Rules = function (_CrudTable) {
+    _inherits(Rules, _CrudTable);
+
+    function Rules(props) {
+        _classCallCheck(this, Rules);
+
+        debugger;
+        var strategy = new Strategy(props.token);
+        return _possibleConstructorReturn(this, (Rules.__proto__ || Object.getPrototypeOf(Rules)).call(this, props, strategy));
+    }
+
+    return Rules;
+}(_CrudTable2.CrudTable);
+
+},{"./CrudTable":197,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],203:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 exports.Servers = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -42039,10 +42202,11 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Strategy = function () {
-    function Strategy(token) {
+    function Strategy(token, username) {
         _classCallCheck(this, Strategy);
 
         this.token = token;
+        this.username = username;
     }
 
     _createClass(Strategy, [{
@@ -42094,6 +42258,7 @@ var Strategy = function () {
     }, {
         key: 'renderOpened',
         value: function renderOpened(row) {
+            debugger;
             return _react2.default.createElement(
                 'span',
                 null,
@@ -42111,7 +42276,7 @@ var Strategy = function () {
                 row.name,
                 _react2.default.createElement('br', null),
                 _react2.default.createElement('span', { 'class': 'glyphicon glyphicon-off',
-                    style: { color: row.lastConnection < new Date().getDate() - 3600000 /*1hora*/ ? "red" : "green", padding: "2px" } }),
+                    style: { color: row.lastConnection < new Date().getTime() - 3600000 /*1hora*/ ? "red" : "green", padding: "2px" } }),
                 'LastConnection: ',
                 new Date(row.lastConnection).toString(),
                 _react2.default.createElement('br', null),
@@ -42160,8 +42325,8 @@ var Strategy = function () {
                 body: JSON.stringify({
                     id: "asd",
                     _ref: "asd",
-                    createdBy: "a user",
-                    createdTime: 0,
+                    createdBy: this.username,
+                    createdTime: new Date().getTime(),
                     name: content.name,
                     lastConnection: 0
                 })
@@ -42178,14 +42343,14 @@ var Servers = exports.Servers = function (_CrudTable) {
     function Servers(props) {
         _classCallCheck(this, Servers);
 
-        var strategy = new Strategy(props.token);
+        var strategy = new Strategy(props.token, props.username);
         return _possibleConstructorReturn(this, (Servers.__proto__ || Object.getPrototypeOf(Servers)).call(this, props, strategy));
     }
 
     return Servers;
 }(_CrudTable2.CrudTable);
 
-},{"./CrudTable":197,"./TokenCreatorButton":203,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],203:[function(require,module,exports){
+},{"./CrudTable":197,"./TokenCreatorButton":204,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],204:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -42313,7 +42478,7 @@ createToken(row){
     }
     */
 
-},{"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],204:[function(require,module,exports){
+},{"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],205:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -42351,6 +42516,7 @@ var Strategy = function () {
     function Strategy(token) {
         _classCallCheck(this, Strategy);
 
+        debugger;
         this.token = token;
     }
 
@@ -42382,13 +42548,7 @@ var Strategy = function () {
     }, {
         key: 'doDelete',
         value: function doDelete(row) {
-            return fetch("/trips/" + row.id, {
-                method: "DELETE",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'api-key ' + this.token
-                }
-            });
+            return Promise.resolve("Cant");
         }
     }, {
         key: 'renderOpened',
@@ -42420,8 +42580,8 @@ var Strategy = function () {
             return _react2.default.createElement(
                 'span',
                 null,
-                'Passenger: ',
-                row.passenger
+                'Id: ',
+                row.id
             );
         }
     }, {
@@ -42440,42 +42600,13 @@ var Strategy = function () {
         key: 'defaultCreationContent',
         value: function defaultCreationContent() {
             return {
-                type: "type",
-                username: "username",
-                password: "password",
-                firstName: "firstName",
-                lastName: "lastName",
-                country: "country",
-                email: "email",
-                birthdate: "birthdate"
+                type: "CANT CREATE"
             };
         }
     }, {
         key: 'doCreate',
         value: function doCreate(content) {
-            return fetch("/users/", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'api-key ' + this.token
-                },
-                body: JSON.stringify({
-                    "_ref": "string",
-                    "type": "string",
-                    "username": "string",
-                    "password": "string",
-                    "fb": {
-                        "userId": "string",
-                        "authToken": "string"
-                    },
-                    "firstName": "string",
-                    "lastName": "string",
-                    "country": "string",
-                    "email": "string",
-                    "birthdate": "string",
-                    "images": ["string"]
-                })
-            });
+            return Promise.resolve(1);
         }
     }]);
 
@@ -42488,6 +42619,7 @@ var Trips = exports.Trips = function (_CrudTable) {
     function Trips(props) {
         _classCallCheck(this, Trips);
 
+        debugger;
         var strategy = new Strategy(props.token);
         return _possibleConstructorReturn(this, (Trips.__proto__ || Object.getPrototypeOf(Trips)).call(this, props, strategy));
     }
@@ -42495,7 +42627,7 @@ var Trips = exports.Trips = function (_CrudTable) {
     return Trips;
 }(_CrudTable2.CrudTable);
 
-},{"./CrudTable":197,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],205:[function(require,module,exports){
+},{"./CrudTable":197,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],206:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -42534,10 +42666,11 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 //import {TokenCreatorButton} from "./TokenCreatorButton"
 
 var Strategy = function () {
-    function Strategy(token) {
+    function Strategy(token, securityLevel) {
         _classCallCheck(this, Strategy);
 
         this.token = token;
+        this.securityLevel = securityLevel;
     }
 
     _createClass(Strategy, [{
@@ -42563,7 +42696,29 @@ var Strategy = function () {
     }, {
         key: 'doUpdate',
         value: function doUpdate(row, content) {
-            return Promise.resolve("Cant");
+            return fetch("/users/" + row.id, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'api-key ' + this.token
+                },
+                body: JSON.stringify({
+                    "_ref": "string",
+                    "type": "string",
+                    "username": "string",
+                    "password": "string",
+                    "fb": {
+                        "userId": "string",
+                        "authToken": "string"
+                    },
+                    "firstName": "string",
+                    "lastName": "string",
+                    "country": "string",
+                    "email": "string",
+                    "birthdate": "string",
+                    "images": ["string"]
+                })
+            });
         }
     }, {
         key: 'doDelete',
@@ -42635,7 +42790,14 @@ var Strategy = function () {
         key: 'defaults',
         value: function defaults(row) {
             return {
-                username: "CANT UPDATE"
+                type: "type",
+                username: "username",
+                password: "password",
+                firstName: "firstName",
+                lastName: "lastName",
+                country: "country",
+                email: "email",
+                birthdate: "birthdate"
             };
         }
     }, {
@@ -42690,14 +42852,14 @@ var Users = exports.Users = function (_CrudTable) {
     function Users(props) {
         _classCallCheck(this, Users);
 
-        var strategy = new Strategy(props.token);
+        var strategy = new Strategy(props.token, props.securityLevel);
         return _possibleConstructorReturn(this, (Users.__proto__ || Object.getPrototypeOf(Users)).call(this, props, strategy));
     }
 
     return Users;
 }(_CrudTable2.CrudTable);
 
-},{"./CarEditorButton":194,"./CrudTable":197,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],206:[function(require,module,exports){
+},{"./CarEditorButton":194,"./CrudTable":197,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],207:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -42726,4 +42888,4 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 _reactDom2.default.render(_react2.default.createElement(_App.App, null), document.getElementById('root'));
 
-},{"./App":192,"./BusinessUsers":193,"./Login":199,"./MainScreen":200,"./Servers":202,"./Users":205,"react":189,"react-dom":28,"whatwg-fetch":191}]},{},[206]);
+},{"./App":192,"./BusinessUsers":193,"./Login":199,"./MainScreen":200,"./Servers":203,"./Users":206,"react":189,"react-dom":28,"whatwg-fetch":191}]},{},[207]);

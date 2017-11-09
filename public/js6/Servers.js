@@ -7,8 +7,9 @@ import {CrudTable} from "./CrudTable";
 import {TokenCreatorButton} from "./TokenCreatorButton"
 
 class Strategy{
-    constructor(token){
+    constructor(token, username){
         this.token=token;
+        this.username=username;
     }
     getAll(){
         return fetch("/servers",{
@@ -54,6 +55,7 @@ class Strategy{
     
 
     renderOpened(row){
+        debugger
         return (<span>
             <br/>
             Id: {row.id}
@@ -65,7 +67,7 @@ class Strategy{
             Name: {row.name}
             <br/>
             <span class="glyphicon glyphicon-off" 
-                style={{color: row.lastConnection < new Date().getDate() - 3600000/*1hora*/ ?  "red" : "green", padding: "2px"}}></span>
+                style={{color: row.lastConnection < new Date().getTime() - 3600000/*1hora*/ ?  "red" : "green", padding: "2px"}}></span>
             LastConnection: {new Date(row.lastConnection).toString()}
             <br/>
             <TokenCreatorButton token={this.token} id={row.id} />
@@ -104,8 +106,8 @@ class Strategy{
             body:JSON.stringify({
                 id:"asd",
                 _ref:"asd",
-                createdBy:"a user",
-                createdTime:0,
+                createdBy:this.username,
+                createdTime:new Date().getTime(),
                 name:content.name,
                 lastConnection:0
             })
@@ -116,7 +118,7 @@ class Strategy{
 
 export class Servers extends CrudTable{
     constructor(props){
-        let strategy=new Strategy(props.token);
+        let strategy=new Strategy(props.token, props.username);
         super(props,strategy);
     }
 }

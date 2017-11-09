@@ -8,8 +8,9 @@ import {CarEditorButton} from "./CarEditorButton";
 //import {TokenCreatorButton} from "./TokenCreatorButton"
 
 class Strategy{
-    constructor(token){
+    constructor(token, securityLevel){
         this.token=token;
+        this.securityLevel=securityLevel;
     }
     getAll(){
         console.log("Iam getting all the things")
@@ -31,7 +32,31 @@ class Strategy{
     }
 
     doUpdate(row,content){
-        return Promise.resolve("Cant")
+        return fetch("/users/"+row.id,{
+            method:"PUT",
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'api-key '+this.token
+            },
+            body:JSON.stringify({
+                "_ref": "string",
+                "type": "string",
+                "username": "string",
+                "password": "string",
+                "fb": {
+                  "userId": "string",
+                  "authToken": "string"
+                },
+                "firstName": "string",
+                "lastName": "string",
+                "country": "string",
+                "email": "string",
+                "birthdate": "string",
+                "images": [
+                  "string"
+                ]
+            })
+        })
     }
 
     doDelete(row){
@@ -86,8 +111,15 @@ class Strategy{
 
     defaults(row){
         return {
-            username:"CANT UPDATE"
-        }
+            type:"type",
+            username:"username",
+            password:"password",
+            firstName:"firstName",
+            lastName:"lastName",
+            country:"country",
+            email:"email",
+            birthdate:"birthdate"
+        };
     }
 
     defaultCreationContent(){
@@ -135,7 +167,7 @@ class Strategy{
 
 export class Users extends CrudTable{
     constructor(props){
-        let strategy=new Strategy(props.token);
+        let strategy=new Strategy(props.token, props.securityLevel);
         super(props,strategy);
     }
 }
