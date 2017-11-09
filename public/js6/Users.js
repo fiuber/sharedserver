@@ -106,7 +106,7 @@ class Strategy{
     }
 
     createKey(row){
-        return row.id+row.applicationOwner+row.type+row.username+row.name+row.surname+row.country+row.email+row.birthdate+row.images.join("");
+        return row.id+row.applicationOwner+row.type+row.username+row.name+row.surname+row.country+row.email+row.birthdate;
     }
 
     defaults(row){

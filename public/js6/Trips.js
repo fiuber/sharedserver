@@ -7,7 +7,6 @@ import {CrudTable} from "./CrudTable";
 
 class Strategy{
     constructor(token){
-        debugger
         this.token=token;
     }
     getAll(){
@@ -23,6 +22,7 @@ class Strategy{
         .then((res)=>res.json())
         .then((jsn)=>{
             console.log("LOS Trips:")
+            console.log(jsn)
             console.log(jsn.trips)
 
             return jsn.trips;
@@ -62,7 +62,7 @@ class Strategy{
     }
 
     createKey(row){
-        return row.id+row.applicationOwner+row.type+row.username+row.name+row.surname+row.country+row.email+row.birthdate+row.images.join("");
+        return row.id+row.applicationOwner+row.driver+row.passenger+row.cost;
     }
 
     defaults(row){
@@ -85,7 +85,6 @@ class Strategy{
 
 export class Trips extends CrudTable{
     constructor(props){
-        debugger
         let strategy=new Strategy(props.token);
         super(props,strategy);
     }

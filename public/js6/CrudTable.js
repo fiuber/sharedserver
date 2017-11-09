@@ -21,7 +21,6 @@ export class CrudTable extends React.Component{
     refresh(){
         this.strategy.getAll()
         .then((all)=>{
-            console.log(all);
             this.rows=all.map((x)=>{
                 x.expanded=false;
                 return x;

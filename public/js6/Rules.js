@@ -7,7 +7,6 @@ import {CrudTable} from "./CrudTable";
 
 class Strategy{
     constructor(token){
-        debugger
         this.token=token;
     }
     getAll(){
@@ -24,17 +23,36 @@ class Strategy{
         .then((jsn)=>{
             console.log("LOS rules:")
             console.log(jsn.rules)
-
-            return jsn.trips;
+            return jsn.rules;
         });
     }
 
     doUpdate(row,content){
-        return Promise.resolve("Cant")
+        return fetch("/rules/"+row.id,{
+            method:"PUT",
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'api-key '+this.token
+            },
+            body:JSON.stringify({
+                "id": "string",
+                "_ref": row._ref,
+                "language": content.language,
+                "lastCommit": {},
+                "blob": content.blob,
+                "active": true
+            })
+        })
     }
 
     doDelete(row){
-        return Promise.resolve("cant");
+        return fetch("/rules/"+row.id,{
+            method:"DELETE",
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'api-key '+this.token
+            },
+        })
     }
 
     
@@ -44,13 +62,11 @@ class Strategy{
             <br/>
             Id: {row.id}
             <br/>
-            ApplicationOwner: {row.applicationOwner}
+            Language: {row.language}
             <br/>
-            Driver: {row.driver}
+            Blob: {row.blob}
             <br/>
-            Passenger: {row.passenger}
-            <br/>
-            Cost: {row.cost}
+            Active: {row.active}
             <br/>
             
         </span>);
@@ -58,34 +74,49 @@ class Strategy{
     }
 
     renderClosed(row){
-        return (<span>Rule: {row.id}</span>);
+        return (<span>Id: {row.id}</span>);
     }
 
     createKey(row){
-        return row.id+row.applicationOwner+row.type+row.username+row.name+row.surname+row.country+row.email+row.birthdate+row.images.join("");
+        return row.id+row.language+row.blob+row.active;
     }
 
     defaults(row){
         return {
-            username:"CANT UPDATE"
-        }
+          "language": "string",
+          "blob": "string"
+        };
     }
 
     defaultCreationContent(){
         return {
-            rule:"string"
+          "language": "string",
+          "blob": "string"
         };
     }
 
     doCreate(content){
-        return Promise.resolve(1);
+        return fetch("/rules/",{
+            method:"POST",
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'api-key '+this.token
+            },
+            body:JSON.stringify({
+                "id": "string",
+                "_ref": "string",
+                "language": content.language,
+                "lastCommit": {},
+                "blob": content.blob,
+                "active": true
+            })
+        })
     }
 }
 
 
 export class Rules extends CrudTable{
     constructor(props){
-        debugger
         let strategy=new Strategy(props.token);
         super(props,strategy);
     }

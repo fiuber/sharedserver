@@ -41265,7 +41265,6 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
             var _this2 = this;
 
             this.strategy.getAll().then(function (all) {
-                console.log(all);
                 _this2.rows = all.map(function (x) {
                     x.expanded = false;
                     return x;
@@ -41498,7 +41497,7 @@ var Dialog = exports.Dialog = function (_React$Component) {
                             'div',
                             { 'class': 'col-sm-10' },
                             _react2.default.createElement('input', {
-                                style: { height: key.toUpperCase() == "RULE" ? '300px' : '' },
+                                style: { height: key.toUpperCase() == "BLOB" ? '300px' : '' },
                                 'class': 'form-control',
                                 placeholder: "Enter " + key,
                                 key: key,
@@ -42054,7 +42053,6 @@ var Strategy = function () {
     function Strategy(token) {
         _classCallCheck(this, Strategy);
 
-        debugger;
         this.token = token;
     }
 
@@ -42074,19 +42072,38 @@ var Strategy = function () {
             }).then(function (jsn) {
                 console.log("LOS rules:");
                 console.log(jsn.rules);
-
-                return jsn.trips;
+                return jsn.rules;
             });
         }
     }, {
         key: 'doUpdate',
         value: function doUpdate(row, content) {
-            return Promise.resolve("Cant");
+            return fetch("/rules/" + row.id, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'api-key ' + this.token
+                },
+                body: JSON.stringify({
+                    "id": "string",
+                    "_ref": row._ref,
+                    "language": content.language,
+                    "lastCommit": {},
+                    "blob": content.blob,
+                    "active": true
+                })
+            });
         }
     }, {
         key: 'doDelete',
         value: function doDelete(row) {
-            return Promise.resolve("cant");
+            return fetch("/rules/" + row.id, {
+                method: "DELETE",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'api-key ' + this.token
+                }
+            });
         }
     }, {
         key: 'renderOpened',
@@ -42098,17 +42115,14 @@ var Strategy = function () {
                 'Id: ',
                 row.id,
                 _react2.default.createElement('br', null),
-                'ApplicationOwner: ',
-                row.applicationOwner,
+                'Language: ',
+                row.language,
                 _react2.default.createElement('br', null),
-                'Driver: ',
-                row.driver,
+                'Blob: ',
+                row.blob,
                 _react2.default.createElement('br', null),
-                'Passenger: ',
-                row.passenger,
-                _react2.default.createElement('br', null),
-                'Cost: ',
-                row.cost,
+                'Active: ',
+                row.active,
                 _react2.default.createElement('br', null)
             );
         }
@@ -42118,33 +42132,49 @@ var Strategy = function () {
             return _react2.default.createElement(
                 'span',
                 null,
-                'Rule: ',
+                'Id: ',
                 row.id
             );
         }
     }, {
         key: 'createKey',
         value: function createKey(row) {
-            return row.id + row.applicationOwner + row.type + row.username + row.name + row.surname + row.country + row.email + row.birthdate + row.images.join("");
+            return row.id + row.language + row.blob + row.active;
         }
     }, {
         key: 'defaults',
         value: function defaults(row) {
             return {
-                username: "CANT UPDATE"
+                "language": "string",
+                "blob": "string"
             };
         }
     }, {
         key: 'defaultCreationContent',
         value: function defaultCreationContent() {
             return {
-                rule: "string"
+                "language": "string",
+                "blob": "string"
             };
         }
     }, {
         key: 'doCreate',
         value: function doCreate(content) {
-            return Promise.resolve(1);
+            return fetch("/rules/", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'api-key ' + this.token
+                },
+                body: JSON.stringify({
+                    "id": "string",
+                    "_ref": "string",
+                    "language": content.language,
+                    "lastCommit": {},
+                    "blob": content.blob,
+                    "active": true
+                })
+            });
         }
     }]);
 
@@ -42157,7 +42187,6 @@ var Rules = exports.Rules = function (_CrudTable) {
     function Rules(props) {
         _classCallCheck(this, Rules);
 
-        debugger;
         var strategy = new Strategy(props.token);
         return _possibleConstructorReturn(this, (Rules.__proto__ || Object.getPrototypeOf(Rules)).call(this, props, strategy));
     }
@@ -42258,7 +42287,6 @@ var Strategy = function () {
     }, {
         key: 'renderOpened',
         value: function renderOpened(row) {
-            debugger;
             return _react2.default.createElement(
                 'span',
                 null,
@@ -42270,7 +42298,7 @@ var Strategy = function () {
                 row.createdBy,
                 _react2.default.createElement('br', null),
                 'CreatedTime: ',
-                row.createdTime,
+                new Date(row.createdTime).toString(),
                 _react2.default.createElement('br', null),
                 'Name: ',
                 row.name,
@@ -42419,19 +42447,39 @@ var TokenCreatorButton = exports.TokenCreatorButton = function (_React$Component
                 console.log(json);
                 var popup = _react2.default.createElement(
                     _reactPopout2.default,
-                    { title: 'Window title', onClosing: closePopup.bind(_this2) },
+                    { title: 'Token Creator', url: window.location.origin + "/js6/dialog.html", onClosing: closePopup.bind(_this2) },
                     _react2.default.createElement(
                         'h1',
-                        null,
-                        ' new token created'
+                        { align: 'center' },
+                        ' New Token Created'
                     ),
-                    'for server ',
-                    json.server.server.name,
-                    '. The token is valid until ',
-                    json.server.token.expiresAt,
-                    '. The token is ',
-                    json.server.token.token,
-                    '.'
+                    _react2.default.createElement(
+                        'p',
+                        null,
+                        'For server ',
+                        _react2.default.createElement(
+                            'b',
+                            null,
+                            json.server.server.name,
+                            '.'
+                        ),
+                        _react2.default.createElement('br', null),
+                        'The token is valid until ',
+                        _react2.default.createElement(
+                            'b',
+                            null,
+                            new Date(json.server.token.expiresAt).toString(),
+                            '.'
+                        ),
+                        _react2.default.createElement('br', null),
+                        'The token is ',
+                        _react2.default.createElement(
+                            'b',
+                            null,
+                            json.server.token.token,
+                            '.'
+                        )
+                    )
                 );
                 _this2.setState({ popup: popup });
             });
@@ -42444,7 +42492,7 @@ var TokenCreatorButton = exports.TokenCreatorButton = function (_React$Component
                 null,
                 _react2.default.createElement(
                     'button',
-                    { onClick: this.onClick.bind(this) },
+                    { 'class': 'btn btn-primary', onClick: this.onClick.bind(this) },
                     ' Update Token '
                 ),
                 this.state.popup
@@ -42516,7 +42564,6 @@ var Strategy = function () {
     function Strategy(token) {
         _classCallCheck(this, Strategy);
 
-        debugger;
         this.token = token;
     }
 
@@ -42535,6 +42582,7 @@ var Strategy = function () {
                 return res.json();
             }).then(function (jsn) {
                 console.log("LOS Trips:");
+                console.log(jsn);
                 console.log(jsn.trips);
 
                 return jsn.trips;
@@ -42587,7 +42635,7 @@ var Strategy = function () {
     }, {
         key: 'createKey',
         value: function createKey(row) {
-            return row.id + row.applicationOwner + row.type + row.username + row.name + row.surname + row.country + row.email + row.birthdate + row.images.join("");
+            return row.id + row.applicationOwner + row.driver + row.passenger + row.cost;
         }
     }, {
         key: 'defaults',
@@ -42619,7 +42667,6 @@ var Trips = exports.Trips = function (_CrudTable) {
     function Trips(props) {
         _classCallCheck(this, Trips);
 
-        debugger;
         var strategy = new Strategy(props.token);
         return _possibleConstructorReturn(this, (Trips.__proto__ || Object.getPrototypeOf(Trips)).call(this, props, strategy));
     }
@@ -42784,7 +42831,7 @@ var Strategy = function () {
     }, {
         key: 'createKey',
         value: function createKey(row) {
-            return row.id + row.applicationOwner + row.type + row.username + row.name + row.surname + row.country + row.email + row.birthdate + row.images.join("");
+            return row.id + row.applicationOwner + row.type + row.username + row.name + row.surname + row.country + row.email + row.birthdate;
         }
     }, {
         key: 'defaults',

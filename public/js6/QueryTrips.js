@@ -7,7 +7,6 @@ import {Trips} from "./Trips";
 
 export class QueryTrips extends React.Component{
     constructor(props){
-    	debugger
         super(props);
         this.token = props.token;
         this.trips=()=><Trips token={this.token}/>
@@ -22,7 +21,6 @@ export class QueryTrips extends React.Component{
     }
 
     consult(nombre){
-    	debugger
     	console.log(nombre)
     	console.log(this.state)
       	this.setState({
@@ -35,7 +33,6 @@ export class QueryTrips extends React.Component{
     }
 
     render(){
-    	debugger
         return <div>
             <h1>Hola</h1>
             <button onClick={() => {this.consult("pepe")}}>Consultar</button>

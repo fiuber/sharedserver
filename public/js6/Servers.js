@@ -55,14 +55,13 @@ class Strategy{
     
 
     renderOpened(row){
-        debugger
         return (<span>
             <br/>
             Id: {row.id}
             <br/>
             CreatedBy: {row.createdBy}
             <br/>
-            CreatedTime: {row.createdTime}
+            CreatedTime: {new Date(row.createdTime).toString()}
             <br/>
             Name: {row.name}
             <br/>

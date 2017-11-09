@@ -31,7 +31,7 @@ export class Dialog extends React.Component {
                             <label class="control-label col-sm-2">{key}:</label>        
                             <div class="col-sm-10">
                                 <input
-                                    style={{height: key.toUpperCase() == "RULE" ? '300px' : ''}}
+                                    style={{height: key.toUpperCase() == "BLOB" ? '300px' : ''}}
                                     class="form-control"
                                     placeholder={"Enter " + key}
                                     key={key} 
