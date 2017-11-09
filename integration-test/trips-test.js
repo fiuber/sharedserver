@@ -1,7 +1,7 @@
 let assert=require("chai").assert;
 var request = require('supertest');
 
-describe.only("using /trips",function(){
+describe("using /trips",function(){
     var app;
     let agent=null;
     let authValue="";
