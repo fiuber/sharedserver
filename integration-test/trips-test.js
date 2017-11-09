@@ -213,6 +213,15 @@ describe("using /trips",function(){
         }).expect(201)
     }).timeout(25000);
 
+    it("The list of trips returns only one trip",()=>{
+        return agent
+        .get("/trips")
+        .set("authorization", authValue)
+        .then((e)=>{
+            assert.lengthOf(e.body.trips,1)
+        })
+    })
+
 
     it("estimate a trip that is opposite",()=>{
         return agent
