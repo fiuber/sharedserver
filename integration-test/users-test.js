@@ -1,11 +1,14 @@
 let assert=require("chai").assert;
 var request = require('supertest');
 
+const log=require("debug")("fiuber:tests")
+
 describe("using users",function(){
     var app;
     let agent=null;
     let authValue="";
     let serverId="";
+    let adminAuthValue="";
     before(function(){
         this.timeout(5000);
         app =require("../server.js");
@@ -17,6 +20,7 @@ describe("using users",function(){
             .post("/token")
             .send({username:"admin",password:"admin"}).then((res)=>{
                 authValue="api-key "+res.body.token.token;
+                adminAuthValue=authValue;
                 //hago request.set("authorization",authValue) todo el tiempo
                 assert.equal(res.statusCode,201);
             })
@@ -97,10 +101,10 @@ describe("using users",function(){
     })
     
 
-    it("add a fb user",function(){
+    it("add a fb user, but as an admin",function(){
         return agent
         .post("/users")
-        .set("authorization", authValue)
+        .set("authorization", adminAuthValue)
         .send({
             _ref:"78",
             type:"passenger",
@@ -120,6 +124,11 @@ describe("using users",function(){
                 "playa.png"
             ]
         }).expect(201)
+        /*
+        .then((res)=>{
+            log(res);
+        })
+        */
     })
 
     describe("Login as that user",function(){
@@ -186,7 +195,7 @@ describe("using users",function(){
                     return u.username==="fayo5159"
                 })
                 assert.isTrue(has_fayo5159,"doesnt have fayo5159")
-                assert.equal(owner_fayo5159,serverId)
+                assert.equal(owner_fayo5159,"admin")//admin is the owner of this user
             })
         })
     
