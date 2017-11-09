@@ -165,7 +165,6 @@ exports.getTrip=function(tripId,nonexistent,badRevision,me){
         if(readTrip==nonexistent){
             return nonexistent;
         }
-
         return steps.read({tripId:tripId}).then((readSteps)=>{
             readTrip.steps=readSteps;
             return readTrip;
@@ -173,6 +172,16 @@ exports.getTrip=function(tripId,nonexistent,badRevision,me){
     })
 }
 exports.getTrip.shape={};
+
+exports.getTrips=function(nonexistent,badRevision,me){
+    return trips.read().then((all)=>{
+        let allPromises=all.map((trip)=>{
+            return exports.getTrip(trip.id,nonexistent,badRevision,me);
+        });
+        return Promise.all(allPromises);
+    })
+}
+exports.getTrips.shape={};
 
 exports.getUserTrips=function(userId,nonexistent,badRevision,me){
     return usersModel.get(userId,nonexistent).then((user)=>{

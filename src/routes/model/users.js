@@ -2,6 +2,9 @@ const users=require("./tables").users;
 const userImages=require("./tables").userImages;
 const cars=require("./tables").cars;
 const carProperties=require("./tables").carProperties;
+
+const log=require("debug")("fiuber:tests")
+
 /**
  * @module
  * @description A model for handling the users CRUD.
@@ -56,7 +59,13 @@ exports.add=function(body,nonexistent,badRevision,me){
     fixUserBody(body);
     return require("./servers").serverIdFromToken(me.token)
     .then((serverId)=>{
-        body.applicationOwner=serverId;
+        
+        if(serverId==null){
+            body.applicationOwner=me.username;    
+        }else{
+            body.applicationOwner=serverId;
+        }
+        
         
         return users.create(body)
         .then((created)=>{

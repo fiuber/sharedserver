@@ -111,9 +111,10 @@ const tripsTranslated=require("./modelTranslate")(tripsModel,tripsTranslator);
 const trips=expressify.all(tripsTranslated,{"version":"1"});
 tripsModel.addTrip(payer,costCalculator)
 router.post("/trips",app,trips.addTripWithPayer);
-router.get("/users/:userId/trips",app,trips.getUserTrips);
+router.get("/users/:userId/trips",appOrUser,trips.getUserTrips);
 router.get("/trips/:tripId",app,trips.getTrip);
 router.post("/trips/estimate",app,trips.estimate);
+router.get("/trips",appOrUser,trips.getTrips);
 
 
 

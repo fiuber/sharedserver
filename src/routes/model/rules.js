@@ -34,6 +34,13 @@ exports.addRule=function(rule,nonexistent,badRevision,me){
         return exports.getRule(created.ruleId);
     })
 }
+exports.addRule.shape={
+    "id": "string",
+    "_ref": "string",
+    "language": "string",
+    "blob": "string",
+    "active": true
+}
 
 exports.getRule=function(ruleId,nonexistent){
     return lastCommits.readOne({ruleId:ruleId},nonexistent)
