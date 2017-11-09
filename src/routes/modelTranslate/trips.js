@@ -46,11 +46,16 @@ function trip(string,number,array,from){
 
 exports.addTripWithPayer=trip;
 exports.getTrip=trip;
-exports.getUserTrips=function(string,number,array,from){
+
+
+function manyTrips(string,number,array,from){
     let shape=trip(string,number,array,from).trip;
     return {
         trips:array(shape)
     }
 }
+
+exports.getUserTrips=manyTrips;
+exports.getTrips=manyTrips;
 
 exports.estimate=trip;

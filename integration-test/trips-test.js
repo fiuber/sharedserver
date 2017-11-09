@@ -1,7 +1,7 @@
 let assert=require("chai").assert;
 var request = require('supertest');
 
-describe("using /trips",function(){
+describe.only("using /trips",function(){
     var app;
     let agent=null;
     let authValue="";
@@ -212,6 +212,15 @@ describe("using /trips",function(){
             assert.equal(trip.cost.value,1000,"the rule was used");
         }).expect(201)
     }).timeout(25000);
+
+    it("The list of trips returns only one trip",()=>{
+        return agent
+        .get("/trips")
+        .set("authorization", authValue)
+        .then((e)=>{
+            assert.lengthOf(e.body.trips,1)
+        })
+    })
 
 
     it("estimate a trip that is opposite",()=>{
