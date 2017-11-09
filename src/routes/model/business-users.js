@@ -1,3 +1,7 @@
+/**
+ * @module
+ * @description business-user model. Doesn't know about request or responses.
+ */
 const udb=require("./tables").businessUsers;
 const rolesdb=require("./tables").roles;
 const userShape={
@@ -191,7 +195,12 @@ exports.tokenCorrect=function(username,token){
     })
 }
 
-//testeado
+/**
+ * @method authorizedRoles
+ * @description A method that creates authorizers.
+ * @param ... All arguments are authorized roles.
+ * @return An authorizer that authorizes cretain roles.
+ */
 exports.authorizedRoles=function(){
     let allowedRoles=Array.prototype.slice.call(arguments);
     return function(credentials,identify){

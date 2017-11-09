@@ -4,30 +4,22 @@ var router = express.Router();
 
 const authorization=require("auth-header");
 
-
-exports.login = function(req,res,next){
-    
-    //res.send("cookie: "+JSON.stringify(req.cookies));
-    //res.send("the body is")
-    let un=req.body.username;
-    let pw=req.body.password;
-    authModel.exists(un,pw).then((exists)=>{
-        if(exists){
-            authModel.newToken(un,pw).then((row)=>{
-                res.status(200).send(row.token);  
-            })
-        }else{
-            res.status(404).send({error:"wrong user-password combination"});
-        }
-    });
-};
-
-exports.logout=function(req,res,next){
-    authModel.expireToken(req.body.username).then(()=>{
-        res.sendStatus(200);
-    });
-};
-
+/**
+ * @module
+ * @description handles authentication
+ */
+/**
+ * A middleware generator function. 
+ * It allows access if at least one of the provided authenticators
+ * returns true or a promise that resolves to true.
+ * 
+ * Authenticators take an "authdata" object wich contains the token from the header
+ * and the username, in case the header has the form user:hash. They also take
+ * an "identify" functions wich takes an identification of the client. Wathever 
+ * object this function takes is the "me" object in calls to the next apify-wrapped middleware.
+ * 
+ * @arg ... A list of authenticators
+ */
 exports.middleware=function(){
     let authenticators=Array.prototype.slice.call(arguments);
     return function(req,res,next){

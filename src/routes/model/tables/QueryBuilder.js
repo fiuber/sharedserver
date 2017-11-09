@@ -1,4 +1,8 @@
 /**
+ * @module
+ */
+
+/**
  * Builds queries. Determines the order of the columns.
  * @param {String} name the name of the table
  * @param {Object} fields An Object containing the fields as keys and the

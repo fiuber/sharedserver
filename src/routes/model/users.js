@@ -2,6 +2,10 @@ const users=require("./tables").users;
 const userImages=require("./tables").userImages;
 const cars=require("./tables").cars;
 const carProperties=require("./tables").carProperties;
+/**
+ * @module
+ * @description A model for handling the users CRUD.
+ */
 
 const userShape={
     "_ref": "string",

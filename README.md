@@ -1,30 +1,51 @@
-# sharedserver
-PRECAUCIÓN: si se modifica algún .js de la raíz, hay que tirar docker-compose build
 
-ANTES DE EJECUTAR CUALQUIER COMANDO ES CONVENIENTE EJECUTAR 
+# Manual de configuración e instalación
 
-sh db 
+[Reporte de cobertura](https://codecov.io/gh/fiuber/sharedserver/)
 
-De esta manera, el resto son más rápidos
+## Configuración del proyecto
+El proyecto está pensado para usarse desde un contexto linux.
+1. Instalar docker y docker-compose
+2. Instalar node y npm
+3. Clonar el respositorio
+4. ejecutar docker-compose build en la carpeta del repositorio
 
-#test localmente
-docker-compose run -v "$PWD/src:/app/src" -v "$PWD/integration-test:/app/integration-test" web npm test
 
-o bien 
+## Desarrollo
+Existen 3 comandos proncipales:
+- ```sh db```  inicia la imagen de postgres y el json-server, de esta manera se acelera sh test
+- ```sh test```  Ejecuta los tests, construyendo las imágenes de docker correspondientes
+- ```sh run``` Inicia y ejecuta el servidor localmente, en el port 8080.
+Se puede modificar docker-compose para alterar el servidor de pagos (puede ser el verdadero o el json-server), o por medio de la variable DEBUG se puede determinar el nivel de logging deseado. En caso de modificarse algún archivo de la raíz de la carpeta, debe ejecutarse nuevamente ```docker-compose build```
 
-sh test
+## Generación de documentación
+Ejecutar el comando ```npm run docs```. De esta manera, se genera la documentación en la carpeta /docs.
+Previamente puede ser necesario ejecutar ```npm install```.
 
-#ejecutar localmente
+## Deploy
+Ejecutar el comando ```npm run init-heroku```, que inicializa el repositorio y loggea al usuario en heroku.
+Una vez ejecutado init-heroku, correr ```npm run push-heroku```, que sube la imagen al heroku.
 
-docker-compose run --service-ports -v "$PWD/src:/app/src" -v "$PWD/integration-test:/app/integration-test" web npm start
 
-o bien
+# Diseño
+La idea que guió el diseño fue separar:
+- comunicaciones (Express) 
+- construcción de json saliente (reshaperCreator)
+- validación del json entrante (apify)
+- acceso a la base de datos postgres (paquete tables)
+El punto de intersección de todas estas tecnologías es los modelos planteados en la carpeta model. Los submódulos de la carpeta model están abstraídos de los aspectos nombrados arriba.
 
-sh run
+Pese a que la idea es atractiva, se obtuvo una arquitectura poco conveniente y demasiado pesada, fruto de sobreingeniería. Así, el modelo tiene como principal responsabilidad el hacer joins, que es una tarea que debería estar relegada al paquete tables. Una mejor decisión habría sido relegar tanto los joins como la construcción de json a vistas de SQL, o usar un ORM, y permitir acoplamiento con Express.
 
-expone el port 8080
+# Modelo de datos
+![https://github.com/fiuber/sharedserver/raw/master/DEI.png](./DEI.png)
 
-#Lo que recibe el engine de reglas (es decir, API para el engine de reglas)
+
+
+# Uso del engine de reglas
+Lo que recibe el engine de reglas es (es decir, API para el engine de reglas).
+EL objeto "this" de las reglas tiene la forma:
+```javascript
 { id: 'string',
   applicationOwner: 1,
   driver: 
@@ -87,3 +108,4 @@ expone el port 8080
   cost: 1000,
   date: '2017-11-04T13:15:39.727Z',
   result: true }
+```
