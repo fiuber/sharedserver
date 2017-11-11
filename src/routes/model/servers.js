@@ -125,8 +125,8 @@ exports.delete.shape={}
 /***
  * no pongo el METADATA correspondiente porque no entiendo qué significa
  */
-exports.list=function(){
-    return sdb.read();
+exports.list=function(nonexistent,badRevision,me,query){
+    return sdb.readQuery(query);
 }
 exports.list.shape={};
 

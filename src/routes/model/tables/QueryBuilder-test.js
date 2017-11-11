@@ -1,7 +1,7 @@
 let assert=require("chai").assert;
 const QueryBuilder=require("./QueryBuilder");
 
-describe("query builder",function(){
+describe.only("query builder",function(){
     let fields={
         "f1":"bigint",
         "f2":"serial",
@@ -36,7 +36,21 @@ describe("query builder",function(){
     it("select where", function(){
         assert.equal(
             builder.select().where({f1:4,f2:58}),
-            "select * from table_name where f1=$1 and f2=$2"
+            "select * from table_name where f1 = $1 and f2 = $2"
+        );
+    })
+
+    it("select where limit offset", function(){
+        assert.equal(
+            builder.select().where({f1:4,f2:58,_limit:10,_offset:5}),
+            "select * from table_name where f1 = $1 and f2 = $2"
+        );
+    })
+
+    it("select where limit offset orderBy", function(){
+        assert.equal(
+            builder.select().where({f1:4,f2:58,_limit:10,_offset:5,_orderBy:"id"}),
+            "select * from table_name where f1 = $1 and f2 = $2 order by id limit 10 offset 5"
         );
     })
 
@@ -56,7 +70,7 @@ describe("query builder",function(){
     it("delete where",function(){
         assert.equal(
             builder.delete().where({asd:5,f1:3}),
-            "delete from table_name where f1=$1"
+            "delete from table_name where f1 = $1"
         )
     })
 

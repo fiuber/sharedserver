@@ -25,11 +25,11 @@ describe("funcionamiento de apify",function(){
     function failer(){
         return Promise.reject("It failed");
     }
-    function parameterized(body,par1,par2,nonexistent,badRevision){
+    function parameterized(body,par1,par2,nonexistent,badRevision,query){
         return [par1,par2];
     }
 
-    function changeMe(nonexistent,badRevision,me){
+    function changeMe(nonexistent,badRevision,me,query){
         me.q=5;
     }
 

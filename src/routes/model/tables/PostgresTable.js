@@ -26,8 +26,14 @@ PostgresTable.prototype.constructor=PostgresTable;
  * @param {Object} row row to be transformed
  */
 PostgresTable.prototype.rowToArray=function(row){
+    let allowedFields=Object.keys(row).concat(["_limit","_offset"])
     let ordered=this.fields.filter((f)=>{
-        return Object.keys(row).includes(f)
+        let beforeUnderscore=f;
+        if(f.indexOf("_")!=-1){
+            beforeUnderscore=f.substr(0,f.indexOf("_"))
+        }
+        
+        return allowedFields.includes(beforeUnderscore) || allowedFields.includes(f)
     });
     let values=ordered.map((field)=>row[field]);
     values.noSerials=()=>{
@@ -150,6 +156,10 @@ PostgresTable.prototype.remove=function(partialRowSelection){
         error(e,this.delete().where(partialRowSelection),this.rowToArray(partialRowSelection));
         return Promise.reject(e);
     });
+}
+
+PostgresTable.prototype.readQuery=function(query){
+    return this.get(query);
 }
 
 

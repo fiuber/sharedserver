@@ -18,7 +18,7 @@ const util=require("util");
  */
 function apify(shape,fun){
     
-    return function(req_body,send,req_parameters,origin){
+    return function(req_body,send,req_parameters,origin,query){
         if(req_parameters==undefined){
             req_parameters=[];
         }
@@ -40,9 +40,9 @@ function apify(shape,fun){
             */
             var argumentsToApply=[];
             if(!req_body || Object.keys(req_body).length==0){
-                argumentsToApply=[        ].concat(req_parameters).concat([inexistent,badRevision,origin]);
+                argumentsToApply=[        ].concat(req_parameters).concat([inexistent,badRevision,origin,query]);
             }else{
-                argumentsToApply=[req_body].concat(req_parameters).concat([inexistent,badRevision,origin]);
+                argumentsToApply=[req_body].concat(req_parameters).concat([inexistent,badRevision,origin,query]);
             }
             
             if(fun.length > argumentsToApply.length){
