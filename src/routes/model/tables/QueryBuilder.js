@@ -105,7 +105,10 @@ function operatorFromName(name){
         gte:">=",
         lte:"<=",
         eq:"=",
-        matches:"~*"
+        matches:"~~"
+    }
+    if(operators[name]==undefined){
+        throw new Error(name+" is not the name of an operator")
     }
     return operators[name];
 }

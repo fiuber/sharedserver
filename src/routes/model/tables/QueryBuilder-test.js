@@ -72,7 +72,7 @@ describe("query builder",function(){
     it("select with matches", function(){
         assert.equal(
             builder.select().where({f1_matches:"asddd",f2_eq:3}),
-            "select * from table_name where f1 ~* $1 and f2 = $2"
+            "select * from table_name where f1 ~~ $1 and f2 = $2"
         );
     })
 

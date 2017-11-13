@@ -2,7 +2,7 @@ const db=require("./localdatabase").db;
 const QueryBuilder=require("./QueryBuilder");
 const log=require("debug")("fiuber:low:PostgresTable");
 const error=require("debug")("fiuber:error:PostgresTable");
-
+const debug=require("debug")("fiuber:tests")
 /**
  * @module 
  */
@@ -26,22 +26,48 @@ PostgresTable.prototype.constructor=PostgresTable;
  * @param {Object} row row to be transformed
  */
 PostgresTable.prototype.rowToArray=function(row){
-    let allowedFields=Object.keys(row).concat(["_limit","_offset"])
-    let ordered=this.fields.filter((f)=>{
-        let beforeUnderscore=f;
-        if(f.indexOf("_")!=-1){
-            beforeUnderscore=f.substr(0,f.indexOf("_"))
+    /*
+    let selectorFields = Object.keys(row).map((original)=>{
+        if(this.fields.includes(original)){
+            return original
+        }else{
+            return original.split("_")[0];
         }
-        
-        return allowedFields.includes(beforeUnderscore) || allowedFields.includes(f)
+    })
+    */
+    let selectorFields=[];
+    let valuesMap={};
+    for(let selectorName in row){
+        let actualSelector="";
+
+        if(this.fields.includes(selectorName)){
+            actualSelector = selectorName;
+        }else{
+            actualSelector = selectorName.split("_")[0];
+        }
+
+        valuesMap[actualSelector]=row[selectorName];
+        selectorFields.push(actualSelector)
+    }
+
+    let allowedFields=selectorFields.concat(["_limit","_offset"])
+    let ordered=this.fields.filter((f)=>{
+        return allowedFields.includes(f);
     });
-    let values=ordered.map((field)=>row[field]);
+    let values=ordered.map((field)=>valuesMap[field]);
     values.noSerials=()=>{
         let filteredAndOrdered=ordered.filter((field)=>{
             return ! this.isSerial(field);
         });
-        return filteredAndOrdered.map((field)=>row[field]);
+        return filteredAndOrdered.map((field)=>valuesMap[field]);
     }
+
+    debug("-------------------------------")
+    debug(row);
+    debug(valuesMap);
+    debug(selectorFields);
+    debug(ordered);
+    debug(values);
     return values;
 }
 
@@ -83,6 +109,7 @@ PostgresTable.prototype.add=function(row){
 PostgresTable.prototype.get=function(partialRow){
     let select=this.select();
     if(partialRow){
+        debug(select.where(partialRow),this.rowToArray(partialRow));
         return db.any(select.where(partialRow),this.rowToArray(partialRow)).then((e)=>{
             log(select.where(partialRow),this.rowToArray(partialRow));
             return e;

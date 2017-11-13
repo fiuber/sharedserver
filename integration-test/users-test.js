@@ -199,6 +199,19 @@ describe("using users",function(){
                 assert.equal(owner_fayo5159,"admin")//admin is the owner of this user
             })
         })
+
+        it("filtering by username gets only that user",function(){
+            return agent
+            .get("/users")
+            .query({username_matches:'soyyo%'})
+            .set("authorization", authValue)
+            //.expect(200)
+            .expect((res)=>{
+                log(res.body);
+                assert.lengthOf(res.body.users,1);
+            })
+
+        })
     
         it("the user can be deleted",function(){
             return agent
