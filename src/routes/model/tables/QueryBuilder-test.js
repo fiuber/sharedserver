@@ -33,6 +33,13 @@ describe("query builder",function(){
         );
     })
 
+    it("simple select", function(){
+        assert.equal(
+            builder.select().where({}),
+            "select * from table_name "
+        );
+    })
+
     it("select where", function(){
         assert.equal(
             builder.select().where({f1:4,f2:58}),

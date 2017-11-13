@@ -1,7 +1,7 @@
 /**
  * @module
  */
-
+const log=require("debug")("fiuber:QueryBuilder");
 /**
  * Builds queries. Determines the order of the columns.
  * @param {String} name the name of the table
@@ -65,7 +65,7 @@ QueryBuilder.prototype.select=function(){
     let partial="select * from "+this.name;
     let ret=new String(partial+";");
     ret.where=(partialRow)=>{
-        return partial+" "+this.where(partialRow,0);
+        return partial+" "+this.where(partialRow);
     }
     ret.all=()=>{
         return partial+";";
@@ -110,7 +110,7 @@ function operatorFromName(name){
     return operators[name];
 }
 
-QueryBuilder.prototype.where=function(partialRow,indexOffset){
+QueryBuilder.prototype.where=function(partialRow){
     //return "where "+this.numberedFields(partialRow,offset," and ");
     let selector=Object.assign({},partialRow);
 
@@ -121,27 +121,46 @@ QueryBuilder.prototype.where=function(partialRow,indexOffset){
     delete selector._offset;
     delete selector._orderBy;
 
+    //parse the partialRow object
     let criterias=[];
     for(let criteria in selector){
         
         if(criteria.indexOf("_")==-1){
             if(this.fields.includes(criteria)){
-                criterias.push(criteria+" = $"+(this.fields.indexOf(criteria)+indexOffset+1));
+                //criterias.push(criteria+" = $"+(this.fields.indexOf(criteria)+1));
+                //criterias.push({name:criteria,op:"="});
+                criterias[criteria]="=";
             }
         }else{
             let parts=criteria.split("_");
             let firstPart=parts[0];
             let operator=operatorFromName(parts[1]);
             if(this.fields.includes(firstPart)){
-                criterias.push(firstPart+" "+operator+" $"+(this.fields.indexOf(firstPart)+indexOffset+1));
+                //criterias.push(firstPart+" "+operator+" $"+(this.fields.indexOf(firstPart)+1));
+                //criterias.push({name:firstPart,op:operator})
+                criterias[firstPart]=operator;
             }
         }
     }
 
-    let where = "where "+criterias.join(" and ");
+    let orderedNames=this.fields.filter((n)=>Object.keys(criterias).includes(n));
+
+    let strings=orderedNames.map((n,i)=>{
+        return n+" "+criterias[n]+" $"+(i+1);
+    })
+
+    let where = "where "+strings.join(" and ");
     if(limit && offset && orderBy){
         where+=" order by "+orderBy+" limit "+limit+" offset "+offset;
     }
+
+    if(strings.length==0){
+        where="";
+    }
+
+    log("-----------------------------")
+    log(partialRow)
+    log(where);
 
     return where;
 }
@@ -163,7 +182,7 @@ QueryBuilder.prototype.update=function(partialRowUpdate){
 QueryBuilder.prototype.delete=function(){
     let ret=new String("delete from "+this.name);
     ret.where=(partialRow)=>{
-        return ret + " "+this.where(partialRow,0);
+        return ret + " "+this.where(partialRow);
     }
     return ret;
 }

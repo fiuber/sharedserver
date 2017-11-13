@@ -174,6 +174,7 @@ describe("using users",function(){
             .set("authorization", authValue)
             .expect(200)
             .expect(function(res){
+                log(res.body);
                 let soyyo5159=null;
                 for(let u of res.body.users){
                     if(u.username==="soyyo5159"){
