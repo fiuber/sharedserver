@@ -1,7 +1,7 @@
 let assert=require("chai").assert;
 const QueryBuilder=require("./QueryBuilder");
 
-describe.only("query builder",function(){
+describe("query builder",function(){
     let fields={
         "f1":"bigint",
         "f2":"serial",
@@ -47,12 +47,29 @@ describe.only("query builder",function(){
         );
     })
 
-    it("select where limit offset orderBy", function(){
+    it("select with lt and gt", function(){
         assert.equal(
-            builder.select().where({f1:4,f2:58,_limit:10,_offset:5,_orderBy:"id"}),
-            "select * from table_name where f1 = $1 and f2 = $2 order by id limit 10 offset 5"
+            builder.select().where({f1_lt:4,f2_gt:58}),
+            "select * from table_name where f1 < $1 and f2 > $2"
         );
     })
+    
+
+    it("select with lte and gte", function(){
+        assert.equal(
+            builder.select().where({f1_lte:4,f2_gte:58}),
+            "select * from table_name where f1 <= $1 and f2 >= $2"
+        );
+    })
+
+    it("select with matches", function(){
+        assert.equal(
+            builder.select().where({f1_matches:"asddd",f2_eq:3}),
+            "select * from table_name where f1 ~* $1 and f2 = $2"
+        );
+    })
+
+
 
     it("numbered fields", function(){
         assert.equal(
