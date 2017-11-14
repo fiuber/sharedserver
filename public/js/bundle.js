@@ -40653,7 +40653,7 @@ var App = exports.App = function (_React$Component) {
   return App;
 }(_react2.default.Component);
 
-},{"./BusinessUsers":193,"./Login":199,"./MainScreen":200,"./Rules":202,"./Servers":203,"./Trips":205,"./Users":206,"react":189,"react-dom":28,"whatwg-fetch":191}],193:[function(require,module,exports){
+},{"./BusinessUsers":193,"./Login":200,"./MainScreen":201,"./Rules":203,"./Servers":204,"./Trips":206,"./Users":207,"react":189,"react-dom":28,"whatwg-fetch":191}],193:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -41232,6 +41232,8 @@ var _Row = require('./Row');
 
 var _CreateDialog = require('./CreateDialog');
 
+var _FilterDialog = require('./FilterDialog');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -41380,39 +41382,47 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
 
             return _react2.default.createElement(
                 'div',
-                { id: 'listContainer' },
-                _react2.default.createElement(_CreateDialog.CreationDialogOpener, {
-                    content: this.strategy.defaultCreationContent(),
-                    onSubmit: function onSubmit(o) {
-                        return _this7.onCreate(o);
-                    }
-                }),
+                { id: 'mainContainer', style: { display: "block" } },
+                _react2.default.createElement(_FilterDialog.FilterDialog, { shape: {
+                        text: "string",
+                        code: 0
+                    } }),
                 _react2.default.createElement(
-                    'table',
-                    null,
+                    'div',
+                    { id: 'listContainer', style: { display: "block" } },
+                    _react2.default.createElement(_CreateDialog.CreationDialogOpener, {
+                        content: this.strategy.defaultCreationContent(),
+                        onSubmit: function onSubmit(o) {
+                            return _this7.onCreate(o);
+                        }
+                    }),
                     _react2.default.createElement(
-                        'tbody',
+                        'table',
                         null,
                         _react2.default.createElement(
-                            'tr',
+                            'tbody',
                             null,
                             _react2.default.createElement(
-                                'th',
+                                'tr',
                                 null,
-                                'Content'
+                                _react2.default.createElement(
+                                    'th',
+                                    null,
+                                    'Content'
+                                ),
+                                _react2.default.createElement(
+                                    'th',
+                                    null,
+                                    'Edit'
+                                ),
+                                _react2.default.createElement(
+                                    'th',
+                                    null,
+                                    'Remove'
+                                )
                             ),
-                            _react2.default.createElement(
-                                'th',
-                                null,
-                                'Edit'
-                            ),
-                            _react2.default.createElement(
-                                'th',
-                                null,
-                                'Remove'
-                            )
-                        ),
-                        this.state.renderedRows
+                            this.state.renderedRows
+                        )
                     )
                 )
             );
@@ -41422,7 +41432,7 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
     return CrudTable;
 }(_react2.default.Component);
 
-},{"./CreateDialog":196,"./Row":201,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],198:[function(require,module,exports){
+},{"./CreateDialog":196,"./FilterDialog":199,"./Row":202,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],198:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -41620,6 +41630,138 @@ var Dialog = exports.Dialog = function (_React$Component) {
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.FilterDialog = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var FilterDialog = exports.FilterDialog = function (_React$Component) {
+    _inherits(FilterDialog, _React$Component);
+
+    function FilterDialog(props) {
+        _classCallCheck(this, FilterDialog);
+
+        //this.shape=props.shape;
+        var _this = _possibleConstructorReturn(this, (FilterDialog.__proto__ || Object.getPrototypeOf(FilterDialog)).call(this, props));
+
+        _this.state = {
+            rendered: _this.renderInputShape(props.shape),
+            searchWord: "search"
+        };
+        return _this;
+    }
+
+    _createClass(FilterDialog, [{
+        key: 'renderInputShape',
+        value: function renderInputShape(shape) {
+            return _react2.default.createElement(
+                'span',
+                null,
+                JSON.stringify(shape)
+            );
+        }
+    }, {
+        key: 'handleInputChange',
+        value: function handleInputChange(e) {
+            console.log(e);
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var displayInline = {
+                "display": "inline",
+                "margin-left": "2px",
+                "margin-right": "2px"
+            };
+            var niceWidth = {
+                width: "40%",
+                "display": "inline",
+                "margin-left": "2px",
+                "margin-right": "2px"
+            };
+            var searchLabel = _react2.default.createElement(
+                'label',
+                { style: displayInline, 'for': 'search' },
+                'Search:'
+            );
+            var searchInput = _react2.default.createElement('input', { style: niceWidth, type: 'text', 'class': 'form-control', id: 'search', value: this.state.searchWord, onChange: this.handleInputChange.bind(this) });
+            var searchDropdown = _react2.default.createElement(
+                'div',
+                { style: displayInline, 'class': 'dropdown' },
+                _react2.default.createElement(
+                    'button',
+                    { 'class': 'btn btn-primary dropdown-toggle', type: 'button', 'data-toggle': 'dropdown' },
+                    'Dropdown Example',
+                    _react2.default.createElement('span', { 'class': 'caret' })
+                ),
+                _react2.default.createElement(
+                    'ul',
+                    { 'class': 'dropdown-menu' },
+                    _react2.default.createElement(
+                        'li',
+                        null,
+                        _react2.default.createElement(
+                            'a',
+                            { onClick: function onClick() {
+                                    return alert("html");
+                                } },
+                            'HTML'
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'li',
+                        null,
+                        _react2.default.createElement(
+                            'a',
+                            null,
+                            'CSS'
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'li',
+                        null,
+                        _react2.default.createElement(
+                            'a',
+                            null,
+                            'JavaScript'
+                        )
+                    )
+                )
+            );
+            return _react2.default.createElement(
+                'div',
+                { style: { display: "block", overflow: "visible", align: 'left' } },
+                searchLabel,
+                searchInput,
+                searchDropdown
+            );
+        }
+    }]);
+
+    return FilterDialog;
+}(_react2.default.Component);
+
+},{"react":189,"react-dom":28}],200:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Login = undefined;
@@ -41809,7 +41951,7 @@ var Login = exports.Login = function (_React$Component) {
   return Login;
 }(_react2.default.Component);
 
-},{"react":189,"react-dom":28,"whatwg-fetch":191}],200:[function(require,module,exports){
+},{"react":189,"react-dom":28,"whatwg-fetch":191}],201:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -41859,7 +42001,7 @@ var MainScreen = exports.MainScreen = function (_React$Component) {
     return MainScreen;
 }(_react2.default.Component);
 
-},{"react":189,"react-dom":28,"whatwg-fetch":191}],201:[function(require,module,exports){
+},{"react":189,"react-dom":28,"whatwg-fetch":191}],202:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -42015,7 +42157,7 @@ var Row = exports.Row = function (_React$Component) {
     return Row;
 }(_react2.default.Component);
 
-},{"./Dialog":198,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],202:[function(require,module,exports){
+},{"./Dialog":198,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],203:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -42194,7 +42336,7 @@ var Rules = exports.Rules = function (_CrudTable) {
     return Rules;
 }(_CrudTable2.CrudTable);
 
-},{"./CrudTable":197,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],203:[function(require,module,exports){
+},{"./CrudTable":197,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],204:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -42378,7 +42520,7 @@ var Servers = exports.Servers = function (_CrudTable) {
     return Servers;
 }(_CrudTable2.CrudTable);
 
-},{"./CrudTable":197,"./TokenCreatorButton":204,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],204:[function(require,module,exports){
+},{"./CrudTable":197,"./TokenCreatorButton":205,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],205:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -42526,7 +42668,7 @@ createToken(row){
     }
     */
 
-},{"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],205:[function(require,module,exports){
+},{"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],206:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -42674,7 +42816,7 @@ var Trips = exports.Trips = function (_CrudTable) {
     return Trips;
 }(_CrudTable2.CrudTable);
 
-},{"./CrudTable":197,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],206:[function(require,module,exports){
+},{"./CrudTable":197,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],207:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -42906,7 +43048,7 @@ var Users = exports.Users = function (_CrudTable) {
     return Users;
 }(_CrudTable2.CrudTable);
 
-},{"./CarEditorButton":194,"./CrudTable":197,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],207:[function(require,module,exports){
+},{"./CarEditorButton":194,"./CrudTable":197,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],208:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -42935,4 +43077,4 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 _reactDom2.default.render(_react2.default.createElement(_App.App, null), document.getElementById('root'));
 
-},{"./App":192,"./BusinessUsers":193,"./Login":199,"./MainScreen":200,"./Servers":203,"./Users":206,"react":189,"react-dom":28,"whatwg-fetch":191}]},{},[207]);
+},{"./App":192,"./BusinessUsers":193,"./Login":200,"./MainScreen":201,"./Servers":204,"./Users":207,"react":189,"react-dom":28,"whatwg-fetch":191}]},{},[208]);

@@ -4,6 +4,7 @@ import "whatwg-fetch";
 import Popout from 'react-popout';
 import {Row} from "./Row";
 import {CreationDialogOpener} from "./CreateDialog";
+import {FilterDialog} from "./FilterDialog";
 
 export class CrudTable extends React.Component{
     constructor(props,strategy){
@@ -94,22 +95,30 @@ export class CrudTable extends React.Component{
     
 
     render(){
-        return <div id="listContainer">
-            <CreationDialogOpener 
-                content={this.strategy.defaultCreationContent()} 
-                onSubmit={(o)=>this.onCreate(o)}
-            />
-            
-            <table>
-                <tbody>
-                <tr>
-                    <th>Content</th>
-                    <th>Edit</th>
-                    <th>Remove</th>
-                </tr>
-                {this.state.renderedRows}
-                </tbody>
-            </table>
+        return <div id="mainContainer" style={{display:"block"}}>
+                <FilterDialog shape={{
+                    text:"string",
+                    code:0
+                }}/>
+
+            <div id="listContainer" style={{display:"block"}}>
+                
+                <CreationDialogOpener 
+                    content={this.strategy.defaultCreationContent()} 
+                    onSubmit={(o)=>this.onCreate(o)}
+                />
+                
+                <table>
+                    <tbody>
+                    <tr>
+                        <th>Content</th>
+                        <th>Edit</th>
+                        <th>Remove</th>
+                    </tr>
+                    {this.state.renderedRows}
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         
