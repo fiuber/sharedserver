@@ -7,8 +7,9 @@ import {CrudTable} from "./CrudTable";
 import {TokenCreatorButton} from "./TokenCreatorButton"
 
 class Strategy{
-    constructor(token){
+    constructor(token, username){
         this.token=token;
+        this.username=username;
     }
     getAll(){
         return fetch("/servers",{
@@ -56,15 +57,17 @@ class Strategy{
     renderOpened(row){
         return (<span>
             <br/>
-            id:{row.id}
+            Id: {row.id}
             <br/>
-            createdBy:{row.createdBy}
+            CreatedBy: {row.createdBy}
             <br/>
-            createdTime:{row.createdTime}
+            CreatedTime: {new Date(row.createdTime).toString()}
             <br/>
-            name:{row.name}
+            Name: {row.name}
             <br/>
-            lastConnection:{row.lastConnection}
+            <span class="glyphicon glyphicon-off" 
+                style={{color: row.lastConnection < new Date().getTime() - 3600000/*1hora*/ ?  "red" : "green", padding: "2px"}}></span>
+            LastConnection: {new Date(row.lastConnection).toString()}
             <br/>
             <TokenCreatorButton token={this.token} id={row.id} />
             
@@ -72,7 +75,7 @@ class Strategy{
     }
 
     renderClosed(row){
-        return (<span>name:{row.name}</span>);
+        return (<span> Name: {row.name}</span>);
     }
 
     createKey(row){
@@ -81,7 +84,8 @@ class Strategy{
 
     defaults(row){
         return {
-            name:row.name,
+            Name: row.name,
+
         }
     }
 
@@ -101,8 +105,8 @@ class Strategy{
             body:JSON.stringify({
                 id:"asd",
                 _ref:"asd",
-                createdBy:"a user",
-                createdTime:0,
+                createdBy:this.username,
+                createdTime:new Date().getTime(),
                 name:content.name,
                 lastConnection:0
             })
@@ -113,7 +117,7 @@ class Strategy{
 
 export class Servers extends CrudTable{
     constructor(props){
-        let strategy=new Strategy(props.token);
+        let strategy=new Strategy(props.token, props.username);
         super(props,strategy);
     }
 }

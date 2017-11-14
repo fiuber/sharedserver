@@ -6,7 +6,8 @@ import {MainScreen} from "./MainScreen";
 import {BusinessUsers} from "./BusinessUsers";
 import {Servers} from "./Servers";
 import {Users} from "./Users";
-
+import {Trips} from "./Trips";
+import {Rules} from "./Rules";
 
 export class App extends React.Component {
     
@@ -15,15 +16,12 @@ export class App extends React.Component {
       this.handleSuccess=this.handleSuccess.bind(this);
   
       this.login=()=><Login onSuccess={this.handleSuccess}/>;
-      this.main=()=><MainScreen
-        onBusinessUsers={this.gotoBusinessUsers.bind(this)}
-        onServers={this.gotoServers.bind(this)}
-        onUsers={this.gotoUsers.bind(this)}
-        token={this.state.token}
-      />
-      this.businessUsers=()=><BusinessUsers token={this.state.token}/>
-      this.servers=()=><Servers token={this.state.token} />
-      this.users=()=><Users token={this.state.token} />
+      this.main=()=><MainScreen token={this.state.token} securityLevel={this.state.securityLevel} />
+      this.businessUsers=()=><BusinessUsers token={this.state.token} securityLevel={this.state.securityLevel} />
+      this.servers=()=><Servers token={this.state.token} username={this.state.username} securityLevel={this.state.securityLevel} />
+      this.users=()=><Users token={this.state.token} securityLevel={this.state.securityLevel} />
+      this.trips=()=><Trips token={this.state.token} securityLevel={this.state.securityLevel} />
+      this.rules=()=><Rules token={this.state.token} securityLevel={this.state.securityLevel} />
 
       
       this.state={
@@ -32,14 +30,28 @@ export class App extends React.Component {
         username:"",
         password:"",
         token:"",
-        currentTab: 1
+        currentTab: 1,
+        securityLevel:0
       }
 
+      this.gotoLogin = this.gotoLogin.bind(this);
       this.gotoHome = this.gotoHome.bind(this);
       this.gotoBusinessUsers = this.gotoBusinessUsers.bind(this);
       this.gotoServers = this.gotoServers.bind(this);
       this.gotoUsers = this.gotoUsers.bind(this);
+      this.gotoTrips = this.gotoTrips.bind(this);
+      this.gotoRules = this.gotoRules.bind(this);
     }
+    gotoLogin(event){
+      this.setState({
+        current:this.login,
+        showbar:false,
+        username:"",
+        password:"",
+        token:"",
+        currentTab: 1});
+    }
+
     gotoHome(event){
       this.setState({current:this.main, currentTab: 1});
     }
@@ -53,12 +65,37 @@ export class App extends React.Component {
     gotoUsers(event){
         this.setState({current:this.users, currentTab: 4});
     }
+    gotoTrips(event){
+        this.setState({current:this.trips, currentTab: 5});
+    }
+    gotoRules(event){
+        this.setState({current:this.rules, currentTab: 6});
+    }
 
 
     handleSuccess(username,password,token){
       console.log(username)
       console.log(password)
       console.log(token)
+      let level =0;
+      fetch("/business-users/me",{
+            method:"GET",
+
+            headers:{
+                "Authorization":"api-key "+token,
+            },
+            cache:"no-store"
+        })
+        .then((res)=>res.json())
+        .then((jsn)=>{
+            console.log("LOS ROLES:")
+            console.log(jsn.businessUser.roles)
+            if (jsn.businessUser.roles.indexOf('admin') > -1) level = 3;
+            else if (jsn.businessUser.roles.indexOf('manager') > -1) level = 2;
+            else if (jsn.businessUser.roles.indexOf('user') > -1) level = 1;
+            this.setState({securityLevel:level})
+        });
+
       this.setState({
         token,
         username,
@@ -66,6 +103,7 @@ export class App extends React.Component {
         current: this.main,
         showbar: true
       });
+      console.log(this.state)
     }
     render(){
       return(
@@ -79,17 +117,28 @@ export class App extends React.Component {
                   <span class="icon-bar"></span>
                   <span class="icon-bar"></span>                        
                 </button>
-                <a class="navbar-brand" href="#">FIUBER</a>
+                <div>
+                  <img id="logo" align="left" src="resources/logo.png"/>
+                  <a class="navbar-brand" href="#">FIUBER</a>
+                </div>
+
               </div>
               <div class="collapse navbar-collapse" id="myNavbar">
                 <ul class="nav navbar-nav">
                   <li class={this.state.currentTab == 1 ? 'active' : ''}><a onClick={this.gotoHome}>Home</a></li>
-                  <li class={this.state.currentTab == 2 ? 'active' : ''}><a onClick={this.gotoBusinessUsers}>Business Users</a></li>
-                  <li class={this.state.currentTab == 3 ? 'active' : ''}><a onClick={this.gotoServers}>Servers</a></li>
-                  <li class={this.state.currentTab == 4 ? 'active' : ''}><a onClick={this.gotoUsers}>Users</a></li>
+                  <li style={{display: this.state.securityLevel >= 3 ? '' : 'none'}}
+                      class={this.state.currentTab == 2 ? 'active' : ''}><a onClick={this.gotoBusinessUsers}>Business Users</a></li>
+                  <li style={{display: this.state.securityLevel >= 2 ? '' : 'none'}}
+                      class={this.state.currentTab == 3 ? 'active' : ''}><a onClick={this.gotoServers}>Servers</a></li>
+                  <li style={{display: this.state.securityLevel >= 1 ? '' : 'none'}}
+                      class={this.state.currentTab == 4 ? 'active' : ''}><a onClick={this.gotoUsers}>Users</a></li>
+                  <li style={{display: this.state.securityLevel >= 1 ? '' : 'none'}}
+                      class={this.state.currentTab == 5 ? 'active' : ''}><a onClick={this.gotoTrips}>Trips</a></li>
+                  <li style={{display: this.state.securityLevel >= 2 ? '' : 'none'}}
+                      class={this.state.currentTab == 6 ? 'active' : ''}><a onClick={this.gotoRules}>Rules</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
-                  <li><a href="#"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                  <li><a onClick={this.gotoLogin}><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
                 </ul>
               </div>
             </div>

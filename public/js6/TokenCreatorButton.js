@@ -1,3 +1,4 @@
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import "whatwg-fetch";
@@ -28,11 +29,11 @@ export class TokenCreatorButton extends React.Component{
             }
             console.log("ESTE ES JASON")
             console.log(json);
-            let popup=<Popout  title='Window title' onClosing={closePopup.bind(this)}>
-                <h1> new token created</h1>
-                for server {json.server.server.name}.
-                The token is valid until {json.server.token.expiresAt}.
-                The token is {json.server.token.token}.
+            let popup=<Popout  title='Token Creator' url={window.location.origin + "/js6/dialog.html"} onClosing={closePopup.bind(this)}>
+                <h1 align="center"> New Token Created</h1>
+                <p>For server <b>{json.server.server.name}.</b><br/>
+                The token is valid until <b>{new Date(json.server.token.expiresAt).toString()}.</b><br/>
+                The token is <b>{json.server.token.token}.</b></p>
             </Popout>
             this.setState({popup});
         });
@@ -41,7 +42,7 @@ export class TokenCreatorButton extends React.Component{
     render(){
         return (
             <span>
-                <button onClick={this.onClick.bind(this)}> Update Token </button>
+                <button class="btn btn-primary" onClick={this.onClick.bind(this)}> Update Token </button>
                 {this.state.popup}
             </span>
         );

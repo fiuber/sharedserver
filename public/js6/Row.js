@@ -37,8 +37,7 @@ export class Row extends React.Component{
     onUpdate(){
         let username=this.state.row.username;
         let popup=(
-        <Popout  title='Window title' onClosing={this.removePopup.bind(this)}>
-            <h1>Updating user {username}</h1>
+        <Popout  title='Updating' url={window.location.origin + "/js6/dialog.html"} onClosing={this.removePopup.bind(this)}>
             <Dialog content={this.state.row} onSubmit={this.onSubmit.bind(this)} />
         </Popout>
         );
@@ -58,15 +57,15 @@ export class Row extends React.Component{
         let renderedRowData=<span></span>;
         let row=this.state.row;
         if(this.state.expanded){
-            renderedRowData=<span><a onClick={this.onClose}>(less)</a>{this.renderOpened()}</span>;
+            renderedRowData=<span><a onClick={this.onClose}>(-)</a>{this.renderOpened()}</span>;
         }else{
-            renderedRowData=<span><a onClick={this.onOpen }>(more)</a>{this.renderClosed()}</span>;
+            renderedRowData=<span><a onClick={this.onOpen }>(+)</a>{this.renderClosed()}</span>;
         }
 
         return <tr>
             <td>{renderedRowData}</td>  
-            <td><a onClick={this.onUpdate}>{this.state.popup}update</a></td>
-            <td><a onClick={this.removeCallback}>remove</a></td>
+            <td><a onClick={this.onUpdate}>{this.state.popup}<span align="center" class="glyphicon glyphicon-edit"></span></a></td>
+            <td><a onClick={this.removeCallback}><span align="center" class="glyphicon glyphicon-remove"></span></a></td>
         </tr>
     }
 }
