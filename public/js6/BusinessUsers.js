@@ -113,6 +113,10 @@ class Strategy {
         
     }
 
+    getFilters(){
+        return ["username","name","surname"]
+    }
+
 
 }
 

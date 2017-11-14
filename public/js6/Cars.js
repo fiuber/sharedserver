@@ -75,6 +75,10 @@ class Strategy{
     doCreate(content){
         return Promise.resolve("yesss");
     }
+
+    getFilters(){
+        return []
+    }
 }
 
 

@@ -80,6 +80,26 @@ class Strategy{
     doCreate(content){
         return Promise.resolve(1);
     }
+
+    getFilters(){
+        return [
+            "applicationOwner",
+            "driver",
+            "passenger",
+            "startTimestamp",
+            "startStreet",
+            "startLat",
+            "startLon",
+            "endTimestamp",
+            "endStreet",
+            "endLat",
+            "endLon",
+            "totalTime",
+            "waitTime",
+            "travelTime",
+            "distance"
+        ]
+    }
 }
 
 

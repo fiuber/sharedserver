@@ -40825,6 +40825,11 @@ var Strategy = function () {
                 })
             });
         }
+    }, {
+        key: 'getFilters',
+        value: function getFilters() {
+            return ["username", "name", "surname"];
+        }
     }]);
 
     return Strategy;
@@ -41096,6 +41101,11 @@ var Strategy = function () {
         key: 'doCreate',
         value: function doCreate(content) {
             return Promise.resolve("yesss");
+        }
+    }, {
+        key: 'getFilters',
+        value: function getFilters() {
+            return [];
         }
     }]);
 
@@ -41383,10 +41393,7 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
             return _react2.default.createElement(
                 'div',
                 { id: 'mainContainer', style: { display: "block" } },
-                _react2.default.createElement(_FilterDialog.FilterDialog, { shape: {
-                        text: "string",
-                        code: 0
-                    } }),
+                _react2.default.createElement(_FilterDialog.FilterDialog, { shape: this.strategy.getFilters() }),
                 _react2.default.createElement(
                     'div',
                     { id: 'listContainer', style: { display: "block" } },
@@ -41661,26 +41668,46 @@ var FilterDialog = exports.FilterDialog = function (_React$Component) {
         //this.shape=props.shape;
         var _this = _possibleConstructorReturn(this, (FilterDialog.__proto__ || Object.getPrototypeOf(FilterDialog)).call(this, props));
 
+        var array = props.shape;
+
         _this.state = {
-            rendered: _this.renderInputShape(props.shape),
-            searchWord: "search"
+            searchWord: "",
+            filterName: "any"
+
         };
+
+        function change(name) {
+            this.setState({
+                filterName: name
+            });
+        }
+
+        _this.state.renderedFilteringOptions = props.shape.concat(["any"]).map(function (f) {
+
+            return _react2.default.createElement(
+                'li',
+                { key: f },
+                _react2.default.createElement(
+                    'a',
+                    { onClick: change.bind(_this, f) },
+                    f
+                )
+            );
+        });
+        /*
+        renderedFilteringOptions:<li><a onClick={()=>alert("html")}>HTML</a></li>
+            <li><a>CSS</a></li>
+            <li><a>JavaScript</a></li>
+            */
         return _this;
     }
 
     _createClass(FilterDialog, [{
-        key: 'renderInputShape',
-        value: function renderInputShape(shape) {
-            return _react2.default.createElement(
-                'span',
-                null,
-                JSON.stringify(shape)
-            );
-        }
-    }, {
         key: 'handleInputChange',
         value: function handleInputChange(e) {
-            console.log(e);
+            this.setState({
+                searchWord: e.target.value
+            });
         }
     }, {
         key: 'render',
@@ -41696,53 +41723,30 @@ var FilterDialog = exports.FilterDialog = function (_React$Component) {
                 "margin-left": "2px",
                 "margin-right": "2px"
             };
+            var buttonStyle = {
+                width: "20%",
+                align: "left"
+            };
             var searchLabel = _react2.default.createElement(
                 'label',
                 { style: displayInline, 'for': 'search' },
                 'Search:'
             );
-            var searchInput = _react2.default.createElement('input', { style: niceWidth, type: 'text', 'class': 'form-control', id: 'search', value: this.state.searchWord, onChange: this.handleInputChange.bind(this) });
+            var searchInput = _react2.default.createElement('input', { style: niceWidth, type: 'text', placeholder: 'search..', 'class': 'form-control', id: 'search', value: this.state.searchWord, onChange: this.handleInputChange.bind(this) });
             var searchDropdown = _react2.default.createElement(
                 'div',
                 { style: displayInline, 'class': 'dropdown' },
                 _react2.default.createElement(
                     'button',
-                    { 'class': 'btn btn-primary dropdown-toggle', type: 'button', 'data-toggle': 'dropdown' },
-                    'Dropdown Example',
+                    { style: buttonStyle, 'class': 'btn btn-primary dropdown-toggle', type: 'button', 'data-toggle': 'dropdown' },
+                    'filter by: ',
+                    this.state.filterName,
                     _react2.default.createElement('span', { 'class': 'caret' })
                 ),
                 _react2.default.createElement(
                     'ul',
                     { 'class': 'dropdown-menu' },
-                    _react2.default.createElement(
-                        'li',
-                        null,
-                        _react2.default.createElement(
-                            'a',
-                            { onClick: function onClick() {
-                                    return alert("html");
-                                } },
-                            'HTML'
-                        )
-                    ),
-                    _react2.default.createElement(
-                        'li',
-                        null,
-                        _react2.default.createElement(
-                            'a',
-                            null,
-                            'CSS'
-                        )
-                    ),
-                    _react2.default.createElement(
-                        'li',
-                        null,
-                        _react2.default.createElement(
-                            'a',
-                            null,
-                            'JavaScript'
-                        )
-                    )
+                    this.state.renderedFilteringOptions
                 )
             );
             return _react2.default.createElement(
@@ -42318,6 +42322,11 @@ var Strategy = function () {
                 })
             });
         }
+    }, {
+        key: 'getFilters',
+        value: function getFilters() {
+            return [];
+        }
     }]);
 
     return Strategy;
@@ -42501,6 +42510,11 @@ var Strategy = function () {
                     lastConnection: 0
                 })
             });
+        }
+    }, {
+        key: 'getFilters',
+        value: function getFilters() {
+            return ["name", "createdBy", "lastConnection"];
         }
     }]);
 
@@ -42798,6 +42812,11 @@ var Strategy = function () {
         value: function doCreate(content) {
             return Promise.resolve(1);
         }
+    }, {
+        key: 'getFilters',
+        value: function getFilters() {
+            return ["applicationOwner", "driver", "passenger", "startTimestamp", "startStreet", "startLat", "startLon", "endTimestamp", "endStreet", "endLat", "endLon", "totalTime", "waitTime", "travelTime", "distance"];
+        }
     }]);
 
     return Strategy;
@@ -43029,6 +43048,11 @@ var Strategy = function () {
                     "images": ["string"]
                 })
             });
+        }
+    }, {
+        key: 'getFilters',
+        value: function getFilters() {
+            return ["applicationOwner", "type", "username", "name", "surname", "country", "email", "brithdate"];
         }
     }]);
 

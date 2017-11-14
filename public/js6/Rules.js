@@ -112,6 +112,10 @@ class Strategy{
             })
         })
     }
+
+    getFilters(){
+        return []
+    }
 }
 
 

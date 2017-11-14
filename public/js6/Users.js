@@ -162,6 +162,19 @@ class Strategy{
             })
         })
     }
+
+    getFilters(){
+        return [
+            "applicationOwner",
+            "type",
+            "username",
+            "name",
+            "surname",
+            "country",
+            "email",
+            "brithdate"
+        ]
+    }
 }
 
 

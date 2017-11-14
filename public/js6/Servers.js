@@ -112,6 +112,14 @@ class Strategy{
             })
         })
     }
+
+    getFilters(){
+        return [
+            "name",
+            "createdBy",
+            "lastConnection"
+        ]
+    }
 }
 
 

@@ -96,10 +96,7 @@ export class CrudTable extends React.Component{
 
     render(){
         return <div id="mainContainer" style={{display:"block"}}>
-                <FilterDialog shape={{
-                    text:"string",
-                    code:0
-                }}/>
+                <FilterDialog shape={this.strategy.getFilters()}/>
 
             <div id="listContainer" style={{display:"block"}}>
                 
