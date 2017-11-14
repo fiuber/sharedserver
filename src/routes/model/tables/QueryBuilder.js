@@ -1,7 +1,7 @@
 /**
  * @module
  */
-
+const log=require("debug")("fiuber:QueryBuilder");
 /**
  * Builds queries. Determines the order of the columns.
  * @param {String} name the name of the table
@@ -98,16 +98,86 @@ QueryBuilder.prototype.numberedFields=function(partialRow,offset,separator){
     return condition;
 }
 
-QueryBuilder.prototype.where=function(partialRow,offset){
+function operatorFromName(name){
+    let operators={
+        lt:"<",
+        gt:">",
+        gte:">=",
+        lte:"<=",
+        eq:"=",
+        matches:"~~"
+    }
+    if(operators[name]==undefined){
+        throw new Error(name+" is not the name of an operator")
+    }
+    return operators[name];
+}
 
-    return "where "+this.numberedFields(partialRow,offset," and ");
+QueryBuilder.prototype.where=function(partialRow){
+    //return "where "+this.numberedFields(partialRow,offset," and ");
+    let selector=Object.assign({},partialRow);
+
+    let limit=selector._limit;
+    let offset=selector._offset;
+    let orderBy=selector._orderBy;
+    delete selector._limit;
+    delete selector._offset;
+    delete selector._orderBy;
+
+    //parse the partialRow object
+    let criterias=[];
+    for(let criteria in selector){
+        
+        if(criteria.indexOf("_")==-1){
+            if(this.fields.includes(criteria)){
+                //criterias.push(criteria+" = $"+(this.fields.indexOf(criteria)+1));
+                //criterias.push({name:criteria,op:"="});
+                criterias[criteria]="=";
+            }
+        }else{
+            let parts=criteria.split("_");
+            let firstPart=parts[0];
+            let operator=operatorFromName(parts[1]);
+            if(this.fields.includes(firstPart)){
+                //criterias.push(firstPart+" "+operator+" $"+(this.fields.indexOf(firstPart)+1));
+                //criterias.push({name:firstPart,op:operator})
+                criterias[firstPart]=operator;
+            }
+        }
+    }
+
+    let orderedNames=this.fields.filter((n)=>Object.keys(criterias).includes(n));
+
+    let strings=orderedNames.map((n,i)=>{
+        return n+" "+criterias[n]+" $"+(i+1);
+    })
+
+    let where = "where "+strings.join(" and ");
+    if(limit && offset && orderBy){
+        where+=" order by "+orderBy+" limit "+limit+" offset "+offset;
+    }
+
+    if(strings.length==0){
+        where="";
+    }
+
+    log("-----------------------------")
+    log(partialRow)
+    log(where);
+
+    return where;
 }
 
 QueryBuilder.prototype.update=function(partialRowUpdate){
     let numbered=this.numberedFields(partialRowUpdate);
     let ret=new String("update "+this.name+" set "+numbered);
+
+    
+
     ret.where=(partialRow)=>{
-        return ret+" "+this.where(partialRow,numbered.fields.length)
+        let where= "where "+this.numberedFields(partialRow,numbered.fields.length," and ");
+        
+        return ret+" "+where;
     }
     return ret;
 }

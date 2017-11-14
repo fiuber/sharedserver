@@ -73,8 +73,8 @@ function getCommit(commitId,nonexistent){
 
 }
 
-exports.getRules=function(){
-    return lastCommits.read().then((all)=>{
+exports.getRules=function(nonexistent,badRevision,me,query){
+    return lastCommits.readQuery(query).then((all)=>{
         let promises=all.map((r)=>exports.getRule(r.ruleId))
         return Promise.all(promises);
     });
@@ -107,6 +107,14 @@ exports.modifyRule=function(rule,ruleId,nonexistent,badRevision,me){
         return exports.getRule(ruleId);
 
     });
+}
+
+exports.modifyRule.shape={
+    "id": "string",
+    "_ref": "string",
+    "language": "string",
+    "blob": "string",
+    "active": true
 }
 
 

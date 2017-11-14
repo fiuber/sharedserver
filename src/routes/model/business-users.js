@@ -87,10 +87,10 @@ exports.add=function(user){
 exports.add.shape=userShape;
 
 // testeado
-exports.list=function(){
+exports.list=function(nonexistent,badRevision,me,query){
     let businessUsers=[];
     return udb
-    .read()
+    .readQuery(query)
     .then(getWithRoles);
 }
 exports.list.shape={}

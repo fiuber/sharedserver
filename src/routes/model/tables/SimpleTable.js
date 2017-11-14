@@ -56,6 +56,10 @@ function SimpleTable(name,fields,primaryKeys){
             }
         });
     }
+
+    this.readQuery=function(query){
+        return postgresTable.readQuery(query);
+    }
 }
 
 module.exports=SimpleTable;

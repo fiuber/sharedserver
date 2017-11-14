@@ -218,6 +218,8 @@ describe("using /trips",function(){
         .get("/trips")
         .set("authorization", authValue)
         .then((e)=>{
+            console.log("-------------------------")
+            console.log(e.body);
             assert.lengthOf(e.body.trips,1)
         })
     })
