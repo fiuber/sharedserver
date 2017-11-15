@@ -16,11 +16,18 @@ export class CrudTable extends React.Component{
         this.rows=[];
         this.popups=[];
         this.strategy=strategy;
+        this.searchWord=""
+        this.filterName="any"
         this.refresh();
     }
 
     refresh(){
-        this.strategy.getAll()
+        let searchQuery="";
+        if(this.searchWord != ""){
+            searchQuery="?"+this.filterName+"_matches=%"+this.searchWord+"%";
+        }
+        
+        this.strategy.getAll(searchQuery)
         .then((all)=>{
             this.rows=all.map((x)=>{
                 x.expanded=false;
@@ -96,7 +103,12 @@ export class CrudTable extends React.Component{
 
     updateQuery(searchWord,filterName){
         console.log(searchWord,filterName);
+        this.searchWord=searchWord;
+        this.filterName=filterName;
+        this.refresh();
     }
+
+    
     render(){
         return <div id="mainContainer" style={{display:"block"}}>
                 <FilterDialog shape={this.strategy.getFilters()} updateQueryCallback={this.updateQuery.bind(this)}/>

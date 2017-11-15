@@ -12,11 +12,10 @@ class Strategy{
         this.token=token;
         this.securityLevel=securityLevel;
     }
-    getAll(){
-        console.log("Iam getting all the things")
-        return fetch("/users",{
+    getAll(searchQuery){
+        console.log("BUSCO:"+"/users"+searchQuery)
+        return fetch("/users"+searchQuery,{
             method:"GET",
-
             headers:{
                 "Authorization":"api-key "+this.token,
             },
@@ -136,6 +135,7 @@ class Strategy{
     }
 
     doCreate(content){
+        console.log("LO CREO CON EL SGTE CONTENIDO",content);
         return fetch("/users/",{
             method:"POST",
             headers: {
@@ -144,18 +144,20 @@ class Strategy{
             },
             body:JSON.stringify({
                 "_ref": "string",
-                "type": "string",
-                "username": "string",
-                "password": "string",
+                "type": content.type,
+                "username": content.username,
+                "password": content.password,
+                /*
                 "fb": {
                   "userId": "string",
                   "authToken": "string"
                 },
-                "firstName": "string",
-                "lastName": "string",
-                "country": "string",
-                "email": "string",
-                "birthdate": "string",
+                */
+                "firstName": content.firstName,
+                "lastName": content.lastName,
+                "country": content.country,
+                "email": content.email,
+                "birthdate": content.birthdate,
                 "images": [
                   "string"
                 ]

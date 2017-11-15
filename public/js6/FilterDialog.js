@@ -11,7 +11,6 @@ export class FilterDialog extends React.Component{
         this.state={
             searchWord:"",
             filterName:"any",
-            
         }
 
         function change(name){

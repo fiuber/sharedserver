@@ -41267,6 +41267,8 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
         _this.rows = [];
         _this.popups = [];
         _this.strategy = strategy;
+        _this.searchWord = "";
+        _this.filterName = "any";
         _this.refresh();
         return _this;
     }
@@ -41276,7 +41278,12 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
         value: function refresh() {
             var _this2 = this;
 
-            this.strategy.getAll().then(function (all) {
+            var searchQuery = "";
+            if (this.searchWord != "") {
+                searchQuery = "?" + this.filterName + "_matches=%" + this.searchWord + "%";
+            }
+
+            this.strategy.getAll(searchQuery).then(function (all) {
                 _this2.rows = all.map(function (x) {
                     x.expanded = false;
                     return x;
@@ -41389,6 +41396,9 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
         key: 'updateQuery',
         value: function updateQuery(searchWord, filterName) {
             console.log(searchWord, filterName);
+            this.searchWord = searchWord;
+            this.filterName = filterName;
+            this.refresh();
         }
     }, {
         key: 'render',
@@ -41679,7 +41689,6 @@ var FilterDialog = exports.FilterDialog = function (_React$Component) {
         _this.state = {
             searchWord: "",
             filterName: "any"
-
         };
 
         function change(name) {
@@ -42886,11 +42895,10 @@ var Strategy = function () {
 
     _createClass(Strategy, [{
         key: 'getAll',
-        value: function getAll() {
-            console.log("Iam getting all the things");
-            return fetch("/users", {
+        value: function getAll(searchQuery) {
+            console.log("BUSCO:" + "/users" + searchQuery);
+            return fetch("/users" + searchQuery, {
                 method: "GET",
-
                 headers: {
                     "Authorization": "api-key " + this.token
                 },
@@ -43028,6 +43036,7 @@ var Strategy = function () {
     }, {
         key: 'doCreate',
         value: function doCreate(content) {
+            console.log("LO CREO CON EL SGTE CONTENIDO", content);
             return fetch("/users/", {
                 method: "POST",
                 headers: {
@@ -43036,18 +43045,20 @@ var Strategy = function () {
                 },
                 body: JSON.stringify({
                     "_ref": "string",
-                    "type": "string",
-                    "username": "string",
-                    "password": "string",
+                    "type": content.type,
+                    "username": content.username,
+                    "password": content.password,
+                    /*
                     "fb": {
-                        "userId": "string",
-                        "authToken": "string"
+                      "userId": "string",
+                      "authToken": "string"
                     },
-                    "firstName": "string",
-                    "lastName": "string",
-                    "country": "string",
-                    "email": "string",
-                    "birthdate": "string",
+                    */
+                    "firstName": content.firstName,
+                    "lastName": content.lastName,
+                    "country": content.country,
+                    "email": content.email,
+                    "birthdate": content.birthdate,
                     "images": ["string"]
                 })
             });
