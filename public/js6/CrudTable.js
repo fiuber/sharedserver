@@ -94,9 +94,12 @@ export class CrudTable extends React.Component{
     }
     
 
+    updateQuery(searchWord,filterName){
+        console.log(searchWord,filterName);
+    }
     render(){
         return <div id="mainContainer" style={{display:"block"}}>
-                <FilterDialog shape={this.strategy.getFilters()}/>
+                <FilterDialog shape={this.strategy.getFilters()} updateQueryCallback={this.updateQuery.bind(this)}/>
 
             <div id="listContainer" style={{display:"block"}}>
                 

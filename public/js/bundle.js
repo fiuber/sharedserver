@@ -41386,6 +41386,11 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
             });
         }
     }, {
+        key: 'updateQuery',
+        value: function updateQuery(searchWord, filterName) {
+            console.log(searchWord, filterName);
+        }
+    }, {
         key: 'render',
         value: function render() {
             var _this7 = this;
@@ -41393,7 +41398,7 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
             return _react2.default.createElement(
                 'div',
                 { id: 'mainContainer', style: { display: "block" } },
-                _react2.default.createElement(_FilterDialog.FilterDialog, { shape: this.strategy.getFilters() }),
+                _react2.default.createElement(_FilterDialog.FilterDialog, { shape: this.strategy.getFilters(), updateQueryCallback: this.updateQuery.bind(this) }),
                 _react2.default.createElement(
                     'div',
                     { id: 'listContainer', style: { display: "block" } },
@@ -41669,6 +41674,7 @@ var FilterDialog = exports.FilterDialog = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (FilterDialog.__proto__ || Object.getPrototypeOf(FilterDialog)).call(this, props));
 
         var array = props.shape;
+        _this.updateQueryCallback = props.updateQueryCallback;
 
         _this.state = {
             searchWord: "",
@@ -41680,6 +41686,7 @@ var FilterDialog = exports.FilterDialog = function (_React$Component) {
             this.setState({
                 filterName: name
             });
+            this.updateQueryCallback(this.state.searchWord, name);
         }
 
         _this.state.renderedFilteringOptions = props.shape.concat(["any"]).map(function (f) {
@@ -41694,11 +41701,6 @@ var FilterDialog = exports.FilterDialog = function (_React$Component) {
                 )
             );
         });
-        /*
-        renderedFilteringOptions:<li><a onClick={()=>alert("html")}>HTML</a></li>
-            <li><a>CSS</a></li>
-            <li><a>JavaScript</a></li>
-            */
         return _this;
     }
 
@@ -41708,6 +41710,7 @@ var FilterDialog = exports.FilterDialog = function (_React$Component) {
             this.setState({
                 searchWord: e.target.value
             });
+            this.updateQueryCallback(e.target.value, this.state.filterName);
         }
     }, {
         key: 'render',
@@ -41720,8 +41723,8 @@ var FilterDialog = exports.FilterDialog = function (_React$Component) {
             var niceWidth = {
                 width: "40%",
                 "display": "inline",
-                "margin-left": "2px",
-                "margin-right": "2px"
+                "marginLeft": "2px",
+                "marginRight": "2px"
             };
             var buttonStyle = {
                 width: "20%",

@@ -6,6 +6,7 @@ export class FilterDialog extends React.Component{
         super(props);
         //this.shape=props.shape;
         let array=props.shape;
+        this.updateQueryCallback=props.updateQueryCallback;
 
         this.state={
             searchWord:"",
@@ -17,17 +18,13 @@ export class FilterDialog extends React.Component{
             this.setState({
                 filterName:name
             });
+            this.updateQueryCallback(this.state.searchWord,name);
         }
 
         this.state.renderedFilteringOptions=props.shape.concat(["any"]).map((f)=>{
 
             return <li key={f}><a onClick={change.bind(this,f)}>{f}</a></li>
         });
-        /*
-        renderedFilteringOptions:<li><a onClick={()=>alert("html")}>HTML</a></li>
-            <li><a>CSS</a></li>
-            <li><a>JavaScript</a></li>
-            */
     }
 
 
@@ -35,6 +32,7 @@ export class FilterDialog extends React.Component{
         this.setState({
             searchWord:e.target.value
         });
+        this.updateQueryCallback(e.target.value,this.state.filterName);
     }
 
     
@@ -48,8 +46,8 @@ export class FilterDialog extends React.Component{
         let niceWidth={
             width:"40%",
             "display":"inline",
-            "margin-left":"2px",
-            "margin-right":"2px"
+            "marginLeft":"2px",
+            "marginRight":"2px"
         }
         let buttonStyle={
             width:"20%",
