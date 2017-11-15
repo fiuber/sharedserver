@@ -40696,13 +40696,8 @@ var Strategy = function () {
 
     _createClass(Strategy, [{
         key: 'getAll',
-        value: function getAll() {
-            console.log("This is:");
-            console.log(this);
-            console.log(this.constructor);
-            console.log(this.prototype);
-            console.log("MI token es", this.token);
-            return fetch("/business-users", {
+        value: function getAll(query) {
+            return fetch("/business-users" + query, {
                 method: "GET",
 
                 headers: {
@@ -41011,8 +41006,8 @@ var Strategy = function () {
 
     _createClass(Strategy, [{
         key: 'getAll',
-        value: function getAll() {
-            return fetch("/users/" + this.userId + "/cars", {
+        value: function getAll(query) {
+            return fetch("/users/" + this.userId + "/cars" + query, {
                 method: "GET",
 
                 headers: {
@@ -42216,9 +42211,9 @@ var Strategy = function () {
 
     _createClass(Strategy, [{
         key: 'getAll',
-        value: function getAll() {
+        value: function getAll(query) {
             console.log("Iam getting all the things");
-            return fetch("/rules", {
+            return fetch("/rules" + query, {
                 method: "GET",
 
                 headers: {
@@ -42403,8 +42398,8 @@ var Strategy = function () {
 
     _createClass(Strategy, [{
         key: 'getAll',
-        value: function getAll() {
-            return fetch("/servers", {
+        value: function getAll(query) {
+            return fetch("/servers" + query, {
                 method: "GET",
 
                 headers: {
@@ -42737,9 +42732,9 @@ var Strategy = function () {
 
     _createClass(Strategy, [{
         key: 'getAll',
-        value: function getAll() {
+        value: function getAll(query) {
             console.log("Iam getting all the things");
-            return fetch("/trips", {
+            return fetch("/trips" + query, {
                 method: "GET",
 
                 headers: {

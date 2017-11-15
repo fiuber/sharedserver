@@ -8,13 +8,8 @@ class Strategy {
     constructor(token){
         this.token=token;
     }
-    getAll(){
-        console.log("This is:")
-        console.log(this);
-        console.log(this.constructor);
-        console.log(this.prototype);
-        console.log("MI token es",this.token);
-        return fetch("/business-users",{
+    getAll(query){
+        return fetch("/business-users"+query,{
             method:"GET",
 
             headers:{

@@ -9,9 +9,9 @@ class Strategy{
     constructor(token){
         this.token=token;
     }
-    getAll(){
+    getAll(query){
         console.log("Iam getting all the things")
-        return fetch("/trips",{
+        return fetch("/trips"+query,{
             method:"GET",
 
             headers:{

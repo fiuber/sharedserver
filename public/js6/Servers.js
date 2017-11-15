@@ -11,8 +11,8 @@ class Strategy{
         this.token=token;
         this.username=username;
     }
-    getAll(){
-        return fetch("/servers",{
+    getAll(query){
+        return fetch("/servers"+query,{
             method:"GET",
 
             headers:{

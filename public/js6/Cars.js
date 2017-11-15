@@ -9,8 +9,8 @@ class Strategy{
         this.token=token;
         this.userId=userId;
     }
-    getAll(){
-        return fetch("/users/"+this.userId+"/cars",{
+    getAll(query){
+        return fetch("/users/"+this.userId+"/cars"+query,{
             method:"GET",
 
             headers:{
