@@ -29,7 +29,7 @@ export class TokenCreatorButton extends React.Component{
             }
             console.log("ESTE ES JASON")
             console.log(json);
-            let popup=<Popout  title='Token Creator' url={window.location.origin + "/js6/dialog.html"} onClosing={closePopup.bind(this)}>
+            let popup=<Popout  title='Token Creator' url={window.location.origin + "/dialog.html"} onClosing={closePopup.bind(this)}>
                 <h1 align="center"> New Token Created</h1>
                 <p>For server <b>{json.server.server.name}.</b><br/>
                 The token is valid until <b>{new Date(json.server.token.expiresAt).toString()}.</b><br/>
