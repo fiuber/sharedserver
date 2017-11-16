@@ -100,6 +100,10 @@ class Strategy{
             "distance"
         ]
     }
+
+    orderBy(){
+        return "startTimestamp";
+    }
 }
 
 

@@ -79,6 +79,10 @@ class Strategy{
     getFilters(){
         return []
     }
+
+    orderBy(){
+        return "id";
+    }
 }
 
 

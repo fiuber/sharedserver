@@ -7,6 +7,7 @@ export class PagingDialog extends React.Component{
         this.state={
             page:1
         }
+        this.updatePageCallback=props.updatePageCallback;
     }
 
     handleInputChange(e){
@@ -15,8 +16,10 @@ export class PagingDialog extends React.Component{
             this.setState({
                 page:value
             });
+            if(new Number(value).valueOf()==value){
+                this.updatePageCallback(value);
+            }
         }
-        //this.updateQueryCallback(e.target.value,this.state.filterName);
     }
 
     handleChangePage(howMuch){
@@ -28,6 +31,7 @@ export class PagingDialog extends React.Component{
         this.setState({
             page:nextPage
         })
+        this.updatePageCallback(nextPage);
     }
 
     render(){

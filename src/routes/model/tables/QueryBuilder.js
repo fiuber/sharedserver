@@ -153,8 +153,9 @@ QueryBuilder.prototype.where=function(partialRow){
     })
 
     let where = "where "+strings.join(" and ");
+    let ending="";
     if(limit && offset && orderBy){
-        where+=" order by "+orderBy+" limit "+limit+" offset "+offset;
+        ending=" order by "+orderBy+" limit "+limit+" offset "+offset;
     }
 
     if(strings.length==0){
@@ -164,8 +165,9 @@ QueryBuilder.prototype.where=function(partialRow){
     log("-----------------------------")
     log(partialRow)
     log(where);
+    log(ending);
 
-    return where;
+    return where + ending;
 }
 
 QueryBuilder.prototype.update=function(partialRowUpdate){

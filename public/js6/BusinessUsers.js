@@ -112,6 +112,10 @@ class Strategy {
         return ["username","name","surname"]
     }
 
+    orderBy(){
+        return "username";
+    }
+
 
 }
 

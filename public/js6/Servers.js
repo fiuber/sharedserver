@@ -120,6 +120,10 @@ class Strategy{
             "lastConnection"
         ]
     }
+
+    orderBy(){
+        return "name";
+    }
 }
 
 

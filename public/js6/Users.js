@@ -177,6 +177,10 @@ class Strategy{
             "brithdate"
         ]
     }
+
+    orderBy(){
+        return "username";
+    }
 }
 
 

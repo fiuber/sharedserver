@@ -19,14 +19,20 @@ export class CrudTable extends React.Component{
         this.strategy=strategy;
         this.searchWord=""
         this.filterName="any"
+        this.page=1;
         this.refresh();
     }
 
     refresh(){
-        let searchQuery="";
+        let searchQuery="?";
+        searchQuery+="_limit=10&_offset="+(this.page-1)*10+"&_orderBy="+this.strategy.orderBy();
+        console.log("THE SEARCHQUERY IS",searchQuery)
         if(this.searchWord != ""){
-            searchQuery="?"+this.filterName+"_matches=%"+this.searchWord+"%";
+            let filter=this.filterName+"_matches=%"+this.searchWord+"%";
+            searchQuery+="&"+filter;
         }
+        console.log("AND THEN ",searchQuery)
+        
         
         this.strategy.getAll(searchQuery)
         .then((all)=>{
@@ -109,10 +115,15 @@ export class CrudTable extends React.Component{
         this.refresh();
     }
 
+    changePage(page){
+        this.page=page;
+        this.refresh();
+    }
+
     
     render(){
         return <div id="mainContainer" style={{display:"block"}}>
-            <PagingDialog/>
+            <PagingDialog updatePageCallback={this.changePage.bind(this)}/>
             <FilterDialog shape={this.strategy.getFilters()} updateQueryCallback={this.updateQuery.bind(this)}/>
 
             <div id="listContainer" style={{display:"block"}}>

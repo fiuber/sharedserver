@@ -40825,6 +40825,11 @@ var Strategy = function () {
         value: function getFilters() {
             return ["username", "name", "surname"];
         }
+    }, {
+        key: 'orderBy',
+        value: function orderBy() {
+            return "username";
+        }
     }]);
 
     return Strategy;
@@ -41102,6 +41107,11 @@ var Strategy = function () {
         value: function getFilters() {
             return [];
         }
+    }, {
+        key: 'orderBy',
+        value: function orderBy() {
+            return "id";
+        }
     }]);
 
     return Strategy;
@@ -41266,6 +41276,7 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
         _this.strategy = strategy;
         _this.searchWord = "";
         _this.filterName = "any";
+        _this.page = 1;
         _this.refresh();
         return _this;
     }
@@ -41275,10 +41286,14 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
         value: function refresh() {
             var _this2 = this;
 
-            var searchQuery = "";
+            var searchQuery = "?";
+            searchQuery += "_limit=10&_offset=" + (this.page - 1) * 10 + "&_orderBy=" + this.strategy.orderBy();
+            console.log("THE SEARCHQUERY IS", searchQuery);
             if (this.searchWord != "") {
-                searchQuery = "?" + this.filterName + "_matches=%" + this.searchWord + "%";
+                var filter = this.filterName + "_matches=%" + this.searchWord + "%";
+                searchQuery += "&" + filter;
             }
+            console.log("AND THEN ", searchQuery);
 
             this.strategy.getAll(searchQuery).then(function (all) {
                 _this2.rows = all.map(function (x) {
@@ -41398,6 +41413,12 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
             this.refresh();
         }
     }, {
+        key: 'changePage',
+        value: function changePage(page) {
+            this.page = page;
+            this.refresh();
+        }
+    }, {
         key: 'render',
         value: function render() {
             var _this7 = this;
@@ -41405,7 +41426,7 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
             return _react2.default.createElement(
                 'div',
                 { id: 'mainContainer', style: { display: "block" } },
-                _react2.default.createElement(_PagingDialog.PagingDialog, null),
+                _react2.default.createElement(_PagingDialog.PagingDialog, { updatePageCallback: this.changePage.bind(this) }),
                 _react2.default.createElement(_FilterDialog.FilterDialog, { shape: this.strategy.getFilters(), updateQueryCallback: this.updateQuery.bind(this) }),
                 _react2.default.createElement(
                     'div',
@@ -42052,6 +42073,7 @@ var PagingDialog = exports.PagingDialog = function (_React$Component) {
         _this.state = {
             page: 1
         };
+        _this.updatePageCallback = props.updatePageCallback;
         return _this;
     }
 
@@ -42063,8 +42085,10 @@ var PagingDialog = exports.PagingDialog = function (_React$Component) {
                 this.setState({
                     page: value
                 });
+                if (new Number(value).valueOf() == value) {
+                    this.updatePageCallback(value);
+                }
             }
-            //this.updateQueryCallback(e.target.value,this.state.filterName);
         }
     }, {
         key: 'handleChangePage',
@@ -42077,6 +42101,7 @@ var PagingDialog = exports.PagingDialog = function (_React$Component) {
             this.setState({
                 page: nextPage
             });
+            this.updatePageCallback(nextPage);
         }
     }, {
         key: 'render',
@@ -42493,6 +42518,11 @@ var Strategy = function () {
         value: function getFilters() {
             return [];
         }
+    }, {
+        key: 'orderBy',
+        value: function orderBy() {
+            return "id";
+        }
     }]);
 
     return Strategy;
@@ -42681,6 +42711,11 @@ var Strategy = function () {
         key: 'getFilters',
         value: function getFilters() {
             return ["name", "createdBy", "lastConnection"];
+        }
+    }, {
+        key: 'orderBy',
+        value: function orderBy() {
+            return "name";
         }
     }]);
 
@@ -42983,6 +43018,11 @@ var Strategy = function () {
         value: function getFilters() {
             return ["applicationOwner", "driver", "passenger", "startTimestamp", "startStreet", "startLat", "startLon", "endTimestamp", "endStreet", "endLat", "endLon", "totalTime", "waitTime", "travelTime", "distance"];
         }
+    }, {
+        key: 'orderBy',
+        value: function orderBy() {
+            return "startTimestamp";
+        }
     }]);
 
     return Strategy;
@@ -43221,6 +43261,11 @@ var Strategy = function () {
         key: 'getFilters',
         value: function getFilters() {
             return ["applicationOwner", "type", "username", "name", "surname", "country", "email", "brithdate"];
+        }
+    }, {
+        key: 'orderBy',
+        value: function orderBy() {
+            return "username";
         }
     }]);
 
