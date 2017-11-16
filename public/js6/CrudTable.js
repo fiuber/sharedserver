@@ -5,6 +5,7 @@ import Popout from 'react-popout';
 import {Row} from "./Row";
 import {CreationDialogOpener} from "./CreateDialog";
 import {FilterDialog} from "./FilterDialog";
+import {PagingDialog} from "./PagingDialog";
 
 export class CrudTable extends React.Component{
     constructor(props,strategy){
@@ -111,7 +112,8 @@ export class CrudTable extends React.Component{
     
     render(){
         return <div id="mainContainer" style={{display:"block"}}>
-                <FilterDialog shape={this.strategy.getFilters()} updateQueryCallback={this.updateQuery.bind(this)}/>
+            <PagingDialog/>
+            <FilterDialog shape={this.strategy.getFilters()} updateQueryCallback={this.updateQuery.bind(this)}/>
 
             <div id="listContainer" style={{display:"block"}}>
                 

@@ -40653,7 +40653,7 @@ var App = exports.App = function (_React$Component) {
   return App;
 }(_react2.default.Component);
 
-},{"./BusinessUsers":193,"./Login":200,"./MainScreen":201,"./Rules":203,"./Servers":204,"./Trips":206,"./Users":207,"react":189,"react-dom":28,"whatwg-fetch":191}],193:[function(require,module,exports){
+},{"./BusinessUsers":193,"./Login":200,"./MainScreen":201,"./Rules":204,"./Servers":205,"./Trips":207,"./Users":208,"react":189,"react-dom":28,"whatwg-fetch":191}],193:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -41239,6 +41239,8 @@ var _CreateDialog = require('./CreateDialog');
 
 var _FilterDialog = require('./FilterDialog');
 
+var _PagingDialog = require('./PagingDialog');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -41403,6 +41405,7 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
             return _react2.default.createElement(
                 'div',
                 { id: 'mainContainer', style: { display: "block" } },
+                _react2.default.createElement(_PagingDialog.PagingDialog, null),
                 _react2.default.createElement(_FilterDialog.FilterDialog, { shape: this.strategy.getFilters(), updateQueryCallback: this.updateQuery.bind(this) }),
                 _react2.default.createElement(
                     'div',
@@ -41449,7 +41452,7 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
     return CrudTable;
 }(_react2.default.Component);
 
-},{"./CreateDialog":196,"./FilterDialog":199,"./Row":202,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],198:[function(require,module,exports){
+},{"./CreateDialog":196,"./FilterDialog":199,"./PagingDialog":202,"./Row":203,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],198:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -42018,6 +42021,132 @@ var MainScreen = exports.MainScreen = function (_React$Component) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.PagingDialog = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var PagingDialog = exports.PagingDialog = function (_React$Component) {
+    _inherits(PagingDialog, _React$Component);
+
+    function PagingDialog(props) {
+        _classCallCheck(this, PagingDialog);
+
+        return _possibleConstructorReturn(this, (PagingDialog.__proto__ || Object.getPrototypeOf(PagingDialog)).call(this, props));
+    }
+
+    _createClass(PagingDialog, [{
+        key: 'render',
+        value: function render() {
+            var arrowStyle = {
+                display: "inline",
+                margin: "5 5 5 5"
+            };
+            var inputStyle = {
+                display: "inline",
+                margin: "5 5 5 5",
+                width: "64px"
+
+            };
+            var leftArrow = _react2.default.createElement(
+                'button',
+                { 'class': 'btn btn-primary', type: 'button', style: arrowStyle },
+                '-',
+                _react2.default.createElement('span', { 'class': 'caret' })
+            );
+
+            var rightArrow = _react2.default.createElement(
+                'button',
+                { 'class': 'btn btn-primary', type: 'button', style: arrowStyle },
+                '-',
+                _react2.default.createElement('span', { 'class': 'caret' })
+            );
+            var input = _react2.default.createElement('input', {
+                style: inputStyle,
+                type: 'text',
+                placeholder: 'page',
+                'class': 'form-control',
+                id: 'search'
+            });
+
+            return _react2.default.createElement(
+                'div',
+                { style: { display: "block", overflow: "visible", align: 'left', margin: "10 10 10 10" } },
+                leftArrow,
+                input,
+                rightArrow
+            );
+        }
+
+        /*
+            handleInputChange(e){
+                this.setState({
+                    searchWord:e.target.value
+                });
+                this.updateQueryCallback(e.target.value,this.state.filterName);
+            }
+        
+            
+        
+            render(){
+                let displayInline={
+                    "display":"inline",
+                    "margin-left":"2px",
+                    "margin-right":"2px"
+                }
+                let niceWidth={
+                    width:"40%",
+                    "display":"inline",
+                    "marginLeft":"2px",
+                    "marginRight":"2px"
+                }
+                let buttonStyle={
+                    width:"20%",
+                    align:"left"
+                }
+                let searchLabel=<label style={displayInline} for="search">Search:</label>
+                let searchInput=<input style={niceWidth} type="text" placeholder="search.." class="form-control" id="search" value={this.state.searchWord} onChange={this.handleInputChange.bind(this)}></input>;
+                let searchDropdown=<div style={displayInline}  class="dropdown">
+                    <button style={buttonStyle} class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                        filter by: {this.state.filterName}
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        {this.state.renderedFilteringOptions}
+                    </ul>
+                </div> 
+                return <div style={{display:"block", overflow: "visible", align:'left'}}>
+                    {searchLabel}{searchInput}{searchDropdown}
+                </div>;
+            }
+            */
+
+    }]);
+
+    return PagingDialog;
+}(_react2.default.Component);
+
+},{"react":189,"react-dom":28}],203:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 exports.Row = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -42168,7 +42297,7 @@ var Row = exports.Row = function (_React$Component) {
     return Row;
 }(_react2.default.Component);
 
-},{"./Dialog":198,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],203:[function(require,module,exports){
+},{"./Dialog":198,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],204:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -42352,7 +42481,7 @@ var Rules = exports.Rules = function (_CrudTable) {
     return Rules;
 }(_CrudTable2.CrudTable);
 
-},{"./CrudTable":197,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],204:[function(require,module,exports){
+},{"./CrudTable":197,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],205:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -42541,7 +42670,7 @@ var Servers = exports.Servers = function (_CrudTable) {
     return Servers;
 }(_CrudTable2.CrudTable);
 
-},{"./CrudTable":197,"./TokenCreatorButton":205,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],205:[function(require,module,exports){
+},{"./CrudTable":197,"./TokenCreatorButton":206,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],206:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -42689,7 +42818,7 @@ createToken(row){
     }
     */
 
-},{"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],206:[function(require,module,exports){
+},{"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],207:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -42842,7 +42971,7 @@ var Trips = exports.Trips = function (_CrudTable) {
     return Trips;
 }(_CrudTable2.CrudTable);
 
-},{"./CrudTable":197,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],207:[function(require,module,exports){
+},{"./CrudTable":197,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],208:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -43081,7 +43210,7 @@ var Users = exports.Users = function (_CrudTable) {
     return Users;
 }(_CrudTable2.CrudTable);
 
-},{"./CarEditorButton":194,"./CrudTable":197,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],208:[function(require,module,exports){
+},{"./CarEditorButton":194,"./CrudTable":197,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],209:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -43110,4 +43239,4 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 _reactDom2.default.render(_react2.default.createElement(_App.App, null), document.getElementById('root'));
 
-},{"./App":192,"./BusinessUsers":193,"./Login":200,"./MainScreen":201,"./Servers":204,"./Users":207,"react":189,"react-dom":28,"whatwg-fetch":191}]},{},[208]);
+},{"./App":192,"./BusinessUsers":193,"./Login":200,"./MainScreen":201,"./Servers":205,"./Users":208,"react":189,"react-dom":28,"whatwg-fetch":191}]},{},[209]);
