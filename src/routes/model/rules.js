@@ -77,7 +77,14 @@ exports.getRules=function(nonexistent,badRevision,me,query){
     return lastCommits.readQuery(query).then((all)=>{
         let promises=all.map((r)=>exports.getRule(r.ruleId))
         return Promise.all(promises);
-    });
+    }).then((all)=>{
+        return lastCommits.read().then((rules)=>{
+            return {
+                rules:all,
+                quantity:rules.length
+            }
+        })
+    })
 }
 
 exports.deleteRule=function(ruleId,nonexistent){

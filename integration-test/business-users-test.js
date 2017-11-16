@@ -192,6 +192,7 @@ describe("testing /business-users", function(){
                     password:"admin"
                 });
                 assert.equal(res.body.businessUser.length,1);
+                assert.equal(res.body.metadata.total,1);
             })
         })
     })

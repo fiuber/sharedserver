@@ -2,6 +2,7 @@ let trips=require("./tables").trips;
 let steps=require("./tables").steps;
 const usersModel=require("./users");
 const transactionsModel=require("./transactions")
+const log=require("debug")("fiuber:tests")
 //const payer=require("./payer");
 
 /**
@@ -179,6 +180,20 @@ exports.getTrips=function(nonexistent,badRevision,me,query){
             return exports.getTrip(trip.id,nonexistent,badRevision,me);
         });
         return Promise.all(allPromises);
+    }).then((complete)=>{
+        return trips.read().then((all)=>{
+            let ret = {
+                trips:complete,
+                quantity:all.length
+            }
+            log("-----------------------------------------------")
+            log("-----------------------------------------------")
+            log("-----------------------------------------------")
+            log("-----------------------------------------------")
+            log(ret);
+
+            return ret;
+        })
     })
 }
 exports.getTrips.shape={};

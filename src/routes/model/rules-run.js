@@ -54,7 +54,7 @@ exports.runMany.shape={
 
 exports.calculateCost=function(fact){
     return rulesModel.getRules().then((rules)=>{
-        let ruleStrings=rules.map((rule)=>{
+        let ruleStrings=rules.rules.map((rule)=>{
             return rule.commit.blob;
         })
         return ruleStrings;

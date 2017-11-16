@@ -1,3 +1,5 @@
+const log=require("debug")("fiuber:reshaperCreator");
+
 /**
  * @module
  */
@@ -25,6 +27,9 @@ function reshape(shapeCreator,data){
  */
 
 function reshapeFromShape(shape,data){
+    log("shape:",shape);
+    log("data:",data);
+
     if(shape instanceof FromSignal){
         return reshapeFromShape(shape.innerShape,data[shape.key]);
     }else if(shape instanceof StringSignal){//key

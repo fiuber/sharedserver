@@ -114,11 +114,11 @@ class Strategy{
     }
 
     getFilters(){
-        return []
+        return ["ruleId"]
     }
 
     orderBy(){
-        return "id";
+        return "ruleId";
     }
 }
 

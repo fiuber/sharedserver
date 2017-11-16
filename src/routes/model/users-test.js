@@ -115,8 +115,8 @@ describe("Using the users model",function(){
 
     it("Listings shows both users",function(){
         return users.list().then((allUsers)=>{
-            let soyyo5159=allUsers.some((u)=>u.username==="soyyo5159");
-            let qman=allUsers.some((u)=>u.username==="q-man");
+            let soyyo5159=allUsers.users.some((u)=>u.username==="soyyo5159");
+            let qman=allUsers.users.some((u)=>u.username==="q-man");
             assert.isTrue(soyyo5159,"soyyo5159 not included")
             assert.isTrue(qman,"q-man not included")
         })
@@ -172,12 +172,12 @@ describe("Using the users model",function(){
 
     it("Listings dont show the deleted user",function(){
         return users.list().then((allUsers)=>{
-            let soyyo5159=allUsers.some((u)=>
+            let soyyo5159=allUsers.users.some((u)=>
                 u.username==="soyyo5159"
                 && u.surname==="Gil"
                 && u.country==="Gillandia"
             );
-            let qman=allUsers.some((u)=>u.username==="q-man");
+            let qman=allUsers.users.some((u)=>u.username==="q-man");
             assert.isTrue(soyyo5159,"soyyo5159 not included")
             assert.isFalse(qman,"q-man not deleted")
         })

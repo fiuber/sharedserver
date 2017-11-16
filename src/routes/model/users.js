@@ -107,6 +107,13 @@ exports.list=function(nonexistent,badRevision,me,query){
         return Promise.all(
             allUsers.map((u)=>exports.get(u.id))
         );
+    }).then((complete)=>{
+        return users.read().then((all)=>{
+            return {
+                users:complete,
+                quantity:all.length
+            }
+        })
     })
 }
 exports.list.shape={};

@@ -2,7 +2,7 @@ const db=require("./localdatabase").db;
 const QueryBuilder=require("./QueryBuilder");
 const log=require("debug")("fiuber:low:PostgresTable");
 const error=require("debug")("fiuber:error:PostgresTable");
-const debug=require("debug")("fiuber:tests")
+const debug=require("debug")("fiuber:PostgresTable:tests")
 /**
  * @module 
  */

@@ -75,7 +75,14 @@ expressify.all=function(module,metadata){
         let reshaper=reshaperCreator(f.outputShape || module.outputShape);
         function trueReshaper(data){
             let reshaped=reshaper(data);
-            reshaped.metadata=metadata;
+            if(reshaped.metadata==undefined){
+                reshaped.metadata=metadata;
+            }else{
+                for(let k in metadata){
+                    reshaped.metadata[k]=metadata[k];
+                }
+            }
+            
             return reshaped;
         }
         return expressify(inShape,f,trueReshaper)

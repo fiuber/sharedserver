@@ -24,7 +24,10 @@ function businessUser(string,number,array,from){
 function businessUserList(string,number,array,from){
     let businessUserShape=businessUser(string,number,array,from).businessUser;
     return {
-        businessUser:array(businessUserShape),
+        businessUser:from("businessUsers",array(businessUserShape)),
+        metadata:{
+            total:number("quantity")
+        }
     }
 }
 

@@ -10,7 +10,7 @@ export class FilterDialog extends React.Component{
 
         this.state={
             searchWord:"",
-            filterName:"any",
+            filterName:array[0],
         }
 
         function change(name){
@@ -20,7 +20,7 @@ export class FilterDialog extends React.Component{
             this.updateQueryCallback(this.state.searchWord,name);
         }
 
-        this.state.renderedFilteringOptions=props.shape.concat(["any"]).map((f)=>{
+        this.state.renderedFilteringOptions=props.shape.map((f)=>{
 
             return <li key={f}><a onClick={change.bind(this,f)}>{f}</a></li>
         });

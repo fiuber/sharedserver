@@ -41707,7 +41707,7 @@ var FilterDialog = exports.FilterDialog = function (_React$Component) {
 
         _this.state = {
             searchWord: "",
-            filterName: "any"
+            filterName: array[0]
         };
 
         function change(name) {
@@ -41717,7 +41717,7 @@ var FilterDialog = exports.FilterDialog = function (_React$Component) {
             this.updateQueryCallback(this.state.searchWord, name);
         }
 
-        _this.state.renderedFilteringOptions = props.shape.concat(["any"]).map(function (f) {
+        _this.state.renderedFilteringOptions = props.shape.map(function (f) {
 
             return _react2.default.createElement(
                 'li',
@@ -42516,12 +42516,12 @@ var Strategy = function () {
     }, {
         key: 'getFilters',
         value: function getFilters() {
-            return [];
+            return ["ruleId"];
         }
     }, {
         key: 'orderBy',
         value: function orderBy() {
-            return "id";
+            return "ruleId";
         }
     }]);
 

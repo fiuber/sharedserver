@@ -134,13 +134,14 @@ describe("CRUD servers list", function(){
             added.push(e.id);
             return servers.list()
         }).then(function(result){
-            var list = result;
+            var list = result.servers;
             
             var ids=list.map((s)=>s.id);
             assert(ids.includes(added[0]))
             assert(ids.includes(added[1]))
             assert(ids.includes(added[2]))
             assert.equal(ids.length,3);
+            assert.equal(result.quantity,3);
         }).then(done,done);
     })
 
@@ -167,7 +168,7 @@ describe("CRUD servers list", function(){
         }).then(function(){
             return servers.list()
         }).then(function(result){
-            var list = result
+            var list = result.servers
             var ids=list.map((s)=>s.id);
             assert(ids.includes(added[0]))
             assert(ids.includes(added[1]))

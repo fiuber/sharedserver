@@ -1,6 +1,7 @@
 let assert=require("chai").assert;
 var request = require('supertest');
 const run=require("./run");
+const log=require("debug")("fiuber:tests")
 
 describe("POST en /servers", function(){
     var app;
@@ -250,7 +251,8 @@ describe("POST en /servers", function(){
             ()=>agent
             .get("/servers")
             .set("Authorization",authValue)
-            .expect(200).expect(function(result){
+            .expect(function(result){
+                log(result.body);
                 var list = result.body.servers;
                 var ids=list.map((s)=>s.id);
                 assert(intercepted.includes(ids[0]))
@@ -258,6 +260,7 @@ describe("POST en /servers", function(){
                 assert(intercepted.includes(ids[2]))
                 assert.equal(ids.length,3);
             })
+            .expect(200)
 
         )
     })
