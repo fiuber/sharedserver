@@ -37,6 +37,7 @@ services:
     environment:
 #      PAYMENT_SERVER:  http://shielded-escarpment-27661.herokuapp.com/api/v1
       PAYMENT_SERVER: http://json-server:3000
+#      DEBUG: fiuber:QueryBuilder
       DEBUG: fiuber:tests
     command: ["./wait-for-it.sh", "db:5432", "json-server:3000", "--", "sh", "test-cover-enviar-en-docker.sh"]
     #command: ["sh &&", "npm", "start"]

@@ -33,12 +33,50 @@ describe("query builder",function(){
         );
     })
 
+    it("simple select", function(){
+        assert.equal(
+            builder.select().where({}),
+            "select * from table_name "
+        );
+    })
+
     it("select where", function(){
         assert.equal(
             builder.select().where({f1:4,f2:58}),
-            "select * from table_name where f1=$1 and f2=$2"
+            "select * from table_name where f1 = $1 and f2 = $2"
         );
     })
+
+    it("select where limit offset", function(){
+        assert.equal(
+            builder.select().where({f1:4,f2:58,_limit:10,_offset:5}),
+            "select * from table_name where f1 = $1 and f2 = $2"
+        );
+    })
+
+    it("select with lt and gt", function(){
+        assert.equal(
+            builder.select().where({f1_lt:4,f2_gt:58}),
+            "select * from table_name where f1 < $1 and f2 > $2"
+        );
+    })
+    
+
+    it("select with lte and gte", function(){
+        assert.equal(
+            builder.select().where({f1_lte:4,f2_gte:58}),
+            "select * from table_name where f1 <= $1 and f2 >= $2"
+        );
+    })
+
+    it("select with matches", function(){
+        assert.equal(
+            builder.select().where({f1_matches:"asddd",f2_eq:3}),
+            "select * from table_name where f1 ~~ $1 and f2 = $2"
+        );
+    })
+
+
 
     it("numbered fields", function(){
         assert.equal(
@@ -56,7 +94,7 @@ describe("query builder",function(){
     it("delete where",function(){
         assert.equal(
             builder.delete().where({asd:5,f1:3}),
-            "delete from table_name where f1=$1"
+            "delete from table_name where f1 = $1"
         )
     })
 

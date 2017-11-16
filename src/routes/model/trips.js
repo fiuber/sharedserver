@@ -173,8 +173,8 @@ exports.getTrip=function(tripId,nonexistent,badRevision,me){
 }
 exports.getTrip.shape={};
 
-exports.getTrips=function(nonexistent,badRevision,me){
-    return trips.read().then((all)=>{
+exports.getTrips=function(nonexistent,badRevision,me,query){
+    return trips.readQuery(query).then((all)=>{
         let allPromises=all.map((trip)=>{
             return exports.getTrip(trip.id,nonexistent,badRevision,me);
         });

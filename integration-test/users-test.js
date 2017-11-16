@@ -174,6 +174,7 @@ describe("using users",function(){
             .set("authorization", authValue)
             .expect(200)
             .expect(function(res){
+                log(res.body);
                 let soyyo5159=null;
                 for(let u of res.body.users){
                     if(u.username==="soyyo5159"){
@@ -197,6 +198,19 @@ describe("using users",function(){
                 assert.isTrue(has_fayo5159,"doesnt have fayo5159")
                 assert.equal(owner_fayo5159,"admin")//admin is the owner of this user
             })
+        })
+
+        it("filtering by username gets only that user",function(){
+            return agent
+            .get("/users")
+            .query({username_matches:'soyyo%'})
+            .set("authorization", authValue)
+            //.expect(200)
+            .expect((res)=>{
+                log(res.body);
+                assert.lengthOf(res.body.users,1);
+            })
+
         })
     
         it("the user can be deleted",function(){

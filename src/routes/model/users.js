@@ -101,8 +101,9 @@ exports.validate.shape={
     "username":"string"
 }
 
-exports.list=function(){
-    return users.read().then((allUsers)=>{
+exports.list=function(nonexistent,badRevision,me,query){
+    log(query);
+    return users.readQuery(query).then((allUsers)=>{
         return Promise.all(
             allUsers.map((u)=>exports.get(u.id))
         );
