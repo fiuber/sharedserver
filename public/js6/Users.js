@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import "whatwg-fetch";
@@ -144,18 +145,18 @@ class Strategy{
             },
             body:JSON.stringify({
                 "_ref": "string",
-                "type": "string",
-                "username": "string",
-                "password": "string",
+                "type": content.type,
+                "username": content.username,
+                "password": content.password,
                 "fb": {
                   "userId": "string",
                   "authToken": "string"
                 },
-                "firstName": "string",
-                "lastName": "string",
-                "country": "string",
-                "email": "string",
-                "birthdate": "string",
+                "firstName": content.firstName,
+                "lastName": content.lastName,
+                "country": content.country,
+                "email": content.email,
+                "birthdate": content.birthdate,
                 "images": [
                   "string"
                 ]
