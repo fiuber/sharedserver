@@ -4,6 +4,30 @@ import ReactDOM from 'react-dom';
 export class PagingDialog extends React.Component{
     constructor(props){
         super(props)
+        this.state={
+            page:1
+        }
+    }
+
+    handleInputChange(e){
+        let value=e.target.value;
+        if(new Number(value).valueOf()==value && value>0 || value==""){
+            this.setState({
+                page:value
+            });
+        }
+        //this.updateQueryCallback(e.target.value,this.state.filterName);
+    }
+
+    handleChangePage(howMuch){
+        let currentPage=new Number(this.state.page).valueOf()
+        let nextPage=currentPage+howMuch;
+        if(nextPage<1){
+            nextPage=1
+        }
+        this.setState({
+            page:nextPage
+        })
     }
 
     render(){
@@ -17,13 +41,13 @@ export class PagingDialog extends React.Component{
             width:"64px"
 
         }
-        let leftArrow=<button class="btn btn-primary" type="button" style={arrowStyle}>
+        let leftArrow=<button class="btn btn-primary" type="button" style={arrowStyle} onClick={this.handleChangePage.bind(this,-1)}>
             -
             <span class="caret"></span>
         </button>
 
-        let rightArrow=<button class="btn btn-primary" type="button" style={arrowStyle}>
-            -
+        let rightArrow=<button class="btn btn-primary" type="button" style={arrowStyle} onClick={this.handleChangePage.bind(this,1)}>
+            +
             <span class="caret"></span>
         </button>
         let input=<input 
@@ -32,6 +56,8 @@ export class PagingDialog extends React.Component{
             placeholder="page" 
             class="form-control" 
             id="search" 
+            value={this.state.page} 
+            onChange={this.handleInputChange.bind(this)}
             >
         </input>;
 

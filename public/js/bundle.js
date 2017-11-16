@@ -42047,10 +42047,38 @@ var PagingDialog = exports.PagingDialog = function (_React$Component) {
     function PagingDialog(props) {
         _classCallCheck(this, PagingDialog);
 
-        return _possibleConstructorReturn(this, (PagingDialog.__proto__ || Object.getPrototypeOf(PagingDialog)).call(this, props));
+        var _this = _possibleConstructorReturn(this, (PagingDialog.__proto__ || Object.getPrototypeOf(PagingDialog)).call(this, props));
+
+        _this.state = {
+            page: 1
+        };
+        return _this;
     }
 
     _createClass(PagingDialog, [{
+        key: 'handleInputChange',
+        value: function handleInputChange(e) {
+            var value = e.target.value;
+            if (new Number(value).valueOf() == value && value > 0 || value == "") {
+                this.setState({
+                    page: value
+                });
+            }
+            //this.updateQueryCallback(e.target.value,this.state.filterName);
+        }
+    }, {
+        key: 'handleChangePage',
+        value: function handleChangePage(howMuch) {
+            var currentPage = new Number(this.state.page).valueOf();
+            var nextPage = currentPage + howMuch;
+            if (nextPage < 1) {
+                nextPage = 1;
+            }
+            this.setState({
+                page: nextPage
+            });
+        }
+    }, {
         key: 'render',
         value: function render() {
             var arrowStyle = {
@@ -42065,15 +42093,15 @@ var PagingDialog = exports.PagingDialog = function (_React$Component) {
             };
             var leftArrow = _react2.default.createElement(
                 'button',
-                { 'class': 'btn btn-primary', type: 'button', style: arrowStyle },
+                { 'class': 'btn btn-primary', type: 'button', style: arrowStyle, onClick: this.handleChangePage.bind(this, -1) },
                 '-',
                 _react2.default.createElement('span', { 'class': 'caret' })
             );
 
             var rightArrow = _react2.default.createElement(
                 'button',
-                { 'class': 'btn btn-primary', type: 'button', style: arrowStyle },
-                '-',
+                { 'class': 'btn btn-primary', type: 'button', style: arrowStyle, onClick: this.handleChangePage.bind(this, 1) },
+                '+',
                 _react2.default.createElement('span', { 'class': 'caret' })
             );
             var input = _react2.default.createElement('input', {
@@ -42081,7 +42109,9 @@ var PagingDialog = exports.PagingDialog = function (_React$Component) {
                 type: 'text',
                 placeholder: 'page',
                 'class': 'form-control',
-                id: 'search'
+                id: 'search',
+                value: this.state.page,
+                onChange: this.handleInputChange.bind(this)
             });
 
             return _react2.default.createElement(
