@@ -248,7 +248,7 @@ describe("Using the users model",function(){
         })
 
         it("the car is removed",function(){
-            return users.deleteCar(myCarId);
+            return users.deleteCar(firstId,myCarId);
         })
 
         it("the new car is nonexistent",function(){

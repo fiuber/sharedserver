@@ -2,7 +2,7 @@ let trips=require("./tables").trips;
 let steps=require("./tables").steps;
 const usersModel=require("./users");
 const transactionsModel=require("./transactions")
-const log=require("debug")("fiuber:tests")
+const log=require("debug")("fiuber:trips")
 //const payer=require("./payer");
 
 /**
