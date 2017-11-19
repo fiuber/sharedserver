@@ -21,9 +21,12 @@ class Strategy{
         })
         .then((res)=>res.json())
         .then((jsn)=>{
+            this.totalRecords=jsn.metadata.total;
             console.log("LOS rules:")
             console.log(jsn.rules)
-            return jsn.rules;
+            let ret=jsn.rules;
+            ret.totalRecords=jsn.metadata.total;
+            return ret;
         });
     }
 

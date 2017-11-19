@@ -21,11 +21,14 @@ class Strategy{
         })
         .then((res)=>res.json())
         .then((jsn)=>{
+            this.totalRecords=jsn.metadata.total;
             console.log("LOS Trips:")
             console.log(jsn)
             console.log(jsn.trips)
 
-            return jsn.trips;
+            let ret=jsn.trips;
+            ret.totalRecords=jsn.metadata.total;
+            return ret;
         });
     }
 

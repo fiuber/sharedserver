@@ -18,7 +18,12 @@ class Strategy {
             cache:"no-store"
         })
         .then((res)=>res.json())
-        .then((jsn)=>jsn.businessUser);
+        .then((jsn)=>{
+            this.totalRecords=jsn.metadata.total;
+            let ret=jsn.businessUser;
+            ret.totalRecords=jsn.metadata.total;
+            return ret;
+        });
     }
 
     doUpdate(row,content){

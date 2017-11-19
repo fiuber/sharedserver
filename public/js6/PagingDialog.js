@@ -5,19 +5,42 @@ export class PagingDialog extends React.Component{
     constructor(props){
         super(props)
         this.state={
-            page:1
+            page:1,
+            pages:1,
+            leftEnabled:false,
+            rightEnabled:false,
         }
         this.updatePageCallback=props.updatePageCallback;
+        this.updatePage(1);
+    }
+
+    updatePage(value){
+        this.updatePageCallback(value).then((pages)=>{
+            console.log("==========================")
+            console.log(pages)
+            console.log("==========================")
+            let currentPage=this.state.page;
+            let leftEnabled=(currentPage>1);
+            let rightEnabled=(currentPage<pages);
+
+            this.setState({
+                pages,leftEnabled,rightEnabled
+            })
+        })   
     }
 
     handleInputChange(e){
-        let value=e.target.value;
-        if(new Number(value).valueOf()==value && value>0 || value==""){
+        let total = this.state.pages
+        let value = e.target.value;
+        if(new Number(value).valueOf()==value 
+            && value>0 
+            && value <=total 
+            || value==""){
             this.setState({
                 page:value
             });
             if(new Number(value).valueOf()==value){
-                this.updatePageCallback(value);
+                this.updatePage(value);
             }
         }
     }
@@ -28,10 +51,15 @@ export class PagingDialog extends React.Component{
         if(nextPage<1){
             nextPage=1
         }
+        let total = this.state.pages;
+        if(nextPage>total){
+            nextPage=total;
+        }
+
         this.setState({
             page:nextPage
         })
-        this.updatePageCallback(nextPage);
+        this.updatePage(nextPage);
     }
 
     render(){
@@ -42,15 +70,18 @@ export class PagingDialog extends React.Component{
         let inputStyle={
             display:"inline",
             margin:"5 5 5 5",
-            width:"64px"
-
+            width:"64px",
+            textAlign:"center"
         }
-        let leftArrow=<button class="btn btn-primary" type="button" style={arrowStyle} onClick={this.handleChangePage.bind(this,-1)}>
+
+        let leftClass="btn btn-primary "+(this.state.page>1)?"active":"disabled";
+        let leftArrow=<button class={leftClass} type="button" style={arrowStyle} onClick={this.handleChangePage.bind(this,-1)}>
             -
             <span class="caret"></span>
         </button>
 
-        let rightArrow=<button class="btn btn-primary" type="button" style={arrowStyle} onClick={this.handleChangePage.bind(this,1)}>
+        let rightClass="btn btn-primary "+(this.state.page<this.state.pages)?"active":"disabled";
+        let rightArrow=<button class={rightClass} type="button" style={arrowStyle} onClick={this.handleChangePage.bind(this,1)}>
             +
             <span class="caret"></span>
         </button>
@@ -66,7 +97,7 @@ export class PagingDialog extends React.Component{
         </input>;
 
         return <div style={{display:"block", overflow: "visible", align:'left', margin:"10 10 10 10"}}>
-            {leftArrow}{input}{rightArrow}
+            Page {leftArrow}{input}{rightArrow} of {this.props.pages}
         </div>;
     }
 

@@ -12,7 +12,8 @@ export class CrudTable extends React.Component{
         super(props);
         this.state={
             renderedRows:[],
-            creatorOpen:false
+            creatorOpen:false,
+            totalRecords:0
         }
         this.rows=[];
         this.popups=[];
@@ -20,6 +21,7 @@ export class CrudTable extends React.Component{
         this.searchWord=""
         this.filterName="any"
         this.page=1;
+
         this.refresh();
     }
 
@@ -32,9 +34,11 @@ export class CrudTable extends React.Component{
             searchQuery+="&"+filter;
         }
         console.log("AND THEN ",searchQuery)
+
         
         
-        this.strategy.getAll(searchQuery)
+        
+        return this.strategy.getAll(searchQuery)
         .then((all)=>{
             this.rows=all.map((x)=>{
                 x.expanded=false;
@@ -45,6 +49,13 @@ export class CrudTable extends React.Component{
                 this.popups.push(<span></span>);
             }
             this.updateRenderedRows();
+            
+            this.setState({
+                totalRecords:all.totalRecords
+            })
+            
+
+            return Math.ceil(all.totalRecords/10);
         })
     }
 
@@ -117,13 +128,17 @@ export class CrudTable extends React.Component{
 
     changePage(page){
         this.page=page;
-        this.refresh();
+        return this.refresh();
     }
+
+
 
     
     render(){
         return <div id="mainContainer" style={{display:"block"}}>
-            <PagingDialog updatePageCallback={this.changePage.bind(this)}/>
+            <PagingDialog 
+                updatePageCallback={this.changePage.bind(this)} 
+                pages={Math.ceil(this.state.totalRecords/10)}/>
             <FilterDialog shape={this.strategy.getFilters()} updateQueryCallback={this.updateQuery.bind(this)}/>
 
             <div id="listContainer" style={{display:"block"}}>

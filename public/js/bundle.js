@@ -44468,11 +44468,7 @@ var App = exports.App = function (_React$Component) {
   return App;
 }(_react2.default.Component);
 
-<<<<<<< HEAD
-},{"./BusinessUsers":193,"./Login":200,"./MainScreen":201,"./Rules":204,"./Servers":205,"./Trips":207,"./Users":208,"react":189,"react-dom":28,"whatwg-fetch":191}],193:[function(require,module,exports){
-=======
-},{"./BusinessUsers":226,"./Login":232,"./MainScreen":233,"./Rules":235,"./Servers":236,"./Trips":238,"./Users":239,"react":222,"react-dom":61,"whatwg-fetch":224}],226:[function(require,module,exports){
->>>>>>> b0ebb42121118e2d32a265206c94b9ce5b095d31
+},{"./BusinessUsers":226,"./Login":233,"./MainScreen":234,"./Rules":237,"./Servers":238,"./Trips":240,"./Users":241,"react":222,"react-dom":61,"whatwg-fetch":224}],226:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -44516,6 +44512,8 @@ var Strategy = function () {
     _createClass(Strategy, [{
         key: 'getAll',
         value: function getAll(query) {
+            var _this = this;
+
             return fetch("/business-users" + query, {
                 method: "GET",
 
@@ -44526,7 +44524,10 @@ var Strategy = function () {
             }).then(function (res) {
                 return res.json();
             }).then(function (jsn) {
-                return jsn.businessUser;
+                _this.totalRecords = jsn.metadata.total;
+                var ret = jsn.businessUser;
+                ret.totalRecords = jsn.metadata.total;
+                return ret;
             });
         }
     }, {
@@ -44831,6 +44832,8 @@ var Strategy = function () {
     _createClass(Strategy, [{
         key: 'getAll',
         value: function getAll(query) {
+            var _this = this;
+
             return fetch("/users/" + this.userId + "/cars" + query, {
                 method: "GET",
 
@@ -44841,7 +44844,10 @@ var Strategy = function () {
             }).then(function (res) {
                 return res.json();
             }).then(function (jsn) {
-                return jsn.cars;
+                _this.totalRecords = jsn.metadata.total;
+                var ret = jsn.cars;
+                ret.totalRecords = jsn.metadata.total;
+                return ret;
             });
         }
     }, {
@@ -45088,7 +45094,8 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
 
         _this.state = {
             renderedRows: [],
-            creatorOpen: false
+            creatorOpen: false,
+            totalRecords: 0
         };
         _this.rows = [];
         _this.popups = [];
@@ -45096,6 +45103,7 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
         _this.searchWord = "";
         _this.filterName = "any";
         _this.page = 1;
+
         _this.refresh();
         return _this;
     }
@@ -45114,7 +45122,7 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
             }
             console.log("AND THEN ", searchQuery);
 
-            this.strategy.getAll(searchQuery).then(function (all) {
+            return this.strategy.getAll(searchQuery).then(function (all) {
                 _this2.rows = all.map(function (x) {
                     x.expanded = false;
                     return x;
@@ -45146,6 +45154,12 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
                 }
 
                 _this2.updateRenderedRows();
+
+                _this2.setState({
+                    totalRecords: all.totalRecords
+                });
+
+                return Math.ceil(all.totalRecords / 10);
             });
         }
     }, {
@@ -45235,7 +45249,7 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
         key: 'changePage',
         value: function changePage(page) {
             this.page = page;
-            this.refresh();
+            return this.refresh();
         }
     }, {
         key: 'render',
@@ -45245,7 +45259,9 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
             return _react2.default.createElement(
                 'div',
                 { id: 'mainContainer', style: { display: "block" } },
-                _react2.default.createElement(_PagingDialog.PagingDialog, { updatePageCallback: this.changePage.bind(this) }),
+                _react2.default.createElement(_PagingDialog.PagingDialog, {
+                    updatePageCallback: this.changePage.bind(this),
+                    pages: Math.ceil(this.state.totalRecords / 10) }),
                 _react2.default.createElement(_FilterDialog.FilterDialog, { shape: this.strategy.getFilters(), updateQueryCallback: this.updateQuery.bind(this) }),
                 _react2.default.createElement(
                     'div',
@@ -45292,11 +45308,7 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
     return CrudTable;
 }(_react2.default.Component);
 
-<<<<<<< HEAD
-},{"./CreateDialog":196,"./FilterDialog":199,"./PagingDialog":202,"./Row":203,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],198:[function(require,module,exports){
-=======
-},{"./CreateDialog":229,"./Row":234,"react":222,"react-dom":61,"react-popout":63,"whatwg-fetch":224}],231:[function(require,module,exports){
->>>>>>> b0ebb42121118e2d32a265206c94b9ce5b095d31
+},{"./CreateDialog":229,"./FilterDialog":232,"./PagingDialog":235,"./Row":236,"react":222,"react-dom":61,"react-popout":63,"whatwg-fetch":224}],231:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45661,7 +45673,7 @@ var FilterDialog = exports.FilterDialog = function (_React$Component) {
     return FilterDialog;
 }(_react2.default.Component);
 
-},{"react":189,"react-dom":28}],200:[function(require,module,exports){
+},{"react":222,"react-dom":61}],233:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45854,11 +45866,7 @@ var Login = exports.Login = function (_React$Component) {
   return Login;
 }(_react2.default.Component);
 
-<<<<<<< HEAD
-},{"react":189,"react-dom":28,"whatwg-fetch":191}],201:[function(require,module,exports){
-=======
-},{"react":222,"react-dom":61,"whatwg-fetch":224}],233:[function(require,module,exports){
->>>>>>> b0ebb42121118e2d32a265206c94b9ce5b095d31
+},{"react":222,"react-dom":61,"whatwg-fetch":224}],234:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45908,8 +45916,7 @@ var MainScreen = exports.MainScreen = function (_React$Component) {
     return MainScreen;
 }(_react2.default.Component);
 
-<<<<<<< HEAD
-},{"react":189,"react-dom":28,"whatwg-fetch":191}],202:[function(require,module,exports){
+},{"react":222,"react-dom":61,"whatwg-fetch":224}],235:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45944,22 +45951,45 @@ var PagingDialog = exports.PagingDialog = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (PagingDialog.__proto__ || Object.getPrototypeOf(PagingDialog)).call(this, props));
 
         _this.state = {
-            page: 1
+            page: 1,
+            pages: 1,
+            leftEnabled: false,
+            rightEnabled: false
         };
         _this.updatePageCallback = props.updatePageCallback;
+        _this.updatePage(1);
         return _this;
     }
 
     _createClass(PagingDialog, [{
+        key: 'updatePage',
+        value: function updatePage(value) {
+            var _this2 = this;
+
+            this.updatePageCallback(value).then(function (pages) {
+                console.log("==========================");
+                console.log(pages);
+                console.log("==========================");
+                var currentPage = _this2.state.page;
+                var leftEnabled = currentPage > 1;
+                var rightEnabled = currentPage < pages;
+
+                _this2.setState({
+                    pages: pages, leftEnabled: leftEnabled, rightEnabled: rightEnabled
+                });
+            });
+        }
+    }, {
         key: 'handleInputChange',
         value: function handleInputChange(e) {
+            var total = this.state.pages;
             var value = e.target.value;
-            if (new Number(value).valueOf() == value && value > 0 || value == "") {
+            if (new Number(value).valueOf() == value && value > 0 && value <= total || value == "") {
                 this.setState({
                     page: value
                 });
                 if (new Number(value).valueOf() == value) {
-                    this.updatePageCallback(value);
+                    this.updatePage(value);
                 }
             }
         }
@@ -45971,10 +46001,15 @@ var PagingDialog = exports.PagingDialog = function (_React$Component) {
             if (nextPage < 1) {
                 nextPage = 1;
             }
+            var total = this.state.pages;
+            if (nextPage > total) {
+                nextPage = total;
+            }
+
             this.setState({
                 page: nextPage
             });
-            this.updatePageCallback(nextPage);
+            this.updatePage(nextPage);
         }
     }, {
         key: 'render',
@@ -45986,19 +46021,22 @@ var PagingDialog = exports.PagingDialog = function (_React$Component) {
             var inputStyle = {
                 display: "inline",
                 margin: "5 5 5 5",
-                width: "64px"
-
+                width: "64px",
+                textAlign: "center"
             };
+
+            var leftClass = "btn btn-primary " + (this.state.page > 1) ? "active" : "disabled";
             var leftArrow = _react2.default.createElement(
                 'button',
-                { 'class': 'btn btn-primary', type: 'button', style: arrowStyle, onClick: this.handleChangePage.bind(this, -1) },
+                { 'class': leftClass, type: 'button', style: arrowStyle, onClick: this.handleChangePage.bind(this, -1) },
                 '-',
                 _react2.default.createElement('span', { 'class': 'caret' })
             );
 
+            var rightClass = "btn btn-primary " + (this.state.page < this.state.pages) ? "active" : "disabled";
             var rightArrow = _react2.default.createElement(
                 'button',
-                { 'class': 'btn btn-primary', type: 'button', style: arrowStyle, onClick: this.handleChangePage.bind(this, 1) },
+                { 'class': rightClass, type: 'button', style: arrowStyle, onClick: this.handleChangePage.bind(this, 1) },
                 '+',
                 _react2.default.createElement('span', { 'class': 'caret' })
             );
@@ -46015,9 +46053,12 @@ var PagingDialog = exports.PagingDialog = function (_React$Component) {
             return _react2.default.createElement(
                 'div',
                 { style: { display: "block", overflow: "visible", align: 'left', margin: "10 10 10 10" } },
+                'Page ',
                 leftArrow,
                 input,
-                rightArrow
+                rightArrow,
+                ' of ',
+                this.props.pages
             );
         }
 
@@ -46069,10 +46110,7 @@ var PagingDialog = exports.PagingDialog = function (_React$Component) {
     return PagingDialog;
 }(_react2.default.Component);
 
-},{"react":189,"react-dom":28}],203:[function(require,module,exports){
-=======
-},{"react":222,"react-dom":61,"whatwg-fetch":224}],234:[function(require,module,exports){
->>>>>>> b0ebb42121118e2d32a265206c94b9ce5b095d31
+},{"react":222,"react-dom":61}],236:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -46228,11 +46266,7 @@ var Row = exports.Row = function (_React$Component) {
     return Row;
 }(_react2.default.Component);
 
-<<<<<<< HEAD
-},{"./Dialog":198,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],204:[function(require,module,exports){
-=======
-},{"./Dialog":231,"react":222,"react-dom":61,"react-popout":63,"whatwg-fetch":224}],235:[function(require,module,exports){
->>>>>>> b0ebb42121118e2d32a265206c94b9ce5b095d31
+},{"./Dialog":231,"react":222,"react-dom":61,"react-popout":63,"whatwg-fetch":224}],237:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -46276,6 +46310,8 @@ var Strategy = function () {
     _createClass(Strategy, [{
         key: 'getAll',
         value: function getAll(query) {
+            var _this = this;
+
             console.log("Iam getting all the things");
             return fetch("/rules" + query, {
                 method: "GET",
@@ -46287,9 +46323,12 @@ var Strategy = function () {
             }).then(function (res) {
                 return res.json();
             }).then(function (jsn) {
+                _this.totalRecords = jsn.metadata.total;
                 console.log("LOS rules:");
                 console.log(jsn.rules);
-                return jsn.rules;
+                var ret = jsn.rules;
+                ret.totalRecords = jsn.metadata.total;
+                return ret;
             });
         }
     }, {
@@ -46424,11 +46463,7 @@ var Rules = exports.Rules = function (_CrudTable) {
     return Rules;
 }(_CrudTable2.CrudTable);
 
-<<<<<<< HEAD
-},{"./CrudTable":197,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],205:[function(require,module,exports){
-=======
-},{"./CrudTable":230,"react":222,"react-dom":61,"react-popout":63,"whatwg-fetch":224}],236:[function(require,module,exports){
->>>>>>> b0ebb42121118e2d32a265206c94b9ce5b095d31
+},{"./CrudTable":230,"react":222,"react-dom":61,"react-popout":63,"whatwg-fetch":224}],238:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -46475,6 +46510,8 @@ var Strategy = function () {
     _createClass(Strategy, [{
         key: 'getAll',
         value: function getAll(query) {
+            var _this = this;
+
             return fetch("/servers" + query, {
                 method: "GET",
 
@@ -46485,7 +46522,10 @@ var Strategy = function () {
             }).then(function (res) {
                 return res.json();
             }).then(function (jsn) {
-                return jsn.servers;
+                _this.totalRecords = jsn.metadata.total;
+                var ret = jsn.servers;
+                ret.totalRecords = jsn.metadata.total;
+                return ret;
             });
         }
     }, {
@@ -46622,11 +46662,7 @@ var Servers = exports.Servers = function (_CrudTable) {
     return Servers;
 }(_CrudTable2.CrudTable);
 
-<<<<<<< HEAD
-},{"./CrudTable":197,"./TokenCreatorButton":206,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],206:[function(require,module,exports){
-=======
-},{"./CrudTable":230,"./TokenCreatorButton":237,"react":222,"react-dom":61,"react-popout":63,"whatwg-fetch":224}],237:[function(require,module,exports){
->>>>>>> b0ebb42121118e2d32a265206c94b9ce5b095d31
+},{"./CrudTable":230,"./TokenCreatorButton":239,"react":222,"react-dom":61,"react-popout":63,"whatwg-fetch":224}],239:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -46774,11 +46810,7 @@ createToken(row){
     }
     */
 
-<<<<<<< HEAD
-},{"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],207:[function(require,module,exports){
-=======
-},{"react":222,"react-dom":61,"react-popout":63,"whatwg-fetch":224}],238:[function(require,module,exports){
->>>>>>> b0ebb42121118e2d32a265206c94b9ce5b095d31
+},{"react":222,"react-dom":61,"react-popout":63,"whatwg-fetch":224}],240:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -46822,6 +46854,8 @@ var Strategy = function () {
     _createClass(Strategy, [{
         key: 'getAll',
         value: function getAll(query) {
+            var _this = this;
+
             console.log("Iam getting all the things");
             return fetch("/trips" + query, {
                 method: "GET",
@@ -46833,11 +46867,14 @@ var Strategy = function () {
             }).then(function (res) {
                 return res.json();
             }).then(function (jsn) {
+                _this.totalRecords = jsn.metadata.total;
                 console.log("LOS Trips:");
                 console.log(jsn);
                 console.log(jsn.trips);
 
-                return jsn.trips;
+                var ret = jsn.trips;
+                ret.totalRecords = jsn.metadata.total;
+                return ret;
             });
         }
     }, {
@@ -46936,11 +46973,7 @@ var Trips = exports.Trips = function (_CrudTable) {
     return Trips;
 }(_CrudTable2.CrudTable);
 
-<<<<<<< HEAD
-},{"./CrudTable":197,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],208:[function(require,module,exports){
-=======
-},{"./CrudTable":230,"react":222,"react-dom":61,"react-popout":63,"whatwg-fetch":224}],239:[function(require,module,exports){
->>>>>>> b0ebb42121118e2d32a265206c94b9ce5b095d31
+},{"./CrudTable":230,"react":222,"react-dom":61,"react-popout":63,"whatwg-fetch":224}],241:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -46989,6 +47022,8 @@ var Strategy = function () {
     _createClass(Strategy, [{
         key: 'getAll',
         value: function getAll(searchQuery) {
+            var _this = this;
+
             console.log("BUSCO:" + "/users" + searchQuery);
             return fetch("/users" + searchQuery, {
                 method: "GET",
@@ -46999,10 +47034,13 @@ var Strategy = function () {
             }).then(function (res) {
                 return res.json();
             }).then(function (jsn) {
+                _this.totalRecords = jsn.metadata.total;
                 console.log("LOS USERS:");
                 console.log(jsn.users);
 
-                return jsn.users;
+                var ret = jsn.users;
+                ret.totalRecords = jsn.metadata.total;
+                return ret;
             });
         }
     }, {
@@ -47141,18 +47179,13 @@ var Strategy = function () {
                     "type": content.type,
                     "username": content.username,
                     "password": content.password,
-<<<<<<< HEAD
+
                     /*
-=======
->>>>>>> b0ebb42121118e2d32a265206c94b9ce5b095d31
                     "fb": {
                       "userId": "string",
                       "authToken": "string"
                     },
-<<<<<<< HEAD
                     */
-=======
->>>>>>> b0ebb42121118e2d32a265206c94b9ce5b095d31
                     "firstName": content.firstName,
                     "lastName": content.lastName,
                     "country": content.country,
@@ -47190,11 +47223,7 @@ var Users = exports.Users = function (_CrudTable) {
     return Users;
 }(_CrudTable2.CrudTable);
 
-<<<<<<< HEAD
-},{"./CarEditorButton":194,"./CrudTable":197,"react":189,"react-dom":28,"react-popout":30,"whatwg-fetch":191}],209:[function(require,module,exports){
-=======
-},{"./CarEditorButton":227,"./CrudTable":230,"react":222,"react-dom":61,"react-popout":63,"whatwg-fetch":224}],240:[function(require,module,exports){
->>>>>>> b0ebb42121118e2d32a265206c94b9ce5b095d31
+},{"./CarEditorButton":227,"./CrudTable":230,"react":222,"react-dom":61,"react-popout":63,"whatwg-fetch":224}],242:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -47223,8 +47252,4 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 _reactDom2.default.render(_react2.default.createElement(_App.App, null), document.getElementById('root'));
 
-<<<<<<< HEAD
-},{"./App":192,"./BusinessUsers":193,"./Login":200,"./MainScreen":201,"./Servers":205,"./Users":208,"react":189,"react-dom":28,"whatwg-fetch":191}]},{},[209]);
-=======
-},{"./App":225,"./BusinessUsers":226,"./Login":232,"./MainScreen":233,"./Servers":236,"./Users":239,"react":222,"react-dom":61,"whatwg-fetch":224}]},{},[240]);
->>>>>>> b0ebb42121118e2d32a265206c94b9ce5b095d31
+},{"./App":225,"./BusinessUsers":226,"./Login":233,"./MainScreen":234,"./Servers":238,"./Users":241,"react":222,"react-dom":61,"whatwg-fetch":224}]},{},[242]);

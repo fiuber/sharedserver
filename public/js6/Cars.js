@@ -19,7 +19,12 @@ class Strategy{
             cache:"no-store"
         })
         .then((res)=>res.json())
-        .then((jsn)=>jsn.cars);
+        .then((jsn)=>{
+            this.totalRecords=jsn.metadata.total;
+            let ret=jsn.cars;
+            ret.totalRecords=jsn.metadata.total;
+            return ret;
+        });
     }
 
     doUpdate(row,content){
