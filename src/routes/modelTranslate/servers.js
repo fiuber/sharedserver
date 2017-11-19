@@ -30,16 +30,19 @@ function getShape(string,number){
     }
 }
 
-function listShape(string,number,array){
+function listShape(string,number,array,from){
     return {
-        servers:array({
+        servers:from("servers",array({
             id:number("id"),
             _ref:string("_ref"),
             createdBy:string("createdBy"),
             createdTime:number("createdTime"),
             name:string("name"),
             lastConnection:number("lastConnection")
-        })
+        })),
+        metadata:{
+            total:number("quantity")
+        }
     }
 }
 

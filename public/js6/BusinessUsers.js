@@ -8,13 +8,8 @@ class Strategy {
     constructor(token){
         this.token=token;
     }
-    getAll(){
-        console.log("This is:")
-        console.log(this);
-        console.log(this.constructor);
-        console.log(this.prototype);
-        console.log("MI token es",this.token);
-        return fetch("/business-users",{
+    getAll(query){
+        return fetch("/business-users"+query,{
             method:"GET",
 
             headers:{
@@ -23,7 +18,12 @@ class Strategy {
             cache:"no-store"
         })
         .then((res)=>res.json())
-        .then((jsn)=>jsn.businessUser);
+        .then((jsn)=>{
+            this.totalRecords=jsn.metadata.total;
+            let ret=jsn.businessUser;
+            ret.totalRecords=jsn.metadata.total;
+            return ret;
+        });
     }
 
     doUpdate(row,content){
@@ -111,6 +111,14 @@ class Strategy {
             })
         })
         
+    }
+
+    getFilters(){
+        return ["username","name","surname"]
+    }
+
+    orderBy(){
+        return "username";
     }
 
 

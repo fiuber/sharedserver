@@ -28,7 +28,6 @@ export class Dialog extends React.Component {
         }
     }
     renderContent(o){
-        debugger
         console.log(o);
         let keys=Object.keys(o);
         let parts= keys.map((key)=>{
@@ -94,7 +93,6 @@ export class Dialog extends React.Component {
         let state = !this.state.toggleActive;
         let copy=JSON.parse(JSON.stringify(this.state.content));
         copy['active'] = state;
-        debugger
         this.setState({
             toggleActive: state,
             content: copy,

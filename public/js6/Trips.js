@@ -9,9 +9,9 @@ class Strategy{
     constructor(token){
         this.token=token;
     }
-    getAll(){
+    getAll(query){
         console.log("Iam getting all the things")
-        return fetch("/trips",{
+        return fetch("/trips"+query,{
             method:"GET",
 
             headers:{
@@ -21,11 +21,14 @@ class Strategy{
         })
         .then((res)=>res.json())
         .then((jsn)=>{
+            this.totalRecords=jsn.metadata.total;
             console.log("LOS Trips:")
             console.log(jsn)
             console.log(jsn.trips)
 
-            return jsn.trips;
+            let ret=jsn.trips;
+            ret.totalRecords=jsn.metadata.total;
+            return ret;
         });
     }
 
@@ -79,6 +82,30 @@ class Strategy{
 
     doCreate(content){
         return Promise.resolve(1);
+    }
+
+    getFilters(){
+        return [
+            "applicationOwner",
+            "driver",
+            "passenger",
+            "startTimestamp",
+            "startStreet",
+            "startLat",
+            "startLon",
+            "endTimestamp",
+            "endStreet",
+            "endLat",
+            "endLon",
+            "totalTime",
+            "waitTime",
+            "travelTime",
+            "distance"
+        ]
+    }
+
+    orderBy(){
+        return "startTimestamp";
     }
 }
 

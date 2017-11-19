@@ -326,6 +326,24 @@ describe("using users",function(){
                 })
             })
 
+            it("the car is updated with bad _ref",function(){
+                return agent
+                .put("/users/"+id_soyyo5159+"/cars/"+carId)
+                .set("authorization", authValue)
+                .send({
+                    id:1,
+                    _ref:"asd",
+                    owner:id_soyyo5159,
+                    properties:[
+                        {
+                            name:"asiento roto",
+                            value:"4"
+                        }
+                    ]
+                })
+                .expect(400)
+            })
+
             it("the car is updated",function(){
                 return agent
                 .put("/users/"+id_soyyo5159+"/cars/"+carId)
@@ -343,17 +361,14 @@ describe("using users",function(){
                 })
                 .expect(200)
                 .expect((res)=>{
-                    assert.deepEqual(res.body.car,{
-                        id:carId,
-                        _ref:carRef,
-                        owner:id_soyyo5159,
-                        properties:[
-                            {
-                                name:"asiento roto",
-                                value:"4"
-                            }
-                        ]
-                    })
+                    assert.equal(res.body.car.id,carId);
+                    assert.equal(res.body.car.owner,id_soyyo5159);
+                    assert.deepEqual(res.body.car.properties,[
+                        {
+                            name:"asiento roto",
+                            value:"4"
+                        }
+                    ])
                     carRef=res.body.car._ref;
                 })
             })
@@ -375,7 +390,6 @@ describe("using users",function(){
                             }
                         ]
                     })
-                    carRef=res.body.car._ref;
                 })
             })
 
@@ -384,6 +398,16 @@ describe("using users",function(){
                 .delete("/users/"+id_soyyo5159+"/cars/"+carId)
                 .set("authorization", authValue)
                 .expect(204)
+            })
+
+            it("Remove that car again gives 404",function(){
+                return agent
+                .delete("/users/"+id_soyyo5159+"/cars/"+carId)
+                .set("authorization", authValue)
+                .expect((res)=>{
+                    log(res.body);
+                })
+                .expect(404)
             })
 
             it("there are no cars in the list of cars",function(){

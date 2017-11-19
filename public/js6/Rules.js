@@ -9,9 +9,9 @@ class Strategy{
     constructor(token){
         this.token=token;
     }
-    getAll(){
+    getAll(query){
         console.log("Iam getting all the things")
-        return fetch("/rules",{
+        return fetch("/rules"+query,{
             method:"GET",
 
             headers:{
@@ -21,9 +21,12 @@ class Strategy{
         })
         .then((res)=>res.json())
         .then((jsn)=>{
+            this.totalRecords=jsn.metadata.total;
             console.log("LOS rules:")
             console.log(jsn.rules)
-            return jsn.rules;
+            let ret=jsn.rules;
+            ret.totalRecords=jsn.metadata.total;
+            return ret;
         });
     }
 
@@ -98,7 +101,6 @@ class Strategy{
     }
 
     doCreate(content){
-        debugger
         return fetch("/rules/",{
             method:"POST",
             headers: {
@@ -114,6 +116,14 @@ class Strategy{
                 "active": content.active
             })
         })
+    }
+
+    getFilters(){
+        return ["ruleId"]
+    }
+
+    orderBy(){
+        return "ruleId";
     }
 }
 

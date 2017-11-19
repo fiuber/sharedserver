@@ -25,7 +25,10 @@ exports.addRule=rule;
 exports.getRules=function(string,number,array,from){
     let ruleShape=rule(string,number,array,from).rule;
     return {
-        rules:array(ruleShape)
+        rules:from("rules",array(ruleShape)),
+        metadata:{
+            total:number("quantity")
+        }
     }
 }
 

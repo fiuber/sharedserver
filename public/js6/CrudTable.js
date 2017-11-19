@@ -4,22 +4,42 @@ import "whatwg-fetch";
 import Popout from 'react-popout';
 import {Row} from "./Row";
 import {CreationDialogOpener} from "./CreateDialog";
+import {FilterDialog} from "./FilterDialog";
+import {PagingDialog} from "./PagingDialog";
 
 export class CrudTable extends React.Component{
     constructor(props,strategy){
         super(props);
         this.state={
             renderedRows:[],
-            creatorOpen:false
+            creatorOpen:false,
+            totalRecords:0,
+            page:1
         }
         this.rows=[];
         this.popups=[];
         this.strategy=strategy;
+        this.searchWord=""
+        this.filterName="any"
+        this.page=1;
+
         this.refresh();
     }
 
     refresh(){
-        this.strategy.getAll()
+        let searchQuery="?";
+        searchQuery+="_limit=10&_offset="+(this.state.page-1)*10+"&_orderBy="+this.strategy.orderBy();
+        console.log("THE SEARCHQUERY IS",searchQuery)
+        if(this.searchWord != ""){
+            let filter=this.filterName+"_matches=%"+this.searchWord+"%";
+            searchQuery+="&"+filter;
+        }
+        console.log("AND THEN ",searchQuery)
+
+        
+        
+        
+        return this.strategy.getAll(searchQuery)
         .then((all)=>{
             this.rows=all.map((x)=>{
                 x.expanded=false;
@@ -30,6 +50,16 @@ export class CrudTable extends React.Component{
                 this.popups.push(<span></span>);
             }
             this.updateRenderedRows();
+            console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            console.log(all);
+            console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+            this.setState({
+                totalRecords:all.totalRecords
+            })
+            
+
+            return Math.ceil(all.totalRecords/10);
         })
     }
 
@@ -93,23 +123,46 @@ export class CrudTable extends React.Component{
     }
     
 
-    render(){
-        return <div id="listContainer">
-            <CreationDialogOpener 
-                content={this.strategy.defaultCreationContent()} 
-                onSubmit={(o)=>this.onCreate(o)}
-            />
-            
-            <table>
-                <tbody>
-                <tr>
-                    <th>Content</th>
-                    <th>Edit</th>
-                    <th>Remove</th>
-                </tr>
-                {this.state.renderedRows}
-                </tbody>
-            </table>
+    updateQuery(searchWord,filterName){
+        console.log(searchWord,filterName);
+        this.searchWord=searchWord;
+        this.filterName=filterName;
+        this.changePage(1);
+    }
+
+    changePage(page){
+        this.setState({page},this.refresh.bind(this));
+    }
+
+
+
+    
+    render(){//this.changePage.bind(this)
+        return <div id="mainContainer" style={{display:"block"}}>
+            <PagingDialog 
+                page={this.state.page}
+                updatePageCallback={this.changePage.bind(this)} 
+                pages={Math.ceil(this.state.totalRecords/10)}/>
+            <FilterDialog shape={this.strategy.getFilters()} updateQueryCallback={this.updateQuery.bind(this)}/>
+
+            <div id="listContainer" style={{display:"block"}}>
+                
+                <CreationDialogOpener 
+                    content={this.strategy.defaultCreationContent()} 
+                    onSubmit={(o)=>this.onCreate(o)}
+                />
+                
+                <table>
+                    <tbody>
+                    <tr>
+                        <th>Content</th>
+                        <th>Edit</th>
+                        <th>Remove</th>
+                    </tr>
+                    {this.state.renderedRows}
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         

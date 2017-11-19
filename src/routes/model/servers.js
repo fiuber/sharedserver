@@ -126,7 +126,14 @@ exports.delete.shape={}
  * no pongo el METADATA correspondiente porque no entiendo qué significa
  */
 exports.list=function(nonexistent,badRevision,me,query){
-    return sdb.readQuery(query);
+    return sdb.readQuery(query).then((servers)=>{
+        return sdb.count(query).then((q)=>{
+            return {
+                servers:servers,
+                quantity:q
+            }
+        })
+    });
 }
 exports.list.shape={};
 

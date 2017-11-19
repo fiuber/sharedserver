@@ -91,7 +91,16 @@ exports.list=function(nonexistent,badRevision,me,query){
     let businessUsers=[];
     return udb
     .readQuery(query)
-    .then(getWithRoles);
+    .then(getWithRoles)
+    .then((withRoles)=>{
+        return udb.count(query).then((q)=>{
+            return {
+                businessUsers:withRoles,
+                quantity:q
+            }
+        })
+        
+    })
 }
 exports.list.shape={}
 

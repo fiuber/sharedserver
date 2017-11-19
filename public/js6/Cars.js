@@ -9,8 +9,8 @@ class Strategy{
         this.token=token;
         this.userId=userId;
     }
-    getAll(){
-        return fetch("/users/"+this.userId+"/cars",{
+    getAll(query){
+        return fetch("/users/"+this.userId+"/cars"+query,{
             method:"GET",
 
             headers:{
@@ -19,7 +19,12 @@ class Strategy{
             cache:"no-store"
         })
         .then((res)=>res.json())
-        .then((jsn)=>jsn.cars);
+        .then((jsn)=>{
+            this.totalRecords=jsn.metadata.total;
+            let ret=jsn.cars;
+            ret.totalRecords=jsn.metadata.total;
+            return ret;
+        });
     }
 
     doUpdate(row,content){
@@ -74,6 +79,14 @@ class Strategy{
 
     doCreate(content){
         return Promise.resolve("yesss");
+    }
+
+    getFilters(){
+        return []
+    }
+
+    orderBy(){
+        return "id";
     }
 }
 

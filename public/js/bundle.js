@@ -44468,7 +44468,7 @@ var App = exports.App = function (_React$Component) {
   return App;
 }(_react2.default.Component);
 
-},{"./BusinessUsers":226,"./Login":232,"./MainScreen":233,"./Rules":235,"./Servers":236,"./Trips":238,"./Users":239,"react":222,"react-dom":61,"whatwg-fetch":224}],226:[function(require,module,exports){
+},{"./BusinessUsers":226,"./Login":233,"./MainScreen":234,"./Rules":237,"./Servers":238,"./Trips":240,"./Users":241,"react":222,"react-dom":61,"whatwg-fetch":224}],226:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -44511,13 +44511,10 @@ var Strategy = function () {
 
     _createClass(Strategy, [{
         key: 'getAll',
-        value: function getAll() {
-            console.log("This is:");
-            console.log(this);
-            console.log(this.constructor);
-            console.log(this.prototype);
-            console.log("MI token es", this.token);
-            return fetch("/business-users", {
+        value: function getAll(query) {
+            var _this = this;
+
+            return fetch("/business-users" + query, {
                 method: "GET",
 
                 headers: {
@@ -44527,7 +44524,10 @@ var Strategy = function () {
             }).then(function (res) {
                 return res.json();
             }).then(function (jsn) {
-                return jsn.businessUser;
+                _this.totalRecords = jsn.metadata.total;
+                var ret = jsn.businessUser;
+                ret.totalRecords = jsn.metadata.total;
+                return ret;
             });
         }
     }, {
@@ -44639,6 +44639,16 @@ var Strategy = function () {
                     roles: content.role
                 })
             });
+        }
+    }, {
+        key: 'getFilters',
+        value: function getFilters() {
+            return ["username", "name", "surname"];
+        }
+    }, {
+        key: 'orderBy',
+        value: function orderBy() {
+            return "username";
         }
     }]);
 
@@ -44821,8 +44831,10 @@ var Strategy = function () {
 
     _createClass(Strategy, [{
         key: 'getAll',
-        value: function getAll() {
-            return fetch("/users/" + this.userId + "/cars", {
+        value: function getAll(query) {
+            var _this = this;
+
+            return fetch("/users/" + this.userId + "/cars" + query, {
                 method: "GET",
 
                 headers: {
@@ -44832,7 +44844,10 @@ var Strategy = function () {
             }).then(function (res) {
                 return res.json();
             }).then(function (jsn) {
-                return jsn.cars;
+                _this.totalRecords = jsn.metadata.total;
+                var ret = jsn.cars;
+                ret.totalRecords = jsn.metadata.total;
+                return ret;
             });
         }
     }, {
@@ -44911,6 +44926,16 @@ var Strategy = function () {
         key: 'doCreate',
         value: function doCreate(content) {
             return Promise.resolve("yesss");
+        }
+    }, {
+        key: 'getFilters',
+        value: function getFilters() {
+            return [];
+        }
+    }, {
+        key: 'orderBy',
+        value: function orderBy() {
+            return "id";
         }
     }]);
 
@@ -45047,6 +45072,10 @@ var _Row = require('./Row');
 
 var _CreateDialog = require('./CreateDialog');
 
+var _FilterDialog = require('./FilterDialog');
+
+var _PagingDialog = require('./PagingDialog');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -45065,11 +45094,17 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
 
         _this.state = {
             renderedRows: [],
-            creatorOpen: false
+            creatorOpen: false,
+            totalRecords: 0,
+            page: 1
         };
         _this.rows = [];
         _this.popups = [];
         _this.strategy = strategy;
+        _this.searchWord = "";
+        _this.filterName = "any";
+        _this.page = 1;
+
         _this.refresh();
         return _this;
     }
@@ -45079,7 +45114,16 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
         value: function refresh() {
             var _this2 = this;
 
-            this.strategy.getAll().then(function (all) {
+            var searchQuery = "?";
+            searchQuery += "_limit=10&_offset=" + (this.state.page - 1) * 10 + "&_orderBy=" + this.strategy.orderBy();
+            console.log("THE SEARCHQUERY IS", searchQuery);
+            if (this.searchWord != "") {
+                var filter = this.filterName + "_matches=%" + this.searchWord + "%";
+                searchQuery += "&" + filter;
+            }
+            console.log("AND THEN ", searchQuery);
+
+            return this.strategy.getAll(searchQuery).then(function (all) {
                 _this2.rows = all.map(function (x) {
                     x.expanded = false;
                     return x;
@@ -45111,6 +45155,15 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
                 }
 
                 _this2.updateRenderedRows();
+                console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                console.log(all);
+                console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
+                _this2.setState({
+                    totalRecords: all.totalRecords
+                });
+
+                return Math.ceil(all.totalRecords / 10);
             });
         }
     }, {
@@ -45189,45 +45242,68 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
             });
         }
     }, {
+        key: 'updateQuery',
+        value: function updateQuery(searchWord, filterName) {
+            console.log(searchWord, filterName);
+            this.searchWord = searchWord;
+            this.filterName = filterName;
+            this.changePage(1);
+        }
+    }, {
+        key: 'changePage',
+        value: function changePage(page) {
+            this.setState({ page: page }, this.refresh.bind(this));
+        }
+    }, {
         key: 'render',
         value: function render() {
             var _this7 = this;
 
+            //this.changePage.bind(this)
             return _react2.default.createElement(
                 'div',
-                { id: 'listContainer' },
-                _react2.default.createElement(_CreateDialog.CreationDialogOpener, {
-                    content: this.strategy.defaultCreationContent(),
-                    onSubmit: function onSubmit(o) {
-                        return _this7.onCreate(o);
-                    }
-                }),
+                { id: 'mainContainer', style: { display: "block" } },
+                _react2.default.createElement(_PagingDialog.PagingDialog, {
+                    page: this.state.page,
+                    updatePageCallback: this.changePage.bind(this),
+                    pages: Math.ceil(this.state.totalRecords / 10) }),
+                _react2.default.createElement(_FilterDialog.FilterDialog, { shape: this.strategy.getFilters(), updateQueryCallback: this.updateQuery.bind(this) }),
                 _react2.default.createElement(
-                    'table',
-                    null,
+                    'div',
+                    { id: 'listContainer', style: { display: "block" } },
+                    _react2.default.createElement(_CreateDialog.CreationDialogOpener, {
+                        content: this.strategy.defaultCreationContent(),
+                        onSubmit: function onSubmit(o) {
+                            return _this7.onCreate(o);
+                        }
+                    }),
                     _react2.default.createElement(
-                        'tbody',
+                        'table',
                         null,
                         _react2.default.createElement(
-                            'tr',
+                            'tbody',
                             null,
                             _react2.default.createElement(
-                                'th',
+                                'tr',
                                 null,
-                                'Content'
+                                _react2.default.createElement(
+                                    'th',
+                                    null,
+                                    'Content'
+                                ),
+                                _react2.default.createElement(
+                                    'th',
+                                    null,
+                                    'Edit'
+                                ),
+                                _react2.default.createElement(
+                                    'th',
+                                    null,
+                                    'Remove'
+                                )
                             ),
-                            _react2.default.createElement(
-                                'th',
-                                null,
-                                'Edit'
-                            ),
-                            _react2.default.createElement(
-                                'th',
-                                null,
-                                'Remove'
-                            )
-                        ),
-                        this.state.renderedRows
+                            this.state.renderedRows
+                        )
                     )
                 )
             );
@@ -45237,7 +45313,7 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
     return CrudTable;
 }(_react2.default.Component);
 
-},{"./CreateDialog":229,"./Row":234,"react":222,"react-dom":61,"react-popout":63,"whatwg-fetch":224}],231:[function(require,module,exports){
+},{"./CreateDialog":229,"./FilterDialog":232,"./PagingDialog":235,"./Row":236,"react":222,"react-dom":61,"react-popout":63,"whatwg-fetch":224}],231:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45303,7 +45379,6 @@ var Dialog = exports.Dialog = function (_React$Component) {
         value: function renderContent(o) {
             var _this2 = this;
 
-            debugger;
             console.log(o);
             var keys = Object.keys(o);
             var parts = keys.map(function (key) {
@@ -45404,7 +45479,6 @@ var Dialog = exports.Dialog = function (_React$Component) {
             var state = !this.state.toggleActive;
             var copy = JSON.parse(JSON.stringify(this.state.content));
             copy['active'] = state;
-            debugger;
             this.setState({
                 toggleActive: state,
                 content: copy,
@@ -45477,6 +45551,132 @@ var Dialog = exports.Dialog = function (_React$Component) {
 }(_react2.default.Component);
 
 },{"react":222,"react-bootstrap-toggle":30,"react-dom":61,"whatwg-fetch":224}],232:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.FilterDialog = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var FilterDialog = exports.FilterDialog = function (_React$Component) {
+    _inherits(FilterDialog, _React$Component);
+
+    function FilterDialog(props) {
+        _classCallCheck(this, FilterDialog);
+
+        //this.shape=props.shape;
+        var _this = _possibleConstructorReturn(this, (FilterDialog.__proto__ || Object.getPrototypeOf(FilterDialog)).call(this, props));
+
+        var array = props.shape;
+        _this.updateQueryCallback = props.updateQueryCallback;
+
+        _this.state = {
+            searchWord: "",
+            filterName: array[0]
+        };
+
+        function change(name) {
+            this.setState({
+                filterName: name
+            });
+            this.updateQueryCallback(this.state.searchWord, name);
+        }
+
+        _this.state.renderedFilteringOptions = props.shape.map(function (f) {
+
+            return _react2.default.createElement(
+                'li',
+                { key: f },
+                _react2.default.createElement(
+                    'a',
+                    { onClick: change.bind(_this, f) },
+                    f
+                )
+            );
+        });
+        return _this;
+    }
+
+    _createClass(FilterDialog, [{
+        key: 'handleInputChange',
+        value: function handleInputChange(e) {
+            this.setState({
+                searchWord: e.target.value
+            });
+            this.updateQueryCallback(e.target.value, this.state.filterName);
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var displayInline = {
+                "display": "inline",
+                "margin-left": "2px",
+                "margin-right": "2px"
+            };
+            var niceWidth = {
+                width: "40%",
+                "display": "inline",
+                "marginLeft": "2px",
+                "marginRight": "2px"
+            };
+            var buttonStyle = {
+                width: "20%",
+                align: "left"
+            };
+            var searchLabel = _react2.default.createElement(
+                'label',
+                { style: displayInline, 'for': 'search' },
+                'Search:'
+            );
+            var searchInput = _react2.default.createElement('input', { style: niceWidth, type: 'text', placeholder: 'search..', 'class': 'form-control', id: 'search', value: this.state.searchWord, onChange: this.handleInputChange.bind(this) });
+            var searchDropdown = _react2.default.createElement(
+                'div',
+                { style: displayInline, 'class': 'dropdown' },
+                _react2.default.createElement(
+                    'button',
+                    { style: buttonStyle, 'class': 'btn btn-primary dropdown-toggle', type: 'button', 'data-toggle': 'dropdown' },
+                    'filter by: ',
+                    this.state.filterName,
+                    _react2.default.createElement('span', { 'class': 'caret' })
+                ),
+                _react2.default.createElement(
+                    'ul',
+                    { 'class': 'dropdown-menu' },
+                    this.state.renderedFilteringOptions
+                )
+            );
+            return _react2.default.createElement(
+                'div',
+                { style: { display: "block", overflow: "visible", align: 'left' } },
+                searchLabel,
+                searchInput,
+                searchDropdown
+            );
+        }
+    }]);
+
+    return FilterDialog;
+}(_react2.default.Component);
+
+},{"react":222,"react-dom":61}],233:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45669,7 +45869,7 @@ var Login = exports.Login = function (_React$Component) {
   return Login;
 }(_react2.default.Component);
 
-},{"react":222,"react-dom":61,"whatwg-fetch":224}],233:[function(require,module,exports){
+},{"react":222,"react-dom":61,"whatwg-fetch":224}],234:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45719,7 +45919,189 @@ var MainScreen = exports.MainScreen = function (_React$Component) {
     return MainScreen;
 }(_react2.default.Component);
 
-},{"react":222,"react-dom":61,"whatwg-fetch":224}],234:[function(require,module,exports){
+},{"react":222,"react-dom":61,"whatwg-fetch":224}],235:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.PagingDialog = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var PagingDialog = exports.PagingDialog = function (_React$Component) {
+    _inherits(PagingDialog, _React$Component);
+
+    function PagingDialog(props) {
+        _classCallCheck(this, PagingDialog);
+
+        var _this = _possibleConstructorReturn(this, (PagingDialog.__proto__ || Object.getPrototypeOf(PagingDialog)).call(this, props));
+
+        _this.state = {
+            page: 1,
+            pages: 1,
+            leftEnabled: false,
+            rightEnabled: false
+        };
+        _this.updatePage = props.updatePageCallback;
+        _this.updatePage(1);
+        return _this;
+    }
+
+    _createClass(PagingDialog, [{
+        key: 'handleInputChange',
+        value: function handleInputChange(e) {
+            var total = this.props.pages;
+            var value = e.target.value;
+            if (new Number(value).valueOf() == value && value > 0 && value <= total || value == "") {
+                /*
+                this.setState({
+                page:value
+                });
+                */
+                if (new Number(value).valueOf() == value) {
+                    this.updatePage(value);
+                }
+            }
+        }
+    }, {
+        key: 'handleChangePage',
+        value: function handleChangePage(howMuch) {
+            var currentPage = new Number(this.props.page).valueOf();
+            var nextPage = currentPage + howMuch;
+            if (nextPage < 1) {
+                nextPage = 1;
+            }
+            var total = this.props.pages;
+            if (nextPage > total) {
+                nextPage = total;
+            }
+
+            this.setState({
+                page: nextPage
+            });
+            this.updatePage(nextPage);
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var arrowStyle = {
+                display: "inline",
+                margin: "5 5 5 5"
+            };
+            var inputStyle = {
+                display: "inline",
+                margin: "5 5 5 5",
+                width: "64px",
+                textAlign: "center"
+                /*
+                        if(this.props.page>this.props.pages){
+                            this.setState({
+                                page:this.props.pages
+                            })
+                        }
+                */
+            };var leftClass = "btn btn-primary " + (this.props.page > 1 ? "" : "disabled");
+            var leftArrow = _react2.default.createElement(
+                'button',
+                { 'class': leftClass, type: 'button', style: arrowStyle, onClick: this.handleChangePage.bind(this, -1) },
+                _react2.default.createElement('span', { 'class': 'glyphicon glyphicon-triangle-left' })
+            );
+
+            //let rightClass="btn btn-primary "+(this.state.page<this.state.pages)?"active":"disabled";
+            var rightClass = "btn btn-primary " + (this.props.page < this.props.pages ? "" : "disabled");
+            var rightArrow = _react2.default.createElement(
+                'button',
+                { 'class': rightClass, type: 'button', style: arrowStyle, onClick: this.handleChangePage.bind(this, 1) },
+                _react2.default.createElement('span', { 'class': 'glyphicon glyphicon-triangle-right' })
+            );
+            var input = _react2.default.createElement('input', {
+                style: inputStyle,
+                type: 'text',
+                placeholder: 'page',
+                'class': 'form-control',
+                id: 'search',
+                value: this.props.page,
+                onChange: this.handleInputChange.bind(this)
+            }); //this.handleInputChange.bind(this)
+
+            return _react2.default.createElement(
+                'div',
+                { style: { display: "block", overflow: "visible", align: 'left', margin: "10 10 10 10" } },
+                'Page ',
+                leftArrow,
+                input,
+                rightArrow,
+                ' of ',
+                this.props.pages
+            );
+        }
+
+        /*
+            handleInputChange(e){
+                this.setState({
+                    searchWord:e.target.value
+                });
+                this.updateQueryCallback(e.target.value,this.state.filterName);
+            }
+        
+            
+        
+            render(){
+                let displayInline={
+                    "display":"inline",
+                    "margin-left":"2px",
+                    "margin-right":"2px"
+                }
+                let niceWidth={
+                    width:"40%",
+                    "display":"inline",
+                    "marginLeft":"2px",
+                    "marginRight":"2px"
+                }
+                let buttonStyle={
+                    width:"20%",
+                    align:"left"
+                }
+                let searchLabel=<label style={displayInline} for="search">Search:</label>
+                let searchInput=<input style={niceWidth} type="text" placeholder="search.." class="form-control" id="search" value={this.state.searchWord} onChange={this.handleInputChange.bind(this)}></input>;
+                let searchDropdown=<div style={displayInline}  class="dropdown">
+                    <button style={buttonStyle} class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">
+                        filter by: {this.state.filterName}
+                        <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        {this.state.renderedFilteringOptions}
+                    </ul>
+                </div> 
+                return <div style={{display:"block", overflow: "visible", align:'left'}}>
+                    {searchLabel}{searchInput}{searchDropdown}
+                </div>;
+            }
+            */
+
+    }]);
+
+    return PagingDialog;
+}(_react2.default.Component);
+
+},{"react":222,"react-dom":61}],236:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45875,7 +46257,7 @@ var Row = exports.Row = function (_React$Component) {
     return Row;
 }(_react2.default.Component);
 
-},{"./Dialog":231,"react":222,"react-dom":61,"react-popout":63,"whatwg-fetch":224}],235:[function(require,module,exports){
+},{"./Dialog":231,"react":222,"react-dom":61,"react-popout":63,"whatwg-fetch":224}],237:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45918,9 +46300,11 @@ var Strategy = function () {
 
     _createClass(Strategy, [{
         key: 'getAll',
-        value: function getAll() {
+        value: function getAll(query) {
+            var _this = this;
+
             console.log("Iam getting all the things");
-            return fetch("/rules", {
+            return fetch("/rules" + query, {
                 method: "GET",
 
                 headers: {
@@ -45930,9 +46314,12 @@ var Strategy = function () {
             }).then(function (res) {
                 return res.json();
             }).then(function (jsn) {
+                _this.totalRecords = jsn.metadata.total;
                 console.log("LOS rules:");
                 console.log(jsn.rules);
-                return jsn.rules;
+                var ret = jsn.rules;
+                ret.totalRecords = jsn.metadata.total;
+                return ret;
             });
         }
     }, {
@@ -46022,7 +46409,6 @@ var Strategy = function () {
     }, {
         key: 'doCreate',
         value: function doCreate(content) {
-            debugger;
             return fetch("/rules/", {
                 method: "POST",
                 headers: {
@@ -46038,6 +46424,16 @@ var Strategy = function () {
                     "active": content.active
                 })
             });
+        }
+    }, {
+        key: 'getFilters',
+        value: function getFilters() {
+            return ["ruleId"];
+        }
+    }, {
+        key: 'orderBy',
+        value: function orderBy() {
+            return "ruleId";
         }
     }]);
 
@@ -46057,7 +46453,7 @@ var Rules = exports.Rules = function (_CrudTable) {
     return Rules;
 }(_CrudTable2.CrudTable);
 
-},{"./CrudTable":230,"react":222,"react-dom":61,"react-popout":63,"whatwg-fetch":224}],236:[function(require,module,exports){
+},{"./CrudTable":230,"react":222,"react-dom":61,"react-popout":63,"whatwg-fetch":224}],238:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -46103,8 +46499,10 @@ var Strategy = function () {
 
     _createClass(Strategy, [{
         key: 'getAll',
-        value: function getAll() {
-            return fetch("/servers", {
+        value: function getAll(query) {
+            var _this = this;
+
+            return fetch("/servers" + query, {
                 method: "GET",
 
                 headers: {
@@ -46114,7 +46512,10 @@ var Strategy = function () {
             }).then(function (res) {
                 return res.json();
             }).then(function (jsn) {
-                return jsn.servers;
+                _this.totalRecords = jsn.metadata.total;
+                var ret = jsn.servers;
+                ret.totalRecords = jsn.metadata.total;
+                return ret;
             });
         }
     }, {
@@ -46223,6 +46624,16 @@ var Strategy = function () {
                 })
             });
         }
+    }, {
+        key: 'getFilters',
+        value: function getFilters() {
+            return ["name", "createdBy", "lastConnection"];
+        }
+    }, {
+        key: 'orderBy',
+        value: function orderBy() {
+            return "name";
+        }
     }]);
 
     return Strategy;
@@ -46241,7 +46652,7 @@ var Servers = exports.Servers = function (_CrudTable) {
     return Servers;
 }(_CrudTable2.CrudTable);
 
-},{"./CrudTable":230,"./TokenCreatorButton":237,"react":222,"react-dom":61,"react-popout":63,"whatwg-fetch":224}],237:[function(require,module,exports){
+},{"./CrudTable":230,"./TokenCreatorButton":239,"react":222,"react-dom":61,"react-popout":63,"whatwg-fetch":224}],239:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -46389,7 +46800,7 @@ createToken(row){
     }
     */
 
-},{"react":222,"react-dom":61,"react-popout":63,"whatwg-fetch":224}],238:[function(require,module,exports){
+},{"react":222,"react-dom":61,"react-popout":63,"whatwg-fetch":224}],240:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -46432,9 +46843,11 @@ var Strategy = function () {
 
     _createClass(Strategy, [{
         key: 'getAll',
-        value: function getAll() {
+        value: function getAll(query) {
+            var _this = this;
+
             console.log("Iam getting all the things");
-            return fetch("/trips", {
+            return fetch("/trips" + query, {
                 method: "GET",
 
                 headers: {
@@ -46444,11 +46857,14 @@ var Strategy = function () {
             }).then(function (res) {
                 return res.json();
             }).then(function (jsn) {
+                _this.totalRecords = jsn.metadata.total;
                 console.log("LOS Trips:");
                 console.log(jsn);
                 console.log(jsn.trips);
 
-                return jsn.trips;
+                var ret = jsn.trips;
+                ret.totalRecords = jsn.metadata.total;
+                return ret;
             });
         }
     }, {
@@ -46519,6 +46935,16 @@ var Strategy = function () {
         value: function doCreate(content) {
             return Promise.resolve(1);
         }
+    }, {
+        key: 'getFilters',
+        value: function getFilters() {
+            return ["applicationOwner", "driver", "passenger", "startTimestamp", "startStreet", "startLat", "startLon", "endTimestamp", "endStreet", "endLat", "endLon", "totalTime", "waitTime", "travelTime", "distance"];
+        }
+    }, {
+        key: 'orderBy',
+        value: function orderBy() {
+            return "startTimestamp";
+        }
     }]);
 
     return Strategy;
@@ -46537,7 +46963,7 @@ var Trips = exports.Trips = function (_CrudTable) {
     return Trips;
 }(_CrudTable2.CrudTable);
 
-},{"./CrudTable":230,"react":222,"react-dom":61,"react-popout":63,"whatwg-fetch":224}],239:[function(require,module,exports){
+},{"./CrudTable":230,"react":222,"react-dom":61,"react-popout":63,"whatwg-fetch":224}],241:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -46585,11 +47011,12 @@ var Strategy = function () {
 
     _createClass(Strategy, [{
         key: 'getAll',
-        value: function getAll() {
-            console.log("Iam getting all the things");
-            return fetch("/users", {
-                method: "GET",
+        value: function getAll(searchQuery) {
+            var _this = this;
 
+            console.log("BUSCO:" + "/users" + searchQuery);
+            return fetch("/users" + searchQuery, {
+                method: "GET",
                 headers: {
                     "Authorization": "api-key " + this.token
                 },
@@ -46597,10 +47024,13 @@ var Strategy = function () {
             }).then(function (res) {
                 return res.json();
             }).then(function (jsn) {
+                _this.totalRecords = jsn.metadata.total;
                 console.log("LOS USERS:");
                 console.log(jsn.users);
 
-                return jsn.users;
+                var ret = jsn.users;
+                ret.totalRecords = jsn.metadata.total;
+                return ret;
             });
         }
     }, {
@@ -46727,6 +47157,7 @@ var Strategy = function () {
     }, {
         key: 'doCreate',
         value: function doCreate(content) {
+            console.log("LO CREO CON EL SGTE CONTENIDO", content);
             return fetch("/users/", {
                 method: "POST",
                 headers: {
@@ -46738,10 +47169,13 @@ var Strategy = function () {
                     "type": content.type,
                     "username": content.username,
                     "password": content.password,
+
+                    /*
                     "fb": {
-                        "userId": "string",
-                        "authToken": "string"
+                      "userId": "string",
+                      "authToken": "string"
                     },
+                    */
                     "firstName": content.firstName,
                     "lastName": content.lastName,
                     "country": content.country,
@@ -46750,6 +47184,16 @@ var Strategy = function () {
                     "images": ["string"]
                 })
             });
+        }
+    }, {
+        key: 'getFilters',
+        value: function getFilters() {
+            return ["applicationOwner", "type", "username", "name", "surname", "country", "email", "brithdate"];
+        }
+    }, {
+        key: 'orderBy',
+        value: function orderBy() {
+            return "username";
         }
     }]);
 
@@ -46769,7 +47213,7 @@ var Users = exports.Users = function (_CrudTable) {
     return Users;
 }(_CrudTable2.CrudTable);
 
-},{"./CarEditorButton":227,"./CrudTable":230,"react":222,"react-dom":61,"react-popout":63,"whatwg-fetch":224}],240:[function(require,module,exports){
+},{"./CarEditorButton":227,"./CrudTable":230,"react":222,"react-dom":61,"react-popout":63,"whatwg-fetch":224}],242:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -46798,4 +47242,4 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 _reactDom2.default.render(_react2.default.createElement(_App.App, null), document.getElementById('root'));
 
-},{"./App":225,"./BusinessUsers":226,"./Login":232,"./MainScreen":233,"./Servers":236,"./Users":239,"react":222,"react-dom":61,"whatwg-fetch":224}]},{},[240]);
+},{"./App":225,"./BusinessUsers":226,"./Login":233,"./MainScreen":234,"./Servers":238,"./Users":241,"react":222,"react-dom":61,"whatwg-fetch":224}]},{},[242]);

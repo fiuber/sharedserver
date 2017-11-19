@@ -13,11 +13,10 @@ class Strategy{
         this.token=token;
         this.securityLevel=securityLevel;
     }
-    getAll(){
-        console.log("Iam getting all the things")
-        return fetch("/users",{
+    getAll(searchQuery){
+        console.log("BUSCO:"+"/users"+searchQuery)
+        return fetch("/users"+searchQuery,{
             method:"GET",
-
             headers:{
                 "Authorization":"api-key "+this.token,
             },
@@ -25,10 +24,13 @@ class Strategy{
         })
         .then((res)=>res.json())
         .then((jsn)=>{
+            this.totalRecords=jsn.metadata.total;
             console.log("LOS USERS:")
             console.log(jsn.users)
 
-            return jsn.users;
+            let ret=jsn.users;
+            ret.totalRecords=jsn.metadata.total;
+            return ret;
         });
     }
 
@@ -137,6 +139,7 @@ class Strategy{
     }
 
     doCreate(content){
+        console.log("LO CREO CON EL SGTE CONTENIDO",content);
         return fetch("/users/",{
             method:"POST",
             headers: {
@@ -148,10 +151,13 @@ class Strategy{
                 "type": content.type,
                 "username": content.username,
                 "password": content.password,
+
+                /*
                 "fb": {
                   "userId": "string",
                   "authToken": "string"
                 },
+                */
                 "firstName": content.firstName,
                 "lastName": content.lastName,
                 "country": content.country,
@@ -162,6 +168,23 @@ class Strategy{
                 ]
             })
         })
+    }
+
+    getFilters(){
+        return [
+            "applicationOwner",
+            "type",
+            "username",
+            "name",
+            "surname",
+            "country",
+            "email",
+            "brithdate"
+        ]
+    }
+
+    orderBy(){
+        return "username";
     }
 }
 

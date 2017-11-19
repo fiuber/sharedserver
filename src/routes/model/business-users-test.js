@@ -171,14 +171,16 @@ describe("Usage of businessUsers",function(){
             return businessUsers.add(juanperez).then(()=>{
                 return businessUsers.list().then((all)=>{
 
-                    assert.equal(all.length,3);
-                    assert.nestedInclude(all[0],{username:"pepenacho"});
-                    assert.nestedInclude(all[1],{username:"mariagonzales"});
-                    assert.nestedInclude(all[2],{username:"juanperez"});
+                    let bu = all.businessUsers;
+                    assert.equal(bu.length,3);
+                    assert.equal(all.quantity,3);
+                    assert.nestedInclude(bu[0],{username:"pepenacho"});
+                    assert.nestedInclude(bu[1],{username:"mariagonzales"});
+                    assert.nestedInclude(bu[2],{username:"juanperez"});
 
-                    assert.includeMembers(all[0].roles,["admin","manager"])
-                    assert.includeMembers(all[1].roles,["manager"])
-                    assert.includeMembers(all[2].roles,["user"])
+                    assert.includeMembers(bu[0].roles,["admin","manager"])
+                    assert.includeMembers(bu[1].roles,["manager"])
+                    assert.includeMembers(bu[2].roles,["user"])
                 })
             })
         })
@@ -187,7 +189,8 @@ describe("Usage of businessUsers",function(){
     it("Testing deletion",function(){
         return businessUsers.delete("pepenacho").then(()=>{
             return businessUsers.list().then((all)=>{
-                assert.equal(all.length,0);
+                assert.equal(all.businessUsers.length,0);
+                assert.equal(all.quantity,0);
             })
         })
     })
@@ -202,8 +205,10 @@ describe("Usage of businessUsers",function(){
         },"pepenacho")
         .then(()=>businessUsers.list())
         .then((all)=>{
-            assert.equal(all.length,1);
-            let carl=all[0];
+            let bu=all.businessUsers;
+            assert.equal(bu.length,1);
+            assert.equal(all.quantity,1);
+            let carl=bu[0];
             assert.include(carl,{
                 username:"cj",
                 password:"cjgangsta",

@@ -1,5 +1,6 @@
 let assert=require("chai").assert;
 var request = require('supertest');
+const log=require("debug")("fiuber:tests")
 
 describe("using /trips",function(){
     var app;
@@ -284,6 +285,7 @@ describe("using /trips",function(){
         .get("/users/"+soyyo5159.id+"/trips")
         .set("authorization", authValue)
         .expect((res)=>{
+            log(res.body)
             let good=res.body.trips.some((s)=>{
                 return s.passenger == fayo5159.id;
             })

@@ -49,7 +49,11 @@ function user(string,number,array,from){
 function userList(string,number,array,from){
     const userShape=user(string,number,array,from).user;
     return {
-        users:array(userShape)
+        users:from("users",array(userShape)),
+        metadata:{
+            total:number("quantity")
+        }
+
     }
 }
 

@@ -76,9 +76,10 @@ describe("Usage of rules",function(){
 
     it("getting all rules gets both rules",()=>{
         return rules.getRules().then((all)=>{
-            assert.lengthOf(all,2);
-            let hasLaw=all.some((r)=>r.lastCommit.ruleId==law.lastCommit.ruleId);
-            let hasLaw2=all.some((r)=>r.lastCommit.ruleId==law2.lastCommit.ruleId);
+            assert.lengthOf(all.rules,2);
+            assert.equal(all.quantity,2);
+            let hasLaw=all.rules.some((r)=>r.lastCommit.ruleId==law.lastCommit.ruleId);
+            let hasLaw2=all.rules.some((r)=>r.lastCommit.ruleId==law2.lastCommit.ruleId);
             assert.isTrue(hasLaw,"it doesnt have f=m*a");
             assert.isTrue(hasLaw2,"it doesnt have E=m*C^2");
         })
@@ -90,8 +91,8 @@ describe("Usage of rules",function(){
 
     it("getting all rules gets one rule",()=>{
         return rules.getRules().then((all)=>{
-            assert.lengthOf(all,1);
-            let hasLaw2=all.some((r)=>r.lastCommit.ruleId==law2.lastCommit.ruleId);
+            assert.lengthOf(all.rules,1);
+            let hasLaw2=all.rules.some((r)=>r.lastCommit.ruleId==law2.lastCommit.ruleId);
             assert.isTrue(hasLaw2,"it doesnt have E=m*C^2");
         })
     })
@@ -108,8 +109,8 @@ describe("Usage of rules",function(){
 
     it("getting all rules gets one changed rule",()=>{
         return rules.getRules().then((all)=>{
-            assert.lengthOf(all,1);
-            let hasLaw2=all.some((r)=>r.lastCommit.ruleId==law2.lastCommit.ruleId && r.commit.blob==="bigote");
+            assert.lengthOf(all.rules,1);
+            let hasLaw2=all.rules.some((r)=>r.lastCommit.ruleId==law2.lastCommit.ruleId && r.commit.blob==="bigote");
             assert.isTrue(hasLaw2,"it doesnt have E=m*C^2");
         })
     })

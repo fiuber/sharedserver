@@ -3,7 +3,7 @@ const userImages=require("./tables").userImages;
 const cars=require("./tables").cars;
 const carProperties=require("./tables").carProperties;
 
-const log=require("debug")("fiuber:tests")
+const log=require("debug")("fiuber:users")
 
 /**
  * @module
@@ -107,6 +107,13 @@ exports.list=function(nonexistent,badRevision,me,query){
         return Promise.all(
             allUsers.map((u)=>exports.get(u.id))
         );
+    }).then((complete)=>{
+        return users.count(query).then((q)=>{
+            return {
+                users:complete,
+                quantity:q
+            }
+        })
     })
 }
 exports.list.shape={};
@@ -177,10 +184,18 @@ function addImages(id,images){
     return Promise.all(additions);
 }
 
-exports.deleteCar=function(carId){
-    return cars.delete({id:carId}).then(()=>{
-        return carProperties.delete({id:carId}).then(()=>null);
+exports.deleteCar=function(userId,carId,nonexistent,badRevision,me){
+    return cars.read({id:carId}).then((all)=>{
+        log(all);
+        if (all.length==0){
+            return nonexistent;
+        }else{
+            return cars.delete({id:carId}).then(()=>{
+                return carProperties.delete({id:carId}).then(()=>null);
+            })
+        }
     })
+    
 }
 exports.deleteCar.shape={}
 
@@ -247,11 +262,18 @@ exports.getCar=function(userId,carId,nonexistent){
 }
 exports.getCar.shape={};
 
-exports.updateCar=function(body,userId,carId,nonexistent){
-    return cars.exists({id:carId,owner:userId}).then((exists)=>{
-        if(!exists){
+exports.updateCar=function(body,userId,carId,nonexistent,badRevision){
+    return cars.read({id:carId,owner:userId}).then((all)=>{
+        if(all.length==0){
             return nonexistent;
         }
+
+        if(all[0]._ref!=body._ref){
+            return badRevision;
+        }
+
+        body._ref=Math.random()*1000+"";
+        
         return cars.update({id:carId,owner:userId},body).then(()=>{
             return carProperties.delete({id:carId}).then(()=>{
                 return addProperties(carId,body.properties);

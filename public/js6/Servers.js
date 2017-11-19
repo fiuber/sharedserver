@@ -11,8 +11,8 @@ class Strategy{
         this.token=token;
         this.username=username;
     }
-    getAll(){
-        return fetch("/servers",{
+    getAll(query){
+        return fetch("/servers"+query,{
             method:"GET",
 
             headers:{
@@ -21,7 +21,12 @@ class Strategy{
             cache:"no-store"
         })
         .then((res)=>res.json())
-        .then((jsn)=>jsn.servers);
+        .then((jsn)=>{
+            this.totalRecords=jsn.metadata.total;
+            let ret=jsn.servers;
+            ret.totalRecords=jsn.metadata.total;
+            return ret;
+        });
     }
 
     doUpdate(row,content){
@@ -111,6 +116,18 @@ class Strategy{
                 lastConnection:0
             })
         })
+    }
+
+    getFilters(){
+        return [
+            "name",
+            "createdBy",
+            "lastConnection"
+        ]
+    }
+
+    orderBy(){
+        return "name";
     }
 }
 
