@@ -2,6 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import "whatwg-fetch";
+import Toggle from 'react-bootstrap-toggle';
 
 //<Dialog content={un_json} onSubmit={submit} />
 
@@ -12,6 +13,9 @@ export class Dialog extends React.Component {
         this.onChange=this.onChange.bind(this);
         this.onSubmit=this.onSubmit.bind(this);
         this.onChecked=this.onChecked.bind(this);
+        this.boolSlide=this.boolSlide.bind(this);
+        this.typeSlide=this.typeSlide.bind(this);
+        this.renderContent=this.renderContent.bind(this);
 
         this.exteriorOnSubmit=props.onSubmit;
         let content=props.content;
@@ -19,15 +23,34 @@ export class Dialog extends React.Component {
         this.state={
             roles,
             content,
-            renderedParts:this.renderContent(content)
+            renderedParts:this.renderContent(content),
+            toggleActive:false
         }
     }
     renderContent(o){
+        debugger
         console.log(o);
         let keys=Object.keys(o);
         let parts= keys.map((key)=>{
-            if (key.toUpperCase() != "ROLE") {
-                return <div class="form-group">
+            switch (key.toUpperCase()){
+                case "ROLE":
+                    return <div class="form-group">
+                            <label class="control-label col-sm-2">{key}:</label>
+                            <div class="col-sm-10">
+                                <label class="checkbox-inline"><input type="checkbox" name={key} value="admin" onClick={this.onChecked}/>Admin</label>
+                                <label class="checkbox-inline"><input type="checkbox" name={key} value="manager" onClick={this.onChecked}/>Manager</label>
+                                <label class="checkbox-inline"><input type="checkbox" name={key} value="user" onClick={this.onChecked}/>User</label>
+                            </div>
+                        </div>
+                    break;
+                case "ACTIVE":
+                    return <Toggle onClick={this.boolSlide} name={key} on="Active" off="Inactive" onstyle="success" offstyle="danger" active={this.state ? this.state.toggleActive : false}/>
+                    break;
+                //case "TYPE":
+                //    return <input onChange={this.typeSlide} id={key.toUpperCase()} type="checkbox" name={key} checked data-toggle="toggle" data-on="Passenger" data-off="Driver" data-onstyle="primary" data-offstyle="success" data-style="ios"/>
+                //    break;
+                default:
+                    return <div class="form-group">
                             <label class="control-label col-sm-2">{key}:</label>        
                             <div class="col-sm-10">
                                 <input
@@ -39,17 +62,6 @@ export class Dialog extends React.Component {
                                     type={key.toUpperCase() == "PASSWORD" ? key : "text"}
                                     onChange={this.onChange} 
                                 />
-                            </div>
-                        </div>
-            }
-            else
-            {
-                return <div class="form-group">
-                            <label class="control-label col-sm-2">{key}:</label>
-                            <div class="col-sm-10">
-                                <label class="checkbox-inline"><input type="checkbox" name={key} value="admin" onClick={this.onChecked}/>Admin</label>
-                                <label class="checkbox-inline"><input type="checkbox" name={key} value="manager" onClick={this.onChecked}/>Manager</label>
-                                <label class="checkbox-inline"><input type="checkbox" name={key} value="user" onClick={this.onChecked}/>User</label>
                             </div>
                         </div>
             }
@@ -78,6 +90,22 @@ export class Dialog extends React.Component {
         })
     }
 
+    boolSlide(event){
+        let state = !this.state.toggleActive;
+        let copy=JSON.parse(JSON.stringify(this.state.content));
+        copy['active'] = state;
+        debugger
+        this.setState({
+            toggleActive: state,
+            content: copy,
+            renderedParts: this.renderContent(copy)
+        })
+    }
+
+    typeSlide(event){
+        //TODO: set content on 'passenger' or 'driver'
+    }
+
     onChange(event){
         let name=event.target.name;
         let value=event.target.value;
@@ -94,6 +122,12 @@ export class Dialog extends React.Component {
     onSubmit(){
        this.exteriorOnSubmit(this.state.content);
     }
+
+    /*componentDidMount() {
+
+      $( this.refs.toggleInput.getDOMNode() ).bootstrapToggle();
+
+    }*/
     render(){
         return <div  class="container" id="formNew" onSubmit={this.onSubmit}>
             <form class="form-horizontal">
@@ -104,6 +138,10 @@ export class Dialog extends React.Component {
                     </div>
                 </div>
             </form>
+            <script>
+                $('#ACTIVE').bootstrapToggle();
+                $('#TYPE').bootstrapToggle();
+            </script>
         </div>
     }
 }

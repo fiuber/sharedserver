@@ -1,4 +1,5 @@
 
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import "whatwg-fetch";
@@ -147,12 +148,18 @@ class Strategy{
                 "type": content.type,
                 "username": content.username,
                 "password": content.password,
+<<<<<<< HEAD
                 /*
+=======
+>>>>>>> b0ebb42121118e2d32a265206c94b9ce5b095d31
                 "fb": {
                   "userId": "string",
                   "authToken": "string"
                 },
+<<<<<<< HEAD
                 */
+=======
+>>>>>>> b0ebb42121118e2d32a265206c94b9ce5b095d31
                 "firstName": content.firstName,
                 "lastName": content.lastName,
                 "country": content.country,

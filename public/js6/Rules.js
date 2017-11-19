@@ -84,18 +84,21 @@ class Strategy{
     defaults(row){
         return {
           "language": "string",
-          "blob": "string"
+          "blob": "string",
+          "active": true
         };
     }
 
     defaultCreationContent(){
         return {
           "language": "string",
-          "blob": "string"
+          "blob": "string",
+          "active": true
         };
     }
 
     doCreate(content){
+        debugger
         return fetch("/rules/",{
             method:"POST",
             headers: {
@@ -108,7 +111,7 @@ class Strategy{
                 "language": content.language,
                 "lastCommit": {},
                 "blob": content.blob,
-                "active": true
+                "active": content.active
             })
         })
     }

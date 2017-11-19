@@ -37,7 +37,7 @@ export class Row extends React.Component{
     onUpdate(){
         let username=this.state.row.username;
         let popup=(
-        <Popout  title='Updating' url={window.location.origin + "/js6/dialog.html"} onClosing={this.removePopup.bind(this)}>
+        <Popout  title='Updating' url={window.location.origin + "/dialog.html"} onClosing={this.removePopup.bind(this)}>
             <Dialog content={this.state.row} onSubmit={this.onSubmit.bind(this)} />
         </Popout>
         );
