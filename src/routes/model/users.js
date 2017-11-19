@@ -108,10 +108,10 @@ exports.list=function(nonexistent,badRevision,me,query){
             allUsers.map((u)=>exports.get(u.id))
         );
     }).then((complete)=>{
-        return users.read().then((all)=>{
+        return users.count(query).then((q)=>{
             return {
                 users:complete,
-                quantity:all.length
+                quantity:q
             }
         })
     })

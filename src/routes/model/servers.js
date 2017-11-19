@@ -127,10 +127,10 @@ exports.delete.shape={}
  */
 exports.list=function(nonexistent,badRevision,me,query){
     return sdb.readQuery(query).then((servers)=>{
-        return sdb.read().then((all)=>{
+        return sdb.count(query).then((q)=>{
             return {
                 servers:servers,
-                quantity:all.length
+                quantity:q
             }
         })
     });

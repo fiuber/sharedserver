@@ -78,10 +78,10 @@ exports.getRules=function(nonexistent,badRevision,me,query){
         let promises=all.map((r)=>exports.getRule(r.ruleId))
         return Promise.all(promises);
     }).then((all)=>{
-        return lastCommits.read().then((rules)=>{
+        return lastCommits.count(query).then((q)=>{
             return {
                 rules:all,
-                quantity:rules.length
+                quantity:q
             }
         })
     })

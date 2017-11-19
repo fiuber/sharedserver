@@ -13,7 +13,8 @@ export class CrudTable extends React.Component{
         this.state={
             renderedRows:[],
             creatorOpen:false,
-            totalRecords:0
+            totalRecords:0,
+            page:1
         }
         this.rows=[];
         this.popups=[];
@@ -27,7 +28,7 @@ export class CrudTable extends React.Component{
 
     refresh(){
         let searchQuery="?";
-        searchQuery+="_limit=10&_offset="+(this.page-1)*10+"&_orderBy="+this.strategy.orderBy();
+        searchQuery+="_limit=10&_offset="+(this.state.page-1)*10+"&_orderBy="+this.strategy.orderBy();
         console.log("THE SEARCHQUERY IS",searchQuery)
         if(this.searchWord != ""){
             let filter=this.filterName+"_matches=%"+this.searchWord+"%";
@@ -49,7 +50,10 @@ export class CrudTable extends React.Component{
                 this.popups.push(<span></span>);
             }
             this.updateRenderedRows();
-            
+            console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            console.log(all);
+            console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+
             this.setState({
                 totalRecords:all.totalRecords
             })
@@ -123,20 +127,20 @@ export class CrudTable extends React.Component{
         console.log(searchWord,filterName);
         this.searchWord=searchWord;
         this.filterName=filterName;
-        this.refresh();
+        this.changePage(1);
     }
 
     changePage(page){
-        this.page=page;
-        return this.refresh();
+        this.setState({page},this.refresh.bind(this));
     }
 
 
 
     
-    render(){
+    render(){//this.changePage.bind(this)
         return <div id="mainContainer" style={{display:"block"}}>
             <PagingDialog 
+                page={this.state.page}
                 updatePageCallback={this.changePage.bind(this)} 
                 pages={Math.ceil(this.state.totalRecords/10)}/>
             <FilterDialog shape={this.strategy.getFilters()} updateQueryCallback={this.updateQuery.bind(this)}/>

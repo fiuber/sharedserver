@@ -93,10 +93,10 @@ exports.list=function(nonexistent,badRevision,me,query){
     .readQuery(query)
     .then(getWithRoles)
     .then((withRoles)=>{
-        return udb.read().then((all)=>{
+        return udb.count(query).then((q)=>{
             return {
                 businessUsers:withRoles,
-                quantity:all.length
+                quantity:q
             }
         })
         

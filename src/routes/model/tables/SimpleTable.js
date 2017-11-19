@@ -41,6 +41,13 @@ function SimpleTable(name,fields,primaryKeys){
             return postgresTable.remove.apply(postgresTable,arguments);
         }
     }
+    this.count=function(query){
+        let copied=Object.assign({},query);
+        delete copied._limit;
+        return this.read(copied).then((all)=>{
+            return all.length;
+        })
+    }
 
     this.readOne=function(filter,nonexistent){
         return this.read(filter).then((read)=>{

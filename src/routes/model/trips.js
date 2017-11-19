@@ -181,10 +181,10 @@ exports.getTrips=function(nonexistent,badRevision,me,query){
         });
         return Promise.all(allPromises);
     }).then((complete)=>{
-        return trips.read().then((all)=>{
+        return trips.count(query).then((q)=>{
             let ret = {
                 trips:complete,
-                quantity:all.length
+                quantity:q
             }
             log("-----------------------------------------------")
             log("-----------------------------------------------")

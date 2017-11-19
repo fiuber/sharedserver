@@ -45095,7 +45095,8 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
         _this.state = {
             renderedRows: [],
             creatorOpen: false,
-            totalRecords: 0
+            totalRecords: 0,
+            page: 1
         };
         _this.rows = [];
         _this.popups = [];
@@ -45114,7 +45115,7 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
             var _this2 = this;
 
             var searchQuery = "?";
-            searchQuery += "_limit=10&_offset=" + (this.page - 1) * 10 + "&_orderBy=" + this.strategy.orderBy();
+            searchQuery += "_limit=10&_offset=" + (this.state.page - 1) * 10 + "&_orderBy=" + this.strategy.orderBy();
             console.log("THE SEARCHQUERY IS", searchQuery);
             if (this.searchWord != "") {
                 var filter = this.filterName + "_matches=%" + this.searchWord + "%";
@@ -45154,6 +45155,9 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
                 }
 
                 _this2.updateRenderedRows();
+                console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+                console.log(all);
+                console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
                 _this2.setState({
                     totalRecords: all.totalRecords
@@ -45243,23 +45247,24 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
             console.log(searchWord, filterName);
             this.searchWord = searchWord;
             this.filterName = filterName;
-            this.refresh();
+            this.changePage(1);
         }
     }, {
         key: 'changePage',
         value: function changePage(page) {
-            this.page = page;
-            return this.refresh();
+            this.setState({ page: page }, this.refresh.bind(this));
         }
     }, {
         key: 'render',
         value: function render() {
             var _this7 = this;
 
+            //this.changePage.bind(this)
             return _react2.default.createElement(
                 'div',
                 { id: 'mainContainer', style: { display: "block" } },
                 _react2.default.createElement(_PagingDialog.PagingDialog, {
+                    page: this.state.page,
                     updatePageCallback: this.changePage.bind(this),
                     pages: Math.ceil(this.state.totalRecords / 10) }),
                 _react2.default.createElement(_FilterDialog.FilterDialog, { shape: this.strategy.getFilters(), updateQueryCallback: this.updateQuery.bind(this) }),
@@ -45374,7 +45379,6 @@ var Dialog = exports.Dialog = function (_React$Component) {
         value: function renderContent(o) {
             var _this2 = this;
 
-            debugger;
             console.log(o);
             var keys = Object.keys(o);
             var parts = keys.map(function (key) {
@@ -45475,7 +45479,6 @@ var Dialog = exports.Dialog = function (_React$Component) {
             var state = !this.state.toggleActive;
             var copy = JSON.parse(JSON.stringify(this.state.content));
             copy['active'] = state;
-            debugger;
             this.setState({
                 toggleActive: state,
                 content: copy,
@@ -45956,38 +45959,22 @@ var PagingDialog = exports.PagingDialog = function (_React$Component) {
             leftEnabled: false,
             rightEnabled: false
         };
-        _this.updatePageCallback = props.updatePageCallback;
+        _this.updatePage = props.updatePageCallback;
         _this.updatePage(1);
         return _this;
     }
 
     _createClass(PagingDialog, [{
-        key: 'updatePage',
-        value: function updatePage(value) {
-            var _this2 = this;
-
-            this.updatePageCallback(value).then(function (pages) {
-                console.log("==========================");
-                console.log(pages);
-                console.log("==========================");
-                var currentPage = _this2.state.page;
-                var leftEnabled = currentPage > 1;
-                var rightEnabled = currentPage < pages;
-
-                _this2.setState({
-                    pages: pages, leftEnabled: leftEnabled, rightEnabled: rightEnabled
-                });
-            });
-        }
-    }, {
         key: 'handleInputChange',
         value: function handleInputChange(e) {
-            var total = this.state.pages;
+            var total = this.props.pages;
             var value = e.target.value;
             if (new Number(value).valueOf() == value && value > 0 && value <= total || value == "") {
+                /*
                 this.setState({
-                    page: value
+                page:value
                 });
+                */
                 if (new Number(value).valueOf() == value) {
                     this.updatePage(value);
                 }
@@ -45996,12 +45983,12 @@ var PagingDialog = exports.PagingDialog = function (_React$Component) {
     }, {
         key: 'handleChangePage',
         value: function handleChangePage(howMuch) {
-            var currentPage = new Number(this.state.page).valueOf();
+            var currentPage = new Number(this.props.page).valueOf();
             var nextPage = currentPage + howMuch;
             if (nextPage < 1) {
                 nextPage = 1;
             }
-            var total = this.state.pages;
+            var total = this.props.pages;
             if (nextPage > total) {
                 nextPage = total;
             }
@@ -46023,9 +46010,14 @@ var PagingDialog = exports.PagingDialog = function (_React$Component) {
                 margin: "5 5 5 5",
                 width: "64px",
                 textAlign: "center"
-            };
-
-            var leftClass = "btn btn-primary " + (this.state.page > 1 ? "" : "disabled");
+                /*
+                        if(this.props.page>this.props.pages){
+                            this.setState({
+                                page:this.props.pages
+                            })
+                        }
+                */
+            };var leftClass = "btn btn-primary " + (this.props.page > 1 ? "" : "disabled");
             var leftArrow = _react2.default.createElement(
                 'button',
                 { 'class': leftClass, type: 'button', style: arrowStyle, onClick: this.handleChangePage.bind(this, -1) },
@@ -46033,7 +46025,7 @@ var PagingDialog = exports.PagingDialog = function (_React$Component) {
             );
 
             //let rightClass="btn btn-primary "+(this.state.page<this.state.pages)?"active":"disabled";
-            var rightClass = "btn btn-primary " + (this.state.page < this.state.pages ? "" : "disabled");
+            var rightClass = "btn btn-primary " + (this.props.page < this.props.pages ? "" : "disabled");
             var rightArrow = _react2.default.createElement(
                 'button',
                 { 'class': rightClass, type: 'button', style: arrowStyle, onClick: this.handleChangePage.bind(this, 1) },
@@ -46045,9 +46037,9 @@ var PagingDialog = exports.PagingDialog = function (_React$Component) {
                 placeholder: 'page',
                 'class': 'form-control',
                 id: 'search',
-                value: this.state.page,
+                value: this.props.page,
                 onChange: this.handleInputChange.bind(this)
-            });
+            }); //this.handleInputChange.bind(this)
 
             return _react2.default.createElement(
                 'div',
@@ -46417,7 +46409,6 @@ var Strategy = function () {
     }, {
         key: 'doCreate',
         value: function doCreate(content) {
-            debugger;
             return fetch("/rules/", {
                 method: "POST",
                 headers: {

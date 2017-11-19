@@ -101,7 +101,6 @@ class Strategy{
     }
 
     doCreate(content){
-        debugger
         return fetch("/rules/",{
             method:"POST",
             headers: {
