@@ -1,6 +1,7 @@
 const apify=require("./apify/apify.js");
 const wrapAll= require("./wrapAll.js");
 const reshaperCreator=require("./reshaperCreator");
+const log=require("debug")("fiuber:tests")
 /**
  * @module routes/expressify
  */
@@ -72,9 +73,18 @@ function expressify(shape,fun,reshapeOutput){
 expressify.all=function(module,metadata){
     return wrapAll(function(f){
         let inShape=f.shape || module.shape;
+
         let reshaper=reshaperCreator(f.outputShape || module.outputShape);
+
         function trueReshaper(data){
-            let reshaped=reshaper(data);
+
+            let reshaped=null
+            try{
+                reshaped = reshaper(data);
+            }catch(e){
+                reshaped=data;
+            }
+            
             if(reshaped.metadata==undefined){
                 reshaped.metadata=metadata;
             }else{
