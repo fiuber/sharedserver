@@ -46025,20 +46025,19 @@ var PagingDialog = exports.PagingDialog = function (_React$Component) {
                 textAlign: "center"
             };
 
-            var leftClass = "btn btn-primary " + (this.state.page > 1) ? "active" : "disabled";
+            var leftClass = "btn btn-primary " + (this.state.page > 1 ? "" : "disabled");
             var leftArrow = _react2.default.createElement(
                 'button',
                 { 'class': leftClass, type: 'button', style: arrowStyle, onClick: this.handleChangePage.bind(this, -1) },
-                '-',
-                _react2.default.createElement('span', { 'class': 'caret' })
+                _react2.default.createElement('span', { 'class': 'glyphicon glyphicon-triangle-left' })
             );
 
-            var rightClass = "btn btn-primary " + (this.state.page < this.state.pages) ? "active" : "disabled";
+            //let rightClass="btn btn-primary "+(this.state.page<this.state.pages)?"active":"disabled";
+            var rightClass = "btn btn-primary " + (this.state.page < this.state.pages ? "" : "disabled");
             var rightArrow = _react2.default.createElement(
                 'button',
                 { 'class': rightClass, type: 'button', style: arrowStyle, onClick: this.handleChangePage.bind(this, 1) },
-                '+',
-                _react2.default.createElement('span', { 'class': 'caret' })
+                _react2.default.createElement('span', { 'class': 'glyphicon glyphicon-triangle-right' })
             );
             var input = _react2.default.createElement('input', {
                 style: inputStyle,

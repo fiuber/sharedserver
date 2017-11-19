@@ -74,16 +74,15 @@ export class PagingDialog extends React.Component{
             textAlign:"center"
         }
 
-        let leftClass="btn btn-primary "+(this.state.page>1)?"active":"disabled";
+        let leftClass="btn btn-primary "+((this.state.page>1)?"":"disabled");
         let leftArrow=<button class={leftClass} type="button" style={arrowStyle} onClick={this.handleChangePage.bind(this,-1)}>
-            -
-            <span class="caret"></span>
+            <span class="glyphicon glyphicon-triangle-left"></span>
         </button>
 
-        let rightClass="btn btn-primary "+(this.state.page<this.state.pages)?"active":"disabled";
+        //let rightClass="btn btn-primary "+(this.state.page<this.state.pages)?"active":"disabled";
+        let rightClass="btn btn-primary "+((this.state.page<this.state.pages)?"":"disabled");
         let rightArrow=<button class={rightClass} type="button" style={arrowStyle} onClick={this.handleChangePage.bind(this,1)}>
-            +
-            <span class="caret"></span>
+            <span class="glyphicon glyphicon-triangle-right"></span>
         </button>
         let input=<input 
             style={inputStyle}
