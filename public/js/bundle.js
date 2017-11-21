@@ -45827,8 +45827,8 @@ var FilterDialog = exports.FilterDialog = function (_React$Component) {
         value: function render() {
             var displayInline = {
                 "display": "inline",
-                "margin-left": "2px",
-                "margin-right": "2px"
+                "marginLeft": "2px",
+                "marginRight": "2px"
             };
             var niceWidth = {
                 width: "40%",
@@ -45921,7 +45921,10 @@ var Heatmap = exports.Heatmap = function (_React$Component) {
                 'span',
                 null,
                 'Waiting for google maps...'
-            )
+            ),
+            showing: "start",
+            map: {},
+            heatmap: null
         };
 
         fetch("/trips", {
@@ -45942,18 +45945,121 @@ var Heatmap = exports.Heatmap = function (_React$Component) {
     }
 
     _createClass(Heatmap, [{
+        key: 'change',
+        value: function change(showing) {
+            if (this.state.heatmap != null) {
+                this.state.heatmap.setMap(null);
+            }
+
+            var heatmap = new google.maps.visualization.HeatmapLayer({
+                data: this.getData(showing),
+                map: this.state.map
+            });
+            this.setState({ showing: showing, heatmap: heatmap });
+        }
+    }, {
+        key: 'getData',
+        value: function getData(showing) {
+            console.log(this.state.trips);
+            var starts = this.state.trips.map(function (trip) {
+                return trip.start.address.location;
+            });
+            console.log("A");
+            var ends = this.state.trips.map(function (trip) {
+                return trip.end.address.location;
+            });
+            console.log("B");
+            var steps = this.state.trips.map(function (trip) {
+                return trip.route.map(function (elem) {
+                    return elem.location;
+                });
+            }).reduce(function (a1, a2) {
+                return a1.concat(a2);
+            }, []);
+            console.log("C");
+
+            var sets = {
+                "start": starts,
+                "end": ends,
+                "entire trips": starts.concat(ends).concat(steps)
+            };
+            console.log("D");
+            console.log(sets[showing]);
+
+            var result = sets[showing].map(function (location) {
+                return new google.maps.LatLng(location.lat, location.lon);
+            });
+            console.log("E");
+
+            console.log(result);
+
+            return result;
+        }
+    }, {
         key: 'render',
         value: function render() {
-            //return <span> un mapa {this.state.trips.toString()}</span>;
+            var displayInline = {
+                "display": "inline",
+                margin: "10px 10px 10px 10px 10px",
+                padding: "10px 10px 10px 10px 10px"
+
+            };
+            var buttonStyle = {
+                width: "100px",
+                align: "left"
+            };
+
             return _react2.default.createElement(
                 'div',
                 null,
                 _react2.default.createElement(_reactLoadScript2.default, {
-                    url: 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBKzseXuW-zDOZGfrgfGpYhVgGhCcddUUE',
+                    url: 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBKzseXuW-zDOZGfrgfGpYhVgGhCcddUUE&libraries=visualization',
                     onLoad: this.loaded.bind(this)
                 }),
+                _react2.default.createElement(
+                    'div',
+                    { style: displayInline, 'class': 'dropdown' },
+                    'showing:',
+                    _react2.default.createElement(
+                        'button',
+                        { style: buttonStyle, 'class': 'btn btn-primary dropdown-toggle', type: 'button', 'data-toggle': 'dropdown' },
+                        this.state.showing,
+                        _react2.default.createElement('span', { 'class': 'caret' })
+                    ),
+                    _react2.default.createElement(
+                        'ul',
+                        { 'class': 'dropdown-menu' },
+                        _react2.default.createElement(
+                            'li',
+                            null,
+                            _react2.default.createElement(
+                                'a',
+                                { onClick: this.change.bind(this, "start") },
+                                'start'
+                            )
+                        ),
+                        _react2.default.createElement(
+                            'li',
+                            null,
+                            _react2.default.createElement(
+                                'a',
+                                { onClick: this.change.bind(this, "end") },
+                                'end'
+                            )
+                        ),
+                        _react2.default.createElement(
+                            'li',
+                            null,
+                            _react2.default.createElement(
+                                'a',
+                                { onClick: this.change.bind(this, "entire trips") },
+                                'entire trips'
+                            )
+                        )
+                    )
+                ),
                 this.state.waitMap,
-                _react2.default.createElement('div', { style: { height: "100%" }, id: 'mapDiv' })
+                _react2.default.createElement('div', { style: { height: "600px" }, id: 'mapDiv' })
             );
         }
     }, {
@@ -45966,8 +46072,9 @@ var Heatmap = exports.Heatmap = function (_React$Component) {
                 zoom: 1
             });
             this.setState({
-                waitMap: _react2.default.createElement('span', null)
-            });
+                waitMap: _react2.default.createElement('span', null),
+                map: map
+            }, this.change.bind(this, this.state.showing));
         }
     }]);
 
