@@ -32,15 +32,6 @@ class Strategy{
             return ret;
         });
     }
-
-    doUpdate(row,content){
-        return Promise.resolve("NOPEEEEE")
-    }
-
-    doDelete(row){
-        return Promise.resolve("NOPEEEEE");
-    }
-
     
 
     renderOpened(row){
@@ -62,26 +53,6 @@ class Strategy{
 
     createKey(row){
         return row.author.username+row.message+row.timestamp;
-    }
-
-    defaults(row){
-        return {
-          "language": "string",
-          "blob": "string",
-          "active": true
-        };
-    }
-
-    defaultCreationContent(){
-        return {
-          "language": "string",
-          "blob": "string",
-          "active": true
-        };
-    }
-
-    doCreate(content){
-        return Promise.resolve("NOOOOOOPEEE")
     }
 
     getFilters(){

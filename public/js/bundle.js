@@ -45402,16 +45402,27 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
             };
 
             var key = this.strategy.createKey(row);
-            var data = this.strategy.defaults(row);
+            var data = this.strategy.defaults ? this.strategy.defaults(row) : {};
+
+            var onUpdate = null;
+            if (this.strategy.doUpdate) {
+                onUpdate = function onUpdate(content) {
+                    return _this6.onUpdate(row, content);
+                };
+            }
+
+            var onDelete = null;
+            if (this.strategy.doDelete) {
+                onDelete = function onDelete() {
+                    return _this6.onDelete(row);
+                };
+            }
+
             return _react2.default.createElement(_Row.Row, {
                 data: data,
                 key: key,
-                onUpdate: function onUpdate(content) {
-                    return _this6.onUpdate(row, content);
-                },
-                onRemove: function onRemove() {
-                    return _this6.onDelete(row);
-                },
+                onUpdate: onUpdate,
+                onRemove: onDelete,
                 renderOpened: renderOpened,
                 renderClosed: renderClosed
             });
@@ -45434,7 +45445,15 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
         value: function render() {
             var _this7 = this;
 
-            //this.changePage.bind(this)
+            var creationDialogOpener = function creationDialogOpener() {
+                return _react2.default.createElement(_CreateDialog.CreationDialogOpener, {
+                    content: _this7.strategy.defaultCreationContent(),
+                    onSubmit: function onSubmit(o) {
+                        return _this7.onCreate(o);
+                    }
+                });
+            };
+
             return _react2.default.createElement(
                 'div',
                 { id: 'mainContainer', style: { display: "block" } },
@@ -45446,12 +45465,7 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
                 _react2.default.createElement(
                     'div',
                     { id: 'listContainer', style: { display: "block" } },
-                    _react2.default.createElement(_CreateDialog.CreationDialogOpener, {
-                        content: this.strategy.defaultCreationContent(),
-                        onSubmit: function onSubmit(o) {
-                            return _this7.onCreate(o);
-                        }
-                    }),
+                    this.strategy.doCreate ? creationDialogOpener() : "",
                     _react2.default.createElement(
                         'table',
                         null,
@@ -45466,16 +45480,16 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
                                     null,
                                     'Content'
                                 ),
-                                _react2.default.createElement(
+                                this.strategy.doUpdate ? _react2.default.createElement(
                                     'th',
                                     null,
                                     'Edit'
-                                ),
-                                _react2.default.createElement(
+                                ) : "",
+                                this.strategy.doDelete ? _react2.default.createElement(
                                     'th',
                                     null,
                                     'Remove'
-                                )
+                                ) : ""
                             ),
                             this.state.renderedRows
                         )
@@ -46168,6 +46182,26 @@ var Row = exports.Row = function (_React$Component) {
                 );
             }
 
+            var updateCell = _react2.default.createElement(
+                'td',
+                null,
+                _react2.default.createElement(
+                    'a',
+                    { onClick: this.onUpdate },
+                    this.state.popup,
+                    _react2.default.createElement('span', { align: 'center', 'class': 'glyphicon glyphicon-edit' })
+                )
+            );
+            var removeCell = _react2.default.createElement(
+                'td',
+                null,
+                _react2.default.createElement(
+                    'a',
+                    { onClick: this.removeCallback },
+                    _react2.default.createElement('span', { align: 'center', 'class': 'glyphicon glyphicon-remove' })
+                )
+            );
+
             return _react2.default.createElement(
                 'tr',
                 null,
@@ -46176,25 +46210,8 @@ var Row = exports.Row = function (_React$Component) {
                     null,
                     renderedRowData
                 ),
-                _react2.default.createElement(
-                    'td',
-                    null,
-                    _react2.default.createElement(
-                        'a',
-                        { onClick: this.onUpdate },
-                        this.state.popup,
-                        _react2.default.createElement('span', { align: 'center', 'class': 'glyphicon glyphicon-edit' })
-                    )
-                ),
-                _react2.default.createElement(
-                    'td',
-                    null,
-                    _react2.default.createElement(
-                        'a',
-                        { onClick: this.removeCallback },
-                        _react2.default.createElement('span', { align: 'center', 'class': 'glyphicon glyphicon-remove' })
-                    )
-                )
+                this.updateCallback ? updateCell : "",
+                this.removeCallback ? removeCell : ""
             );
         }
     }]);
@@ -46470,16 +46487,6 @@ var Strategy = function () {
             });
         }
     }, {
-        key: 'doUpdate',
-        value: function doUpdate(row, content) {
-            return Promise.resolve("Cant");
-        }
-    }, {
-        key: 'doDelete',
-        value: function doDelete(row) {
-            return Promise.resolve("Cant");
-        }
-    }, {
         key: 'renderOpened',
         value: function renderOpened(row) {
             return _react2.default.createElement(
@@ -46519,25 +46526,6 @@ var Strategy = function () {
         key: 'createKey',
         value: function createKey(row) {
             return row.id + row.applicationOwner + row.driver + row.passenger + row.cost;
-        }
-    }, {
-        key: 'defaults',
-        value: function defaults(row) {
-            return {
-                username: "CANT UPDATE"
-            };
-        }
-    }, {
-        key: 'defaultCreationContent',
-        value: function defaultCreationContent() {
-            return {
-                type: "CANT CREATE"
-            };
-        }
-    }, {
-        key: 'doCreate',
-        value: function doCreate(content) {
-            return Promise.resolve(1);
         }
     }, {
         key: 'getFilters',
@@ -46634,16 +46622,6 @@ var Strategy = function () {
             });
         }
     }, {
-        key: 'doUpdate',
-        value: function doUpdate(row, content) {
-            return Promise.resolve("NOPEEEEE");
-        }
-    }, {
-        key: 'doDelete',
-        value: function doDelete(row) {
-            return Promise.resolve("NOPEEEEE");
-        }
-    }, {
         key: 'renderOpened',
         value: function renderOpened(row) {
             return _react2.default.createElement(
@@ -46675,29 +46653,6 @@ var Strategy = function () {
         key: 'createKey',
         value: function createKey(row) {
             return row.author.username + row.message + row.timestamp;
-        }
-    }, {
-        key: 'defaults',
-        value: function defaults(row) {
-            return {
-                "language": "string",
-                "blob": "string",
-                "active": true
-            };
-        }
-    }, {
-        key: 'defaultCreationContent',
-        value: function defaultCreationContent() {
-            return {
-                "language": "string",
-                "blob": "string",
-                "active": true
-            };
-        }
-    }, {
-        key: 'doCreate',
-        value: function doCreate(content) {
-            return Promise.resolve("NOOOOOOPEEE");
         }
     }, {
         key: 'getFilters',
@@ -47544,11 +47499,6 @@ var Strategy = function () {
             });
         }
     }, {
-        key: 'doUpdate',
-        value: function doUpdate(row, content) {
-            return Promise.resolve("CANT UPDATE");
-        }
-    }, {
         key: 'doDelete',
         value: function doDelete(row) {
             return fetch("/users/" + this.userId + "/cars/" + row.id, {
@@ -47600,25 +47550,6 @@ var Strategy = function () {
         key: 'createKey',
         value: function createKey(row) {
             return row.id + row.owner + row.properties.join("");
-        }
-    }, {
-        key: 'defaults',
-        value: function defaults(row) {
-            return {
-                name: "CANT UPDATE"
-            };
-        }
-    }, {
-        key: 'defaultCreationContent',
-        value: function defaultCreationContent() {
-            return {
-                name: "CANT CREATE"
-            };
-        }
-    }, {
-        key: 'doCreate',
-        value: function doCreate(content) {
-            return Promise.resolve("yesss");
         }
     }, {
         key: 'getFilters',

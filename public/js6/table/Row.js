@@ -62,10 +62,13 @@ export class Row extends React.Component{
             renderedRowData=<span><a onClick={this.onOpen }>(+)</a>{this.renderClosed()}</span>;
         }
 
+        let updateCell=<td><a onClick={this.onUpdate}>{this.state.popup}<span align="center" class="glyphicon glyphicon-edit"></span></a></td>;
+        let removeCell=<td><a onClick={this.removeCallback}><span align="center" class="glyphicon glyphicon-remove"></span></a></td>;
+
         return <tr>
             <td>{renderedRowData}</td>  
-            <td><a onClick={this.onUpdate}>{this.state.popup}<span align="center" class="glyphicon glyphicon-edit"></span></a></td>
-            <td><a onClick={this.removeCallback}><span align="center" class="glyphicon glyphicon-remove"></span></a></td>
+            {this.updateCallback?updateCell:""}
+            {this.removeCallback?removeCell:""}
         </tr>
     }
 }

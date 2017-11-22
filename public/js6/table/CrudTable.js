@@ -108,12 +108,25 @@ export class CrudTable extends React.Component{
 
 
         let key=this.strategy.createKey(row);
-        let data=this.strategy.defaults(row);
+        let data=this.strategy.defaults?this.strategy.defaults(row):{};
+
+        let onUpdate=null;
+        if(this.strategy.doUpdate){
+            onUpdate=(content)=>this.onUpdate(row,content);
+        }
+
+        let onDelete=null;
+        if(this.strategy.doDelete){
+            onDelete=()=>this.onDelete(row);
+        }
+
+
+        
         return <Row 
             data={data} 
             key={key} 
-            onUpdate={(content)=>this.onUpdate(row,content)}
-            onRemove={()=>this.onDelete(row)}
+            onUpdate={onUpdate}
+            onRemove={onDelete}
             renderOpened={renderOpened}
             renderClosed={renderClosed}
         />
@@ -134,7 +147,12 @@ export class CrudTable extends React.Component{
 
 
     
-    render(){//this.changePage.bind(this)
+    render(){
+        let creationDialogOpener=()=><CreationDialogOpener 
+            content={this.strategy.defaultCreationContent()} 
+            onSubmit={(o)=>this.onCreate(o)}
+        />
+
         return <div id="mainContainer" style={{display:"block"}}>
             <PagingDialog 
                 page={this.state.page}
@@ -144,17 +162,14 @@ export class CrudTable extends React.Component{
 
             <div id="listContainer" style={{display:"block"}}>
                 
-                <CreationDialogOpener 
-                    content={this.strategy.defaultCreationContent()} 
-                    onSubmit={(o)=>this.onCreate(o)}
-                />
+                {this.strategy.doCreate?creationDialogOpener():""}
                 
                 <table>
                     <tbody>
                     <tr>
                         <th>Content</th>
-                        <th>Edit</th>
-                        <th>Remove</th>
+                        {this.strategy.doUpdate?<th>Edit</th>:""}
+                        {this.strategy.doDelete?<th>Remove</th>:""}
                     </tr>
                     {this.state.renderedRows}
                     </tbody>

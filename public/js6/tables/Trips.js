@@ -32,14 +32,6 @@ class Strategy{
         });
     }
 
-    doUpdate(row,content){
-        return Promise.resolve("Cant")
-    }
-
-    doDelete(row){
-        return Promise.resolve("Cant")
-    }
-
     
 
     renderOpened(row){
@@ -67,21 +59,6 @@ class Strategy{
         return row.id+row.applicationOwner+row.driver+row.passenger+row.cost;
     }
 
-    defaults(row){
-        return {
-            username:"CANT UPDATE"
-        }
-    }
-
-    defaultCreationContent(){
-        return {
-            type:"CANT CREATE"
-        };
-    }
-
-    doCreate(content){
-        return Promise.resolve(1);
-    }
 
     getFilters(){
         return [

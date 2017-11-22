@@ -27,10 +27,6 @@ class Strategy{
         });
     }
 
-    doUpdate(row,content){
-        return Promise.resolve("CANT UPDATE")
-    }
-
     doDelete(row){
         return fetch("/users/"+this.userId+"/cars/"+row.id,{
             method:"DELETE",
@@ -63,22 +59,6 @@ class Strategy{
 
     createKey(row){
         return row.id+row.owner+row.properties.join("");
-    }
-
-    defaults(row){
-        return {
-            name:"CANT UPDATE",
-        }
-    }
-
-    defaultCreationContent(){
-        return {
-            name:"CANT CREATE",
-        };
-    }
-
-    doCreate(content){
-        return Promise.resolve("yesss");
     }
 
     getFilters(){
