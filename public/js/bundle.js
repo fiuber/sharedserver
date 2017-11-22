@@ -45265,7 +45265,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 var CrudTable = exports.CrudTable = function (_React$Component) {
     _inherits(CrudTable, _React$Component);
 
-    function CrudTable(props, strategy) {
+    function CrudTable(props, strategy, selectionCallback) {
         _classCallCheck(this, CrudTable);
 
         var _this = _possibleConstructorReturn(this, (CrudTable.__proto__ || Object.getPrototypeOf(CrudTable)).call(this, props));
@@ -45274,7 +45274,8 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
             renderedRows: [],
             creatorOpen: false,
             totalRecords: 0,
-            page: 1
+            page: 1,
+            selectedRows: []
         };
         _this.rows = [];
         _this.popups = [];
@@ -45282,6 +45283,7 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
         _this.searchWord = "";
         _this.filterName = "any";
         _this.page = 1;
+        _this.selectionCallback = selectionCallback;
 
         _this.refresh();
         return _this;
@@ -45345,7 +45347,6 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
         key: 'updateRenderedRows',
         value: function updateRenderedRows() {
             this.setState({ renderedRows: this.rows.map(this.renderRow, this) });
-            this.forceUpdate();
         }
     }, {
         key: 'onUpdate',
@@ -45424,8 +45425,27 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
                 onUpdate: onUpdate,
                 onRemove: onDelete,
                 renderOpened: renderOpened,
-                renderClosed: renderClosed
+                renderClosed: renderClosed,
+                checked: this.state.selectedRows.includes(key),
+                onChange: this.selectionCallback ? this.changeCheck.bind(this, key) : null
             });
+        }
+    }, {
+        key: 'changeCheck',
+        value: function changeCheck(key, event) {
+            var current = this.state.selectedRows;
+            if (current.includes(key)) {
+                current = current.filter(function (e) {
+                    return e != key;
+                });
+            } else {
+                current.push(key);
+            }
+            this.setState({
+                selectedRows: current
+            }, this.updateRenderedRows.bind(this));
+            console.log(current);
+            //this.selectionCallback.bind(this,current)
         }
     }, {
         key: 'updateQuery',
@@ -45489,6 +45509,11 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
                                     'th',
                                     null,
                                     'Remove'
+                                ) : "",
+                                this.selectionCallback ? _react2.default.createElement(
+                                    'th',
+                                    null,
+                                    'Select'
                                 ) : ""
                             ),
                             this.state.renderedRows
@@ -46155,6 +46180,7 @@ var Row = exports.Row = function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
+            var _this2 = this;
 
             var renderedRowData = _react2.default.createElement('span', null);
             var row = this.state.row;
@@ -46201,6 +46227,13 @@ var Row = exports.Row = function (_React$Component) {
                     _react2.default.createElement('span', { align: 'center', 'class': 'glyphicon glyphicon-remove' })
                 )
             );
+            var selectCell = function selectCell() {
+                return _react2.default.createElement(
+                    'td',
+                    null,
+                    _react2.default.createElement('input', { type: 'checkbox', checked: _this2.props.checked, onChange: _this2.props.onChange })
+                );
+            };
 
             return _react2.default.createElement(
                 'tr',
@@ -46211,7 +46244,8 @@ var Row = exports.Row = function (_React$Component) {
                     renderedRowData
                 ),
                 this.updateCallback ? updateCell : "",
-                this.removeCallback ? removeCell : ""
+                this.removeCallback ? removeCell : "",
+                this.props.onChange == null ? "" : selectCell()
             );
         }
     }]);
@@ -46814,7 +46848,7 @@ var Strategy = function () {
     }, {
         key: 'createKey',
         value: function createKey(row) {
-            return row.id + row.language + row.blob + row.active;
+            return row.id;
         }
     }, {
         key: 'defaults',
@@ -46875,8 +46909,23 @@ var Rules = exports.Rules = function (_CrudTable) {
         _classCallCheck(this, Rules);
 
         var strategy = new Strategy(props.token);
-        return _possibleConstructorReturn(this, (Rules.__proto__ || Object.getPrototypeOf(Rules)).call(this, props, strategy));
+        var actualCallback = function actualCallback() {};
+        var selectionCallback = function selectionCallback(selection) {
+            actualCallback(selection);
+        };
+
+        var _this2 = _possibleConstructorReturn(this, (Rules.__proto__ || Object.getPrototypeOf(Rules)).call(this, props, strategy, selectionCallback));
+
+        actualCallback = _this2.selectionCallback.bind(_this2);
+        return _this2;
     }
+
+    _createClass(Rules, [{
+        key: 'selectionCallback',
+        value: function selectionCallback(selection) {
+            console.log(selection);
+        }
+    }]);
 
     return Rules;
 }(_CrudTable2.CrudTable);

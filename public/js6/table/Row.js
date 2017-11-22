@@ -64,11 +64,13 @@ export class Row extends React.Component{
 
         let updateCell=<td><a onClick={this.onUpdate}>{this.state.popup}<span align="center" class="glyphicon glyphicon-edit"></span></a></td>;
         let removeCell=<td><a onClick={this.removeCallback}><span align="center" class="glyphicon glyphicon-remove"></span></a></td>;
+        let selectCell=()=><td><input type="checkbox" checked={this.props.checked} onChange={this.props.onChange}/></td>
 
         return <tr>
             <td>{renderedRowData}</td>  
             {this.updateCallback?updateCell:""}
             {this.removeCallback?removeCell:""}
+            {this.props.onChange==null?"":selectCell()}
         </tr>
     }
 }

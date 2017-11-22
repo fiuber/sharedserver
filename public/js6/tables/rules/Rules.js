@@ -85,7 +85,7 @@ class Strategy{
     }
 
     createKey(row){
-        return row.id+row.language+row.blob+row.active;
+        return row.id;
     }
 
     defaults(row){
@@ -135,6 +135,17 @@ class Strategy{
 export class Rules extends CrudTable{
     constructor(props){
         let strategy=new Strategy(props.token);
-        super(props,strategy);
+        let actualCallback=()=>{};
+        let selectionCallback=(selection)=>{
+            actualCallback(selection)
+        }
+        super(props,strategy,selectionCallback);
+        actualCallback=this.selectionCallback.bind(this);
     }
+
+    selectionCallback(selection){
+        console.log(selection)
+    }
+
+    
 }

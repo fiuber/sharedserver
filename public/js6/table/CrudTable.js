@@ -8,13 +8,14 @@ import {FilterDialog} from "./FilterDialog";
 import {PagingDialog} from "./PagingDialog";
 
 export class CrudTable extends React.Component{
-    constructor(props,strategy){
+    constructor(props,strategy,selectionCallback){
         super(props);
         this.state={
             renderedRows:[],
             creatorOpen:false,
             totalRecords:0,
-            page:1
+            page:1,
+            selectedRows:[]
         }
         this.rows=[];
         this.popups=[];
@@ -22,6 +23,8 @@ export class CrudTable extends React.Component{
         this.searchWord=""
         this.filterName="any"
         this.page=1;
+        this.selectionCallback=selectionCallback;
+
 
         this.refresh();
     }
@@ -62,7 +65,7 @@ export class CrudTable extends React.Component{
 
     updateRenderedRows(){
         this.setState({renderedRows:this.rows.map(this.renderRow,this)});
-        this.forceUpdate();
+        
     }
 
     onUpdate(row,content){
@@ -129,7 +132,23 @@ export class CrudTable extends React.Component{
             onRemove={onDelete}
             renderOpened={renderOpened}
             renderClosed={renderClosed}
+            checked={this.state.selectedRows.includes(key)}
+            onChange={this.selectionCallback?this.changeCheck.bind(this,key):null}
         />
+    }
+
+    changeCheck(key,event){
+        let current=this.state.selectedRows;
+        if(current.includes(key)){
+            current=current.filter(e=>e!=key);
+        }else{
+            current.push(key)
+        }
+        this.setState({
+            selectedRows:current
+        },this.updateRenderedRows.bind(this))
+        console.log(current);
+        //this.selectionCallback.bind(this,current)
     }
     
 
@@ -170,6 +189,7 @@ export class CrudTable extends React.Component{
                         <th>Content</th>
                         {this.strategy.doUpdate?<th>Edit</th>:""}
                         {this.strategy.doDelete?<th>Remove</th>:""}
+                        {this.selectionCallback?<th>Select</th>:""}
                     </tr>
                     {this.state.renderedRows}
                     </tbody>

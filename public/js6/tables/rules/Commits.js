@@ -71,4 +71,5 @@ export class Commits extends CrudTable{
         let strategy=new Strategy(props.token,props.ruleId);
         super(props,strategy);
     }
+    
 }
