@@ -30,6 +30,10 @@ export class CarEditorButton extends React.Component{
             console.log("ESTE ES JASON")
             console.log(json);
             let popup=<Popout  title='Window title' onClosing={closePopup.bind(this)}>
+                <link rel="stylesheet" href="style.css"/>
+                <link rel="stylesheet" href="resources/css/bootstrap.min.css"/>
+		        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		        <script src="resources/js/bootstrap.min.js"></script>
                 <Cars token={this.token} userId={this.id}/>
             </Popout>
             this.setState({popup});

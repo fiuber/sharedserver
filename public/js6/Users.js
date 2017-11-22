@@ -30,6 +30,8 @@ class Strategy{
 
             let ret=jsn.users;
             ret.totalRecords=jsn.metadata.total;
+            console.log("USERS QUE VIENEN:")
+            console.log(ret);
             return ret;
         });
     }

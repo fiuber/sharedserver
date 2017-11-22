@@ -44939,6 +44939,10 @@ var CarEditorButton = exports.CarEditorButton = function (_React$Component) {
                 var popup = _react2.default.createElement(
                     _reactPopout2.default,
                     { title: 'Window title', onClosing: closePopup.bind(_this2) },
+                    _react2.default.createElement('link', { rel: 'stylesheet', href: 'style.css' }),
+                    _react2.default.createElement('link', { rel: 'stylesheet', href: 'resources/css/bootstrap.min.css' }),
+                    _react2.default.createElement('script', { src: 'https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js' }),
+                    _react2.default.createElement('script', { src: 'resources/js/bootstrap.min.js' }),
                     _react2.default.createElement(_Cars.Cars, { token: _this2.token, userId: _this2.id })
                 );
                 _this2.setState({ popup: popup });
@@ -45578,7 +45582,7 @@ var Dialog = exports.Dialog = function (_React$Component) {
         value: function renderContent(o) {
             var _this2 = this;
 
-            console.log(o);
+            //console.log(o);
             var keys = Object.keys(o);
             var parts = keys.map(function (key) {
                 switch (key.toUpperCase()) {
@@ -45648,7 +45652,7 @@ var Dialog = exports.Dialog = function (_React$Component) {
                         );
                 }
             });
-            console.log(parts);
+            //console.log(parts);
             return parts;
         }
     }, {
@@ -47435,6 +47439,8 @@ var Strategy = function () {
 
                 var ret = jsn.users;
                 ret.totalRecords = jsn.metadata.total;
+                console.log("USERS QUE VIENEN:");
+                console.log(ret);
                 return ret;
             });
         }

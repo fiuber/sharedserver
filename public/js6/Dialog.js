@@ -28,7 +28,7 @@ export class Dialog extends React.Component {
         }
     }
     renderContent(o){
-        console.log(o);
+        //console.log(o);
         let keys=Object.keys(o);
         let parts= keys.map((key)=>{
             switch (key.toUpperCase()){
@@ -65,7 +65,7 @@ export class Dialog extends React.Component {
                         </div>
             }
         })
-        console.log(parts);
+        //console.log(parts);
         return parts;
     }
 
