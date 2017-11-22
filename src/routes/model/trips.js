@@ -145,8 +145,8 @@ exports.addTripWithPayer=function(body,nonexistent,badRevision,me){
         })
         
     }).then((created)=>{
-        let steps=body.trip.route;
-        let addPromises=steps.map((s)=>{
+        let addSteps=body.trip.route;
+        let addPromises=addSteps.map((s)=>{
             return steps.create({
                 tripId:created.id,
                 timestamp:s.timestamp,

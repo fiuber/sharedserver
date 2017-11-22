@@ -152,22 +152,42 @@ describe("using /trips",function(){
         address:{
             street:"zeballos",
             location:{
-                lat:348.15162342,
-                lon:1516.3482342
+                lat:-34.637818,
+                lon:-58.362485
             }
         }
     }
 
     let endPoint={
-        timestamp:4578999874,
+        timestamp:4865454700,
         address:{
             street:"las heras",
             location:{
-                lat:123.456789,
-                lon:456.789123
+                lat:-34.633766,
+                lon:-58.365210
             }
         }
     }
+
+    let route=[
+        {
+            timestamp:4865454689,
+            location:{
+                lat:-34.635629, 
+                lon:-58.364073
+            }
+        },
+
+        {
+            timestamp:4865454693,
+            location:{
+                lat:-34.634322, 
+                lon:-58.364856
+            }
+        }
+        
+
+    ]
 
 
     it("add a trip",()=>{
@@ -186,7 +206,7 @@ describe("using /trips",function(){
                 "waitTime": 0,
                 "travelTime": 0,
                 "distance": 0,
-                "route": [],
+                "route": route,
                 "cost": {
                     "currency":"platita",
                     "value":193
@@ -207,7 +227,7 @@ describe("using /trips",function(){
             console.log(res.body);
             
             trip=res.body.trip;
-            assert.equal(trip.start.address.location.lat,348.15162342);
+            assert.equal(trip.start.address.location.lat,-34.637818);
             assert.equal(trip.passenger,fayo5159.id);
             assert.equal(trip.cost.currency,"ARS");
             assert.equal(trip.cost.value,1000,"the rule was used");
@@ -241,7 +261,7 @@ describe("using /trips",function(){
             "waitTime": 0,
             "travelTime": 0,
             "distance": 0,
-            "route": [],
+            "route": route,
             "cost": {
                 "currency":"platita",
                 "value":193
@@ -259,7 +279,7 @@ describe("using /trips",function(){
         }).expect((res)=>{
             let trip=res.body.trip;
             console.log(res.body);
-            assert.equal(trip.start.address.location.lat,123.456789);
+            assert.equal(trip.start.address.location.lat,-34.633766 );
             assert.equal(trip.passenger,fayo5159.id);
             assert.equal(trip.cost.currency,"ARS");
             assert.equal(trip.cost.value,1000,"the rule was used");
@@ -274,7 +294,7 @@ describe("using /trips",function(){
         .expect((res)=>{
             console.log(res.body);
             trip=res.body.trip;
-            assert.equal(trip.start.address.location.lat,348.15162342);
+            assert.equal(trip.start.address.location.lat,-34.637818);
             assert.equal(trip.passenger,fayo5159.id);
             assert.equal(trip.cost.currency,"ARS");
         }).expect(200)

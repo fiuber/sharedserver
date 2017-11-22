@@ -39,8 +39,8 @@ export class FilterDialog extends React.Component{
     render(){
         let displayInline={
             "display":"inline",
-            "margin-left":"2px",
-            "margin-right":"2px"
+            "marginLeft":"2px",
+            "marginRight":"2px"
         }
         let niceWidth={
             width:"40%",
