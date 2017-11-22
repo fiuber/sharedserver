@@ -44667,7 +44667,7 @@ var App = exports.App = function (_React$Component) {
   return App;
 }(_react2.default.Component);
 
-},{"./BusinessUsers":227,"./Heatmap":234,"./Login":235,"./MainScreen":236,"./Rules":239,"./Servers":240,"./Trips":242,"./Users":243,"react":223,"react-dom":61,"whatwg-fetch":225}],227:[function(require,module,exports){
+},{"./BusinessUsers":227,"./Heatmap":235,"./Login":236,"./MainScreen":237,"./Rules":240,"./Servers":241,"./Trips":243,"./Users":244,"react":223,"react-dom":61,"whatwg-fetch":225}],227:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -44867,7 +44867,7 @@ var BusinessUsers = exports.BusinessUsers = function (_CrudTable) {
     return BusinessUsers;
 }(_CrudTable2.CrudTable);
 
-},{"./CrudTable":231,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],228:[function(require,module,exports){
+},{"./CrudTable":232,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],228:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45158,7 +45158,167 @@ var Cars = exports.Cars = function (_CrudTable) {
     return Cars;
 }(_CrudTable2.CrudTable);
 
-},{"./CrudTable":231,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],230:[function(require,module,exports){
+},{"./CrudTable":232,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],230:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.Commits = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+require('whatwg-fetch');
+
+var _reactPopout = require('react-popout');
+
+var _reactPopout2 = _interopRequireDefault(_reactPopout);
+
+var _CrudTable2 = require('./CrudTable');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Strategy = function () {
+    function Strategy(token, ruleId) {
+        _classCallCheck(this, Strategy);
+
+        this.token = token;
+        this.ruleId = ruleId;
+    }
+
+    _createClass(Strategy, [{
+        key: 'getAll',
+        value: function getAll(query) {
+            var _this = this;
+
+            console.log("I am getting all the commits");
+            return fetch("/rules/" + this.ruleId + "/commits", {
+                method: "GET",
+
+                headers: {
+                    "Authorization": "api-key " + this.token
+                },
+                cache: "no-store"
+            }).then(function (res) {
+                return res.json();
+            }).then(function (jsn) {
+                _this.totalRecords = jsn.metadata.total;
+                console.log("LOS commits:");
+                console.log(jsn.commits);
+                var ret = jsn.commits;
+                ret.totalRecords = jsn.metadata.total;
+                return ret;
+            });
+        }
+    }, {
+        key: 'doUpdate',
+        value: function doUpdate(row, content) {
+            return Promise.resolve("NOPEEEEE");
+        }
+    }, {
+        key: 'doDelete',
+        value: function doDelete(row) {
+            return Promise.resolve("NOPEEEEE");
+        }
+    }, {
+        key: 'renderOpened',
+        value: function renderOpened(row) {
+            return _react2.default.createElement(
+                'span',
+                null,
+                _react2.default.createElement('br', null),
+                'Author: ',
+                row.author.username,
+                _react2.default.createElement('br', null),
+                'Blob: ',
+                row.message,
+                _react2.default.createElement('br', null),
+                'Sent: ',
+                new Date(row.timestamp).toString(),
+                _react2.default.createElement('br', null)
+            );
+        }
+    }, {
+        key: 'renderClosed',
+        value: function renderClosed(row) {
+            return _react2.default.createElement(
+                'span',
+                null,
+                'Sent: ',
+                new Date(row.timestamp).toString()
+            );
+        }
+    }, {
+        key: 'createKey',
+        value: function createKey(row) {
+            return row.author.username + row.message + row.timestamp;
+        }
+    }, {
+        key: 'defaults',
+        value: function defaults(row) {
+            return {
+                "language": "string",
+                "blob": "string",
+                "active": true
+            };
+        }
+    }, {
+        key: 'defaultCreationContent',
+        value: function defaultCreationContent() {
+            return {
+                "language": "string",
+                "blob": "string",
+                "active": true
+            };
+        }
+    }, {
+        key: 'doCreate',
+        value: function doCreate(content) {
+            return Promise.resolve("NOOOOOOPEEE");
+        }
+    }, {
+        key: 'getFilters',
+        value: function getFilters() {
+            return ["message", "timestamp"];
+        }
+    }, {
+        key: 'orderBy',
+        value: function orderBy() {
+            return "timestamp";
+        }
+    }]);
+
+    return Strategy;
+}();
+
+var Commits = exports.Commits = function (_CrudTable) {
+    _inherits(Commits, _CrudTable);
+
+    function Commits(props) {
+        _classCallCheck(this, Commits);
+
+        var strategy = new Strategy(props.token, props.ruleId);
+        return _possibleConstructorReturn(this, (Commits.__proto__ || Object.getPrototypeOf(Commits)).call(this, props, strategy));
+    }
+
+    return Commits;
+}(_CrudTable2.CrudTable);
+
+},{"./CrudTable":232,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],231:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45247,7 +45407,7 @@ var CreationDialogOpener = exports.CreationDialogOpener = function (_React$Compo
     return CreationDialogOpener;
 }(_react2.default.Component);
 
-},{"./Dialog":232,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],231:[function(require,module,exports){
+},{"./Dialog":233,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],232:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45358,9 +45518,6 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
                 }
 
                 _this2.updateRenderedRows();
-                console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                console.log(all);
-                console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
                 _this2.setState({
                     totalRecords: all.totalRecords
@@ -45516,7 +45673,7 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
     return CrudTable;
 }(_react2.default.Component);
 
-},{"./CreateDialog":230,"./FilterDialog":233,"./PagingDialog":237,"./Row":238,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],232:[function(require,module,exports){
+},{"./CreateDialog":231,"./FilterDialog":234,"./PagingDialog":238,"./Row":239,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],233:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45571,9 +45728,10 @@ var Dialog = exports.Dialog = function (_React$Component) {
         _this.state = {
             roles: roles,
             content: content,
-            renderedParts: _this.renderContent(content),
+            //renderedParts:this.renderContent(content),
             toggleActive: false
         };
+        _this.state.renderedParts = _this.renderContent(content);
         return _this;
     }
 
@@ -45621,7 +45779,7 @@ var Dialog = exports.Dialog = function (_React$Component) {
                         );
                         break;
                     case "ACTIVE":
-                        return _react2.default.createElement(_reactBootstrapToggle2.default, { onClick: _this2.boolSlide, name: key, on: 'Active', off: 'Inactive', onstyle: 'success', offstyle: 'danger', active: _this2.state ? _this2.state.toggleActive : false });
+                        return _react2.default.createElement(_reactBootstrapToggle2.default, { onClick: _this2.boolSlide, name: key, on: 'Active', off: 'Inactive', onstyle: 'success', offstyle: 'danger', active: _this2.state.toggleActive });
                         break;
                     //case "TYPE":
                     //    return <input onChange={this.typeSlide} id={key.toUpperCase()} type="checkbox" name={key} checked data-toggle="toggle" data-on="Passenger" data-off="Driver" data-onstyle="primary" data-offstyle="success" data-style="ios"/>
@@ -45658,6 +45816,8 @@ var Dialog = exports.Dialog = function (_React$Component) {
     }, {
         key: 'onChecked',
         value: function onChecked(event) {
+            var _this3 = this;
+
             var name = event.target.name;
             var value = event.target.value;
 
@@ -45672,20 +45832,25 @@ var Dialog = exports.Dialog = function (_React$Component) {
 
             this.setState({
                 roles: roles,
-                content: copy,
-                renderedParts: this.renderContent(copy)
+                content: copy
+            }, function () {
+                _this3.setState({
+                    renderedParts: _this3.renderContent(_this3.state.content)
+                });
             });
         }
     }, {
         key: 'boolSlide',
         value: function boolSlide(event) {
+            var _this4 = this;
+
             var state = !this.state.toggleActive;
-            var copy = JSON.parse(JSON.stringify(this.state.content));
-            copy['active'] = state;
             this.setState({
-                toggleActive: state,
-                content: copy,
-                renderedParts: this.renderContent(copy)
+                toggleActive: event
+            }, function () {
+                _this4.setState({
+                    renderedParts: _this4.renderContent(_this4.state.content)
+                });
             });
         }
     }, {
@@ -45696,6 +45861,8 @@ var Dialog = exports.Dialog = function (_React$Component) {
     }, {
         key: 'onChange',
         value: function onChange(event) {
+            var _this5 = this;
+
             var name = event.target.name;
             var value = event.target.value;
 
@@ -45703,8 +45870,11 @@ var Dialog = exports.Dialog = function (_React$Component) {
             copy[name] = value;
 
             this.setState({
-                content: copy,
-                renderedParts: this.renderContent(copy)
+                content: copy
+            }, function () {
+                _this5.setState({
+                    renderedParts: _this5.renderContent(_this5.state.content)
+                });
             });
         }
     }, {
@@ -45753,7 +45923,7 @@ var Dialog = exports.Dialog = function (_React$Component) {
     return Dialog;
 }(_react2.default.Component);
 
-},{"react":223,"react-bootstrap-toggle":30,"react-dom":61,"whatwg-fetch":225}],233:[function(require,module,exports){
+},{"react":223,"react-bootstrap-toggle":30,"react-dom":61,"whatwg-fetch":225}],234:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45879,7 +46049,7 @@ var FilterDialog = exports.FilterDialog = function (_React$Component) {
     return FilterDialog;
 }(_react2.default.Component);
 
-},{"react":223,"react-dom":61}],234:[function(require,module,exports){
+},{"react":223,"react-dom":61}],235:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -46085,7 +46255,7 @@ var Heatmap = exports.Heatmap = function (_React$Component) {
     return Heatmap;
 }(_react2.default.Component);
 
-},{"react":223,"react-dom":61,"react-load-script":63,"whatwg-fetch":225}],235:[function(require,module,exports){
+},{"react":223,"react-dom":61,"react-load-script":63,"whatwg-fetch":225}],236:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -46278,7 +46448,7 @@ var Login = exports.Login = function (_React$Component) {
   return Login;
 }(_react2.default.Component);
 
-},{"react":223,"react-dom":61,"whatwg-fetch":225}],236:[function(require,module,exports){
+},{"react":223,"react-dom":61,"whatwg-fetch":225}],237:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -46328,7 +46498,7 @@ var MainScreen = exports.MainScreen = function (_React$Component) {
     return MainScreen;
 }(_react2.default.Component);
 
-},{"react":223,"react-dom":61,"whatwg-fetch":225}],237:[function(require,module,exports){
+},{"react":223,"react-dom":61,"whatwg-fetch":225}],238:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -46510,7 +46680,7 @@ var PagingDialog = exports.PagingDialog = function (_React$Component) {
     return PagingDialog;
 }(_react2.default.Component);
 
-},{"react":223,"react-dom":61}],238:[function(require,module,exports){
+},{"react":223,"react-dom":61}],239:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -46666,7 +46836,7 @@ var Row = exports.Row = function (_React$Component) {
     return Row;
 }(_react2.default.Component);
 
-},{"./Dialog":232,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],239:[function(require,module,exports){
+},{"./Dialog":233,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],240:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -46691,6 +46861,8 @@ var _reactPopout = require('react-popout');
 var _reactPopout2 = _interopRequireDefault(_reactPopout);
 
 var _CrudTable2 = require('./CrudTable');
+
+var _ViewCommitsButton = require('./ViewCommitsButton');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -46779,7 +46951,8 @@ var Strategy = function () {
                 _react2.default.createElement('br', null),
                 'Active: ',
                 row.active,
-                _react2.default.createElement('br', null)
+                _react2.default.createElement('br', null),
+                _react2.default.createElement(_ViewCommitsButton.ViewCommitsButton, { ruleId: row.id, token: this.token })
             );
         }
     }, {
@@ -46862,7 +47035,7 @@ var Rules = exports.Rules = function (_CrudTable) {
     return Rules;
 }(_CrudTable2.CrudTable);
 
-},{"./CrudTable":231,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],240:[function(require,module,exports){
+},{"./CrudTable":232,"./ViewCommitsButton":245,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],241:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -47061,7 +47234,7 @@ var Servers = exports.Servers = function (_CrudTable) {
     return Servers;
 }(_CrudTable2.CrudTable);
 
-},{"./CrudTable":231,"./TokenCreatorButton":241,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],241:[function(require,module,exports){
+},{"./CrudTable":232,"./TokenCreatorButton":242,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],242:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -47209,7 +47382,7 @@ createToken(row){
     }
     */
 
-},{"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],242:[function(require,module,exports){
+},{"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],243:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -47289,8 +47462,6 @@ var Strategy = function () {
     }, {
         key: 'renderOpened',
         value: function renderOpened(row) {
-            console.log(row);
-
             return _react2.default.createElement(
                 'span',
                 null,
@@ -47376,7 +47547,7 @@ var Trips = exports.Trips = function (_CrudTable) {
     return Trips;
 }(_CrudTable2.CrudTable);
 
-},{"./CrudTable":231,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],243:[function(require,module,exports){
+},{"./CrudTable":232,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],244:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -47628,7 +47799,91 @@ var Users = exports.Users = function (_CrudTable) {
     return Users;
 }(_CrudTable2.CrudTable);
 
-},{"./CarEditorButton":228,"./CrudTable":231,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],244:[function(require,module,exports){
+},{"./CarEditorButton":228,"./CrudTable":232,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],245:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.ViewCommitsButton = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _Commits = require('./Commits');
+
+var _reactPopout = require('react-popout');
+
+var _reactPopout2 = _interopRequireDefault(_reactPopout);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ViewCommitsButton = exports.ViewCommitsButton = function (_React$Component) {
+    _inherits(ViewCommitsButton, _React$Component);
+
+    function ViewCommitsButton(props) {
+        _classCallCheck(this, ViewCommitsButton);
+
+        var _this = _possibleConstructorReturn(this, (ViewCommitsButton.__proto__ || Object.getPrototypeOf(ViewCommitsButton)).call(this, props));
+
+        _this.state = {
+            popup: _react2.default.createElement('span', null)
+        };
+        _this.token = props.token;
+        _this.ruleId = props.ruleId;
+        return _this;
+    }
+
+    _createClass(ViewCommitsButton, [{
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'span',
+                null,
+                _react2.default.createElement(
+                    'button',
+                    { onClick: this.onClick.bind(this) },
+                    ' View previous commits'
+                ),
+                this.state.popup
+            );
+        }
+    }, {
+        key: 'onClick',
+        value: function onClick(event) {
+            function closePopup() {
+                this.setState({ popup: _react2.default.createElement('span', null) });
+            }
+            var popup = _react2.default.createElement(
+                _reactPopout2.default,
+                { title: 'Window title', onClosing: closePopup.bind(this) },
+                _react2.default.createElement('link', { rel: 'stylesheet', href: 'style.css' }),
+                _react2.default.createElement('link', { rel: 'stylesheet', href: 'resources/css/bootstrap.min.css' }),
+                _react2.default.createElement('script', { src: 'https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js' }),
+                _react2.default.createElement('script', { src: 'resources/js/bootstrap.min.js' }),
+                _react2.default.createElement(_Commits.Commits, { ruleId: this.props.ruleId, token: this.props.token })
+            );
+            this.setState({ popup: popup });
+        }
+    }]);
+
+    return ViewCommitsButton;
+}(_react2.default.Component);
+
+},{"./Commits":230,"react":223,"react-dom":61,"react-popout":64}],246:[function(require,module,exports){
 'use strict';
 
 var _react = require('react');
@@ -47657,4 +47912,4 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 _reactDom2.default.render(_react2.default.createElement(_App.App, null), document.getElementById('root'));
 
-},{"./App":226,"./BusinessUsers":227,"./Login":235,"./MainScreen":236,"./Servers":240,"./Users":243,"react":223,"react-dom":61,"whatwg-fetch":225}]},{},[244]);
+},{"./App":226,"./BusinessUsers":227,"./Login":236,"./MainScreen":237,"./Servers":241,"./Users":244,"react":223,"react-dom":61,"whatwg-fetch":225}]},{},[246]);

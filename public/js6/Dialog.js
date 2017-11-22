@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import "whatwg-fetch";
 import Toggle from 'react-bootstrap-toggle';
 
+
 //<Dialog content={un_json} onSubmit={submit} />
 
 export class Dialog extends React.Component {
@@ -23,9 +24,10 @@ export class Dialog extends React.Component {
         this.state={
             roles,
             content,
-            renderedParts:this.renderContent(content),
+            //renderedParts:this.renderContent(content),
             toggleActive:false
         }
+        this.state.renderedParts=this.renderContent(content);
     }
     renderContent(o){
         //console.log(o);
@@ -43,7 +45,7 @@ export class Dialog extends React.Component {
                         </div>
                     break;
                 case "ACTIVE":
-                    return <Toggle onClick={this.boolSlide} name={key} on="Active" off="Inactive" onstyle="success" offstyle="danger" active={this.state ? this.state.toggleActive : false}/>
+                    return <Toggle onClick={this.boolSlide} name={key} on="Active" off="Inactive" onstyle="success" offstyle="danger" active={this.state.toggleActive}/>
                     break;
                 //case "TYPE":
                 //    return <input onChange={this.typeSlide} id={key.toUpperCase()} type="checkbox" name={key} checked data-toggle="toggle" data-on="Passenger" data-off="Driver" data-onstyle="primary" data-offstyle="success" data-style="ios"/>
@@ -85,18 +87,22 @@ export class Dialog extends React.Component {
         this.setState({
             roles: roles,
             content:copy,
-            renderedParts:this.renderContent(copy)
+        },()=>{
+            this.setState({
+                renderedParts:this.renderContent(this.state.content)
+            })
         })
     }
 
     boolSlide(event){
+
         let state = !this.state.toggleActive;
-        let copy=JSON.parse(JSON.stringify(this.state.content));
-        copy['active'] = state;
         this.setState({
-            toggleActive: state,
-            content: copy,
-            renderedParts: this.renderContent(copy)
+            toggleActive: event,
+        },()=>{
+            this.setState({
+                renderedParts:this.renderContent(this.state.content)
+            })
         })
     }
 
@@ -113,7 +119,10 @@ export class Dialog extends React.Component {
 
         this.setState({
             content:copy,
-            renderedParts:this.renderContent(copy)
+        },()=>{
+            this.setState({
+                renderedParts:this.renderContent(this.state.content)
+            })
         })
     }
 

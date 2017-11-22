@@ -50,9 +50,6 @@ export class CrudTable extends React.Component{
                 this.popups.push(<span></span>);
             }
             this.updateRenderedRows();
-            console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-            console.log(all);
-            console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 
             this.setState({
                 totalRecords:all.totalRecords

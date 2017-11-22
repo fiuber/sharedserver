@@ -4,6 +4,8 @@ import ReactDOM from 'react-dom';
 import "whatwg-fetch";
 import Popout from 'react-popout';
 import {CrudTable} from "./CrudTable";
+import {ViewCommitsButton} from "./ViewCommitsButton"
+
 
 class Strategy{
     constructor(token){
@@ -71,6 +73,8 @@ class Strategy{
             <br/>
             Active: {row.active}
             <br/>
+
+            <ViewCommitsButton ruleId={row.id} token={this.token}/>
             
         </span>);
         
