@@ -1,15 +1,19 @@
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 import "whatwg-fetch";
 import Popout from 'react-popout';
-import {CrudTable} from "./CrudTable";
+import {CrudTable} from "../../table/CrudTable";
+import {ViewCommitsButton} from "./ViewCommitsButton"
 
-class Strategy {
+
+class Strategy{
     constructor(token){
         this.token=token;
     }
     getAll(query){
-        return fetch("/business-users"+query,{
+        console.log("Iam getting all the things")
+        return fetch("/rules"+query,{
             method:"GET",
 
             headers:{
@@ -20,31 +24,34 @@ class Strategy {
         .then((res)=>res.json())
         .then((jsn)=>{
             this.totalRecords=jsn.metadata.total;
-            let ret=jsn.businessUser;
+            console.log("LOS rules:")
+            console.log(jsn.rules)
+            let ret=jsn.rules;
             ret.totalRecords=jsn.metadata.total;
             return ret;
         });
     }
 
     doUpdate(row,content){
-        return fetch("/business-users/"+row.username,{
+        return fetch("/rules/"+row.id,{
             method:"PUT",
             headers: {
               'Content-Type': 'application/json',
               'Authorization': 'api-key '+this.token
             },
             body:JSON.stringify({
-                username:row.username,
-                password:content.password,
-                name:content.name,
-                surname:content.surname,
-                roles:[content.role]
+                "id": "string",
+                "_ref": row._ref,
+                "language": content.language,
+                "lastCommit": {},
+                "blob": content.blob,
+                "active": true
             })
         })
     }
 
     doDelete(row){
-        return fetch("/business-users/"+row.username,{
+        return fetch("/rules/"+row.id,{
             method:"DELETE",
             headers: {
               'Content-Type': 'application/json',
@@ -53,83 +60,81 @@ class Strategy {
         })
     }
 
+    
+
     renderOpened(row){
         return (<span>
             <br/>
-            Username: {row.username}
+            Id: {row.id}
             <br/>
-            Name: {row.name}
+            Language: {row.language}
             <br/>
-            Surname: {row.surname}
+            Blob: {row.blob}
             <br/>
-            Roles: {row.roles.map((x)=>
-                <span key={x}>{x}<br/></span>
-            )}
+            Active: {row.active}
+            <br/>
+
+            <ViewCommitsButton ruleId={row.id} token={this.token}/>
+            
         </span>);
+        
     }
 
     renderClosed(row){
-        return (<span> Username: {row.username}</span>);
+        return (<span>Id: {row.id}</span>);
     }
 
     createKey(row){
-        return row.username+row.password+row.name+row.surname+row.roles.join("");
+        return row.id+row.language+row.blob+row.active;
     }
 
     defaults(row){
         return {
-            Password: row.password,
-            Name: row.name,
-            Surname: row.surname,
-            Role: row.roles[0]
-        }
+          "language": "string",
+          "blob": "string",
+          "active": true
+        };
     }
 
     defaultCreationContent(){
         return {
-            username:"username",
-            password:"password",
-            name:"name",
-            surname:"surname",
-            role:"user"
+          "language": "string",
+          "blob": "string",
+          "active": true
         };
     }
 
     doCreate(content){
-        return fetch("/business-users/",{
+        return fetch("/rules/",{
             method:"POST",
             headers: {
               'Content-Type': 'application/json',
               'Authorization': 'api-key '+this.token
             },
             body:JSON.stringify({
-                username:content.username,
-                password:content.password,
-                name:content.name,
-                surname:content.surname,
-                roles:content.role
+                "id": "string",
+                "_ref": "string",
+                "language": content.language,
+                "lastCommit": {},
+                "blob": content.blob,
+                "active": content.active
             })
         })
-        
     }
 
     getFilters(){
-        return ["username","name","surname"]
+        return ["ruleId"]
     }
 
     orderBy(){
-        return "username";
+        return "ruleId";
     }
-
-
 }
 
 
-export class BusinessUsers extends CrudTable{
-    
-        constructor(props){
-            let strategy=new Strategy(props.token);
-            super(props,strategy);
-        }
-        
+export class Rules extends CrudTable{
+    constructor(props){
+        let strategy=new Strategy(props.token);
+        super(props,strategy);
     }
+}

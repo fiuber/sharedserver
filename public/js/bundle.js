@@ -44373,15 +44373,15 @@ var _Login = require('./Login');
 
 var _MainScreen = require('./MainScreen');
 
-var _BusinessUsers = require('./BusinessUsers');
+var _BusinessUsers = require('./tables/BusinessUsers');
 
-var _Servers = require('./Servers');
+var _Servers = require('./tables/servers/Servers');
 
-var _Users = require('./Users');
+var _Users = require('./tables/users/Users');
 
-var _Trips = require('./Trips');
+var _Trips = require('./tables/Trips');
 
-var _Rules = require('./Rules');
+var _Rules = require('./tables/rules/Rules');
 
 var _Heatmap = require('./Heatmap');
 
@@ -44667,13 +44667,13 @@ var App = exports.App = function (_React$Component) {
   return App;
 }(_react2.default.Component);
 
-},{"./BusinessUsers":227,"./Heatmap":235,"./Login":236,"./MainScreen":237,"./Rules":240,"./Servers":241,"./Trips":243,"./Users":244,"react":223,"react-dom":61,"whatwg-fetch":225}],227:[function(require,module,exports){
+},{"./Heatmap":227,"./Login":228,"./MainScreen":229,"./tables/BusinessUsers":237,"./tables/Trips":238,"./tables/rules/Rules":240,"./tables/servers/Servers":242,"./tables/users/Users":246,"react":223,"react-dom":61,"whatwg-fetch":225}],227:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.BusinessUsers = undefined;
+exports.Heatmap = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -44687,211 +44687,9 @@ var _reactDom2 = _interopRequireDefault(_reactDom);
 
 require('whatwg-fetch');
 
-var _reactPopout = require('react-popout');
+var _reactLoadScript = require('react-load-script');
 
-var _reactPopout2 = _interopRequireDefault(_reactPopout);
-
-var _CrudTable2 = require('./CrudTable');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var Strategy = function () {
-    function Strategy(token) {
-        _classCallCheck(this, Strategy);
-
-        this.token = token;
-    }
-
-    _createClass(Strategy, [{
-        key: 'getAll',
-        value: function getAll(query) {
-            var _this = this;
-
-            return fetch("/business-users" + query, {
-                method: "GET",
-
-                headers: {
-                    "Authorization": "api-key " + this.token
-                },
-                cache: "no-store"
-            }).then(function (res) {
-                return res.json();
-            }).then(function (jsn) {
-                _this.totalRecords = jsn.metadata.total;
-                var ret = jsn.businessUser;
-                ret.totalRecords = jsn.metadata.total;
-                return ret;
-            });
-        }
-    }, {
-        key: 'doUpdate',
-        value: function doUpdate(row, content) {
-            return fetch("/business-users/" + row.username, {
-                method: "PUT",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'api-key ' + this.token
-                },
-                body: JSON.stringify({
-                    username: row.username,
-                    password: content.password,
-                    name: content.name,
-                    surname: content.surname,
-                    roles: [content.role]
-                })
-            });
-        }
-    }, {
-        key: 'doDelete',
-        value: function doDelete(row) {
-            return fetch("/business-users/" + row.username, {
-                method: "DELETE",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'api-key ' + this.token
-                }
-            });
-        }
-    }, {
-        key: 'renderOpened',
-        value: function renderOpened(row) {
-            return _react2.default.createElement(
-                'span',
-                null,
-                _react2.default.createElement('br', null),
-                'Username: ',
-                row.username,
-                _react2.default.createElement('br', null),
-                'Name: ',
-                row.name,
-                _react2.default.createElement('br', null),
-                'Surname: ',
-                row.surname,
-                _react2.default.createElement('br', null),
-                'Roles: ',
-                row.roles.map(function (x) {
-                    return _react2.default.createElement(
-                        'span',
-                        { key: x },
-                        x,
-                        _react2.default.createElement('br', null)
-                    );
-                })
-            );
-        }
-    }, {
-        key: 'renderClosed',
-        value: function renderClosed(row) {
-            return _react2.default.createElement(
-                'span',
-                null,
-                ' Username: ',
-                row.username
-            );
-        }
-    }, {
-        key: 'createKey',
-        value: function createKey(row) {
-            return row.username + row.password + row.name + row.surname + row.roles.join("");
-        }
-    }, {
-        key: 'defaults',
-        value: function defaults(row) {
-            return {
-                Password: row.password,
-                Name: row.name,
-                Surname: row.surname,
-                Role: row.roles[0]
-            };
-        }
-    }, {
-        key: 'defaultCreationContent',
-        value: function defaultCreationContent() {
-            return {
-                username: "username",
-                password: "password",
-                name: "name",
-                surname: "surname",
-                role: "user"
-            };
-        }
-    }, {
-        key: 'doCreate',
-        value: function doCreate(content) {
-            return fetch("/business-users/", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'api-key ' + this.token
-                },
-                body: JSON.stringify({
-                    username: content.username,
-                    password: content.password,
-                    name: content.name,
-                    surname: content.surname,
-                    roles: content.role
-                })
-            });
-        }
-    }, {
-        key: 'getFilters',
-        value: function getFilters() {
-            return ["username", "name", "surname"];
-        }
-    }, {
-        key: 'orderBy',
-        value: function orderBy() {
-            return "username";
-        }
-    }]);
-
-    return Strategy;
-}();
-
-var BusinessUsers = exports.BusinessUsers = function (_CrudTable) {
-    _inherits(BusinessUsers, _CrudTable);
-
-    function BusinessUsers(props) {
-        _classCallCheck(this, BusinessUsers);
-
-        var strategy = new Strategy(props.token);
-        return _possibleConstructorReturn(this, (BusinessUsers.__proto__ || Object.getPrototypeOf(BusinessUsers)).call(this, props, strategy));
-    }
-
-    return BusinessUsers;
-}(_CrudTable2.CrudTable);
-
-},{"./CrudTable":232,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],228:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.CarEditorButton = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
-require('whatwg-fetch');
-
-var _reactPopout = require('react-popout');
-
-var _reactPopout2 = _interopRequireDefault(_reactPopout);
-
-var _Cars = require('./Cars');
+var _reactLoadScript2 = _interopRequireDefault(_reactLoadScript);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -44901,102 +44699,187 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-var CarEditorButton = exports.CarEditorButton = function (_React$Component) {
-    _inherits(CarEditorButton, _React$Component);
+var Heatmap = exports.Heatmap = function (_React$Component) {
+    _inherits(Heatmap, _React$Component);
 
-    function CarEditorButton(props) {
-        _classCallCheck(this, CarEditorButton);
+    function Heatmap(props) {
+        _classCallCheck(this, Heatmap);
 
-        var _this = _possibleConstructorReturn(this, (CarEditorButton.__proto__ || Object.getPrototypeOf(CarEditorButton)).call(this, props));
+        var _this = _possibleConstructorReturn(this, (Heatmap.__proto__ || Object.getPrototypeOf(Heatmap)).call(this, props));
 
-        _this.token = props.token;
-        _this.id = props.id;
         _this.state = {
-            popup: _react2.default.createElement('span', null)
+            trips: [],
+            waitMap: _react2.default.createElement(
+                'span',
+                null,
+                'Waiting for google maps...'
+            ),
+            showing: "start",
+            map: {},
+            heatmap: null
         };
+
+        fetch("/trips", {
+            method: "GET",
+
+            headers: {
+                "Authorization": "api-key " + props.token
+            },
+            cache: "no-store"
+        }).then(function (res) {
+            return res.json();
+        }).then(function (jsn) {
+            _this.setState({
+                trips: jsn.trips
+            });
+        });
         return _this;
     }
 
-    _createClass(CarEditorButton, [{
-        key: 'onClick',
-        value: function onClick() {
-            var _this2 = this;
+    _createClass(Heatmap, [{
+        key: 'change',
+        value: function change(showing) {
+            if (this.state.heatmap != null) {
+                this.state.heatmap.setMap(null);
+            }
 
-            fetch("/users/" + this.id + "/cars", {
-                method: "GET",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'api-key ' + this.token
-                }
-            }).then(function (res) {
-                return res.json();
-            }).then(function (json) {
-                function closePopup() {
-                    this.setState({ popup: _react2.default.createElement('span', null) });
-                }
-                console.log("ESTE ES JASON");
-                console.log(json);
-                var popup = _react2.default.createElement(
-                    _reactPopout2.default,
-                    { title: 'Window title', onClosing: closePopup.bind(_this2) },
-                    _react2.default.createElement('link', { rel: 'stylesheet', href: 'style.css' }),
-                    _react2.default.createElement('link', { rel: 'stylesheet', href: 'resources/css/bootstrap.min.css' }),
-                    _react2.default.createElement('script', { src: 'https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js' }),
-                    _react2.default.createElement('script', { src: 'resources/js/bootstrap.min.js' }),
-                    _react2.default.createElement(_Cars.Cars, { token: _this2.token, userId: _this2.id })
-                );
-                _this2.setState({ popup: popup });
+            var heatmap = new google.maps.visualization.HeatmapLayer({
+                data: this.getData(showing),
+                map: this.state.map
             });
+            this.setState({ showing: showing, heatmap: heatmap });
+        }
+    }, {
+        key: 'getData',
+        value: function getData(showing) {
+            console.log(this.state.trips);
+            var starts = this.state.trips.map(function (trip) {
+                return trip.start.address.location;
+            });
+            console.log("A");
+            var ends = this.state.trips.map(function (trip) {
+                return trip.end.address.location;
+            });
+            console.log("B");
+            var steps = this.state.trips.map(function (trip) {
+                return trip.route.map(function (elem) {
+                    return elem.location;
+                });
+            }).reduce(function (a1, a2) {
+                return a1.concat(a2);
+            }, []);
+            console.log("C");
+
+            var sets = {
+                "start": starts,
+                "end": ends,
+                "entire trips": starts.concat(ends).concat(steps)
+            };
+            console.log("D");
+            console.log(sets[showing]);
+
+            var result = sets[showing].map(function (location) {
+                return new google.maps.LatLng(location.lat, location.lon);
+            });
+            console.log("E");
+
+            console.log(result);
+
+            return result;
         }
     }, {
         key: 'render',
         value: function render() {
+            var displayInline = {
+                "display": "inline",
+                margin: "10px 10px 10px 10px 10px",
+                padding: "10px 10px 10px 10px 10px"
+
+            };
+            var buttonStyle = {
+                width: "100px",
+                align: "left"
+            };
+
             return _react2.default.createElement(
-                'span',
+                'div',
                 null,
+                _react2.default.createElement(_reactLoadScript2.default, {
+                    url: 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBKzseXuW-zDOZGfrgfGpYhVgGhCcddUUE&libraries=visualization',
+                    onLoad: this.loaded.bind(this)
+                }),
                 _react2.default.createElement(
-                    'button',
-                    { onClick: this.onClick.bind(this) },
-                    ' Show cars '
+                    'div',
+                    { style: displayInline, 'class': 'dropdown' },
+                    'showing:',
+                    _react2.default.createElement(
+                        'button',
+                        { style: buttonStyle, 'class': 'btn btn-primary dropdown-toggle', type: 'button', 'data-toggle': 'dropdown' },
+                        this.state.showing,
+                        _react2.default.createElement('span', { 'class': 'caret' })
+                    ),
+                    _react2.default.createElement(
+                        'ul',
+                        { 'class': 'dropdown-menu' },
+                        _react2.default.createElement(
+                            'li',
+                            null,
+                            _react2.default.createElement(
+                                'a',
+                                { onClick: this.change.bind(this, "start") },
+                                'start'
+                            )
+                        ),
+                        _react2.default.createElement(
+                            'li',
+                            null,
+                            _react2.default.createElement(
+                                'a',
+                                { onClick: this.change.bind(this, "end") },
+                                'end'
+                            )
+                        ),
+                        _react2.default.createElement(
+                            'li',
+                            null,
+                            _react2.default.createElement(
+                                'a',
+                                { onClick: this.change.bind(this, "entire trips") },
+                                'entire trips'
+                            )
+                        )
+                    )
                 ),
-                this.state.popup
+                this.state.waitMap,
+                _react2.default.createElement('div', { style: { height: "600px" }, id: 'mapDiv' })
             );
+        }
+    }, {
+        key: 'loaded',
+        value: function loaded(e) {
+            console.log("333333333333333333333333333333333333");
+            console.log(document.getElementById("mapDiv"));
+            var map = new google.maps.Map(document.getElementById("mapDiv"), {
+                center: { lat: -34.397, lng: 150.644 },
+                zoom: 1
+            });
+            this.setState({
+                waitMap: _react2.default.createElement('span', null),
+                map: map
+            }, this.change.bind(this, this.state.showing));
         }
     }]);
 
-    return CarEditorButton;
+    return Heatmap;
 }(_react2.default.Component);
 
-/*
-createToken(row){
-        fetch("/servers/"+row.id,{
-            method:"POST",
-            headers: {
-              'Content-Type': 'application/json',
-              'Authorization': 'api-key '+this.token
-            },
-        })
-        .then((res)=>res.json())
-        .then((json)=>{
-            function closePopup(){
-                this.popup=<span></span>;
-            }
-            this.popup=<Popout  title='Window title' onClosing={closePopup.bind(this)}>
-                {json}
-            </Popout>
-            
-        })
-
-    }
-    */
-
-},{"./Cars":229,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],229:[function(require,module,exports){
+},{"react":223,"react-dom":61,"react-load-script":63,"whatwg-fetch":225}],228:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-    value: true
+  value: true
 });
-exports.Cars = undefined;
+exports.Login = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -45010,161 +44893,186 @@ var _reactDom2 = _interopRequireDefault(_reactDom);
 
 require('whatwg-fetch');
 
-var _reactPopout = require('react-popout');
-
-var _reactPopout2 = _interopRequireDefault(_reactPopout);
-
-var _CrudTable2 = require('./CrudTable');
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var Login = exports.Login = function (_React$Component) {
+  _inherits(Login, _React$Component);
 
-var Strategy = function () {
-    function Strategy(token, userId) {
-        _classCallCheck(this, Strategy);
+  function Login(props) {
+    _classCallCheck(this, Login);
 
-        this.token = token;
-        this.userId = userId;
+    var _this = _possibleConstructorReturn(this, (Login.__proto__ || Object.getPrototypeOf(Login)).call(this, props));
+
+    _this.state = {
+      username: "admin",
+      password: "admin",
+      redMessage: ""
+    };
+    _this.handleInputChange = _this.handleInputChange.bind(_this);
+    _this.handleSubmit = _this.handleSubmit.bind(_this);
+    _this.onSuccess = props.onSuccess;
+    return _this;
+  }
+
+  _createClass(Login, [{
+    key: 'handleSubmit',
+    value: function handleSubmit(event) {
+      var _this2 = this;
+
+      console.log("submit");
+      event.preventDefault();
+
+      var _state = this.state,
+          username = _state.username,
+          password = _state.password;
+
+
+      fetch("/token", {
+        method: "POST",
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username: username, password: password })
+      }).then(function (response) {
+        if (response.status == 201) {
+          return response.json();
+        } else {
+          return Promise.reject(response);
+        }
+      }).then(function (json) {
+        console.log(json);
+        var token = json.token.token;
+        _this2.onSuccess(username, password, token);
+      }).catch(function (response) {
+        console.log(response);
+        _this2.setState({ redMessage: "Please try again" });
+      });
     }
-
-    _createClass(Strategy, [{
-        key: 'getAll',
-        value: function getAll(query) {
-            var _this = this;
-
-            return fetch("/users/" + this.userId + "/cars" + query, {
-                method: "GET",
-
-                headers: {
-                    "Authorization": "api-key " + this.token
-                },
-                cache: "no-store"
-            }).then(function (res) {
-                return res.json();
-            }).then(function (jsn) {
-                _this.totalRecords = jsn.metadata.total;
-                var ret = jsn.cars;
-                ret.totalRecords = jsn.metadata.total;
-                return ret;
-            });
-        }
-    }, {
-        key: 'doUpdate',
-        value: function doUpdate(row, content) {
-            return Promise.resolve("CANT UPDATE");
-        }
-    }, {
-        key: 'doDelete',
-        value: function doDelete(row) {
-            return fetch("/users/" + this.userId + "/cars/" + row.id, {
-                method: "DELETE",
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'api-key ' + this.token
-                }
-            });
-        }
-    }, {
-        key: 'renderOpened',
-        value: function renderOpened(row) {
-            return _react2.default.createElement(
-                'span',
-                null,
-                'id:',
-                row.id,
-                'owner:',
-                row.owner,
-                'properties:',
+  }, {
+    key: 'handleInputChange',
+    value: function handleInputChange(event) {
+      var target = event.target;
+      var value = target.value;
+      var name = target.name;
+      this.setState(_defineProperty({}, name, value));
+    }
+  }, {
+    key: 'render',
+    value: function render() {
+      return _react2.default.createElement(
+        'div',
+        { 'class': 'container', align: 'center', id: 'centeredbox' },
+        _react2.default.createElement(
+          'form',
+          { 'class': 'form-horizontal', onSubmit: this.handleSubmit },
+          _react2.default.createElement(
+            'div',
+            { 'class': 'form-group' },
+            _react2.default.createElement(
+              'h1',
+              { align: 'center' },
+              'Login'
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            { 'class': 'form-group' },
+            _react2.default.createElement(
+              'label',
+              { 'class': 'control-label col-sm-2' },
+              ' User:'
+            ),
+            _react2.default.createElement(
+              'div',
+              { 'class': 'col-sm-8' },
+              _react2.default.createElement(
+                'div',
+                { 'class': 'input-group' },
                 _react2.default.createElement(
-                    'ul',
-                    null,
-                    row.properties.map(function (prop) {
-                        var key = prop.name + prop.value;
-                        return _react2.default.createElement(
-                            'li',
-                            { key: key },
-                            prop.name,
-                            ':',
-                            prop.value
-                        );
-                    })
+                  'span',
+                  { 'class': 'input-group-addon' },
+                  _react2.default.createElement('i', { 'class': 'glyphicon glyphicon-user' })
+                ),
+                _react2.default.createElement('input', { type: 'text', 'class': 'form-control', name: 'username', value: this.state.username, onChange: this.handleInputChange })
+              )
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            { 'class': 'form-group' },
+            _react2.default.createElement(
+              'label',
+              { 'class': 'control-label col-sm-2' },
+              ' Password:'
+            ),
+            _react2.default.createElement(
+              'div',
+              { 'class': 'col-sm-8' },
+              _react2.default.createElement(
+                'div',
+                { 'class': 'input-group' },
+                _react2.default.createElement(
+                  'span',
+                  { 'class': 'input-group-addon' },
+                  _react2.default.createElement('i', { 'class': 'glyphicon glyphicon-lock' })
+                ),
+                _react2.default.createElement('input', { type: 'password', 'class': 'form-control', name: 'password', value: this.state.password, onChange: this.handleInputChange })
+              )
+            )
+          ),
+          _react2.default.createElement(
+            'div',
+            { 'class': 'form-group' },
+            _react2.default.createElement(
+              'div',
+              { 'class': 'col-sm-offset-9 col-sm-1' },
+              _react2.default.createElement(
+                'div',
+                { align: 'right' },
+                _react2.default.createElement(
+                  'button',
+                  { 'class': 'btn btn-primary', onClick: this.handleSubmit },
+                  'Submit'
                 )
-            );
-        }
-    }, {
-        key: 'renderClosed',
-        value: function renderClosed(row) {
-            return _react2.default.createElement(
-                'span',
-                null,
-                'id:',
-                row.id
-            );
-        }
-    }, {
-        key: 'createKey',
-        value: function createKey(row) {
-            return row.id + row.owner + row.properties.join("");
-        }
-    }, {
-        key: 'defaults',
-        value: function defaults(row) {
-            return {
-                name: "CANT UPDATE"
-            };
-        }
-    }, {
-        key: 'defaultCreationContent',
-        value: function defaultCreationContent() {
-            return {
-                name: "CANT CREATE"
-            };
-        }
-    }, {
-        key: 'doCreate',
-        value: function doCreate(content) {
-            return Promise.resolve("yesss");
-        }
-    }, {
-        key: 'getFilters',
-        value: function getFilters() {
-            return [];
-        }
-    }, {
-        key: 'orderBy',
-        value: function orderBy() {
-            return "id";
-        }
-    }]);
-
-    return Strategy;
-}();
-
-var Cars = exports.Cars = function (_CrudTable) {
-    _inherits(Cars, _CrudTable);
-
-    function Cars(props) {
-        _classCallCheck(this, Cars);
-
-        var strategy = new Strategy(props.token, props.userId);
-        return _possibleConstructorReturn(this, (Cars.__proto__ || Object.getPrototypeOf(Cars)).call(this, props, strategy));
+              )
+            ),
+            _react2.default.createElement(
+              'div',
+              { 'class': 'col-sm-2' },
+              _react2.default.createElement(
+                'div',
+                { align: 'left' },
+                _react2.default.createElement(
+                  'p',
+                  { id: 'tryagain' },
+                  this.state.redMessage
+                )
+              )
+            )
+          )
+        )
+      );
     }
+  }]);
 
-    return Cars;
-}(_CrudTable2.CrudTable);
+  return Login;
+}(_react2.default.Component);
 
-},{"./CrudTable":232,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],230:[function(require,module,exports){
+},{"react":223,"react-dom":61,"whatwg-fetch":225}],229:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.Commits = undefined;
+exports.MainScreen = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -45178,147 +45086,54 @@ var _reactDom2 = _interopRequireDefault(_reactDom);
 
 require('whatwg-fetch');
 
-var _reactPopout = require('react-popout');
-
-var _reactPopout2 = _interopRequireDefault(_reactPopout);
-
-var _CrudTable2 = require('./CrudTable');
-
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+var MainScreen = exports.MainScreen = function (_React$Component) {
+    _inherits(MainScreen, _React$Component);
 
-var Strategy = function () {
-    function Strategy(token, ruleId) {
-        _classCallCheck(this, Strategy);
+    function MainScreen(props) {
+        _classCallCheck(this, MainScreen);
 
-        this.token = token;
-        this.ruleId = ruleId;
+        var _this = _possibleConstructorReturn(this, (MainScreen.__proto__ || Object.getPrototypeOf(MainScreen)).call(this, props));
+
+        _this.token = props.token;
+        return _this;
     }
 
-    _createClass(Strategy, [{
-        key: 'getAll',
-        value: function getAll(query) {
-            var _this = this;
-
-            console.log("I am getting all the commits");
-            return fetch("/rules/" + this.ruleId + "/commits", {
-                method: "GET",
-
-                headers: {
-                    "Authorization": "api-key " + this.token
-                },
-                cache: "no-store"
-            }).then(function (res) {
-                return res.json();
-            }).then(function (jsn) {
-                _this.totalRecords = jsn.metadata.total;
-                console.log("LOS commits:");
-                console.log(jsn.commits);
-                var ret = jsn.commits;
-                ret.totalRecords = jsn.metadata.total;
-                return ret;
-            });
-        }
-    }, {
-        key: 'doUpdate',
-        value: function doUpdate(row, content) {
-            return Promise.resolve("NOPEEEEE");
-        }
-    }, {
-        key: 'doDelete',
-        value: function doDelete(row) {
-            return Promise.resolve("NOPEEEEE");
-        }
-    }, {
-        key: 'renderOpened',
-        value: function renderOpened(row) {
-            return _react2.default.createElement(
-                'span',
-                null,
-                _react2.default.createElement('br', null),
-                'Author: ',
-                row.author.username,
-                _react2.default.createElement('br', null),
-                'Blob: ',
-                row.message,
-                _react2.default.createElement('br', null),
-                'Sent: ',
-                new Date(row.timestamp).toString(),
-                _react2.default.createElement('br', null)
-            );
-        }
-    }, {
-        key: 'renderClosed',
-        value: function renderClosed(row) {
-            return _react2.default.createElement(
-                'span',
-                null,
-                'Sent: ',
-                new Date(row.timestamp).toString()
-            );
-        }
-    }, {
-        key: 'createKey',
-        value: function createKey(row) {
-            return row.author.username + row.message + row.timestamp;
-        }
-    }, {
-        key: 'defaults',
-        value: function defaults(row) {
-            return {
-                "language": "string",
-                "blob": "string",
-                "active": true
-            };
-        }
-    }, {
-        key: 'defaultCreationContent',
-        value: function defaultCreationContent() {
-            return {
-                "language": "string",
-                "blob": "string",
-                "active": true
-            };
-        }
-    }, {
-        key: 'doCreate',
-        value: function doCreate(content) {
-            return Promise.resolve("NOOOOOOPEEE");
-        }
-    }, {
-        key: 'getFilters',
-        value: function getFilters() {
-            return ["message", "timestamp"];
-        }
-    }, {
-        key: 'orderBy',
-        value: function orderBy() {
-            return "timestamp";
+    _createClass(MainScreen, [{
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement('div', null);
         }
     }]);
 
-    return Strategy;
-}();
+    return MainScreen;
+}(_react2.default.Component);
 
-var Commits = exports.Commits = function (_CrudTable) {
-    _inherits(Commits, _CrudTable);
+},{"react":223,"react-dom":61,"whatwg-fetch":225}],230:[function(require,module,exports){
+'use strict';
 
-    function Commits(props) {
-        _classCallCheck(this, Commits);
+var _reactDom = require('react-dom');
 
-        var strategy = new Strategy(props.token, props.ruleId);
-        return _possibleConstructorReturn(this, (Commits.__proto__ || Object.getPrototypeOf(Commits)).call(this, props, strategy));
-    }
+var _reactDom2 = _interopRequireDefault(_reactDom);
 
-    return Commits;
-}(_CrudTable2.CrudTable);
+var _react = require('react');
 
-},{"./CrudTable":232,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],231:[function(require,module,exports){
+var _react2 = _interopRequireDefault(_react);
+
+var _App = require('./App');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+_reactDom2.default.render(_react2.default.createElement(_App.App, null), document.getElementById('root'));
+
+},{"./App":226,"react":223,"react-dom":61}],231:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45673,7 +45488,7 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
     return CrudTable;
 }(_react2.default.Component);
 
-},{"./CreateDialog":231,"./FilterDialog":234,"./PagingDialog":238,"./Row":239,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],233:[function(require,module,exports){
+},{"./CreateDialog":231,"./FilterDialog":234,"./PagingDialog":235,"./Row":236,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],233:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -46055,455 +45870,6 @@ var FilterDialog = exports.FilterDialog = function (_React$Component) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.Heatmap = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
-require('whatwg-fetch');
-
-var _reactLoadScript = require('react-load-script');
-
-var _reactLoadScript2 = _interopRequireDefault(_reactLoadScript);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Heatmap = exports.Heatmap = function (_React$Component) {
-    _inherits(Heatmap, _React$Component);
-
-    function Heatmap(props) {
-        _classCallCheck(this, Heatmap);
-
-        var _this = _possibleConstructorReturn(this, (Heatmap.__proto__ || Object.getPrototypeOf(Heatmap)).call(this, props));
-
-        _this.state = {
-            trips: [],
-            waitMap: _react2.default.createElement(
-                'span',
-                null,
-                'Waiting for google maps...'
-            ),
-            showing: "start",
-            map: {},
-            heatmap: null
-        };
-
-        fetch("/trips", {
-            method: "GET",
-
-            headers: {
-                "Authorization": "api-key " + props.token
-            },
-            cache: "no-store"
-        }).then(function (res) {
-            return res.json();
-        }).then(function (jsn) {
-            _this.setState({
-                trips: jsn.trips
-            });
-        });
-        return _this;
-    }
-
-    _createClass(Heatmap, [{
-        key: 'change',
-        value: function change(showing) {
-            if (this.state.heatmap != null) {
-                this.state.heatmap.setMap(null);
-            }
-
-            var heatmap = new google.maps.visualization.HeatmapLayer({
-                data: this.getData(showing),
-                map: this.state.map
-            });
-            this.setState({ showing: showing, heatmap: heatmap });
-        }
-    }, {
-        key: 'getData',
-        value: function getData(showing) {
-            console.log(this.state.trips);
-            var starts = this.state.trips.map(function (trip) {
-                return trip.start.address.location;
-            });
-            console.log("A");
-            var ends = this.state.trips.map(function (trip) {
-                return trip.end.address.location;
-            });
-            console.log("B");
-            var steps = this.state.trips.map(function (trip) {
-                return trip.route.map(function (elem) {
-                    return elem.location;
-                });
-            }).reduce(function (a1, a2) {
-                return a1.concat(a2);
-            }, []);
-            console.log("C");
-
-            var sets = {
-                "start": starts,
-                "end": ends,
-                "entire trips": starts.concat(ends).concat(steps)
-            };
-            console.log("D");
-            console.log(sets[showing]);
-
-            var result = sets[showing].map(function (location) {
-                return new google.maps.LatLng(location.lat, location.lon);
-            });
-            console.log("E");
-
-            console.log(result);
-
-            return result;
-        }
-    }, {
-        key: 'render',
-        value: function render() {
-            var displayInline = {
-                "display": "inline",
-                margin: "10px 10px 10px 10px 10px",
-                padding: "10px 10px 10px 10px 10px"
-
-            };
-            var buttonStyle = {
-                width: "100px",
-                align: "left"
-            };
-
-            return _react2.default.createElement(
-                'div',
-                null,
-                _react2.default.createElement(_reactLoadScript2.default, {
-                    url: 'https://maps.googleapis.com/maps/api/js?key=AIzaSyBKzseXuW-zDOZGfrgfGpYhVgGhCcddUUE&libraries=visualization',
-                    onLoad: this.loaded.bind(this)
-                }),
-                _react2.default.createElement(
-                    'div',
-                    { style: displayInline, 'class': 'dropdown' },
-                    'showing:',
-                    _react2.default.createElement(
-                        'button',
-                        { style: buttonStyle, 'class': 'btn btn-primary dropdown-toggle', type: 'button', 'data-toggle': 'dropdown' },
-                        this.state.showing,
-                        _react2.default.createElement('span', { 'class': 'caret' })
-                    ),
-                    _react2.default.createElement(
-                        'ul',
-                        { 'class': 'dropdown-menu' },
-                        _react2.default.createElement(
-                            'li',
-                            null,
-                            _react2.default.createElement(
-                                'a',
-                                { onClick: this.change.bind(this, "start") },
-                                'start'
-                            )
-                        ),
-                        _react2.default.createElement(
-                            'li',
-                            null,
-                            _react2.default.createElement(
-                                'a',
-                                { onClick: this.change.bind(this, "end") },
-                                'end'
-                            )
-                        ),
-                        _react2.default.createElement(
-                            'li',
-                            null,
-                            _react2.default.createElement(
-                                'a',
-                                { onClick: this.change.bind(this, "entire trips") },
-                                'entire trips'
-                            )
-                        )
-                    )
-                ),
-                this.state.waitMap,
-                _react2.default.createElement('div', { style: { height: "600px" }, id: 'mapDiv' })
-            );
-        }
-    }, {
-        key: 'loaded',
-        value: function loaded(e) {
-            console.log("333333333333333333333333333333333333");
-            console.log(document.getElementById("mapDiv"));
-            var map = new google.maps.Map(document.getElementById("mapDiv"), {
-                center: { lat: -34.397, lng: 150.644 },
-                zoom: 1
-            });
-            this.setState({
-                waitMap: _react2.default.createElement('span', null),
-                map: map
-            }, this.change.bind(this, this.state.showing));
-        }
-    }]);
-
-    return Heatmap;
-}(_react2.default.Component);
-
-},{"react":223,"react-dom":61,"react-load-script":63,"whatwg-fetch":225}],236:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.Login = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
-require('whatwg-fetch');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var Login = exports.Login = function (_React$Component) {
-  _inherits(Login, _React$Component);
-
-  function Login(props) {
-    _classCallCheck(this, Login);
-
-    var _this = _possibleConstructorReturn(this, (Login.__proto__ || Object.getPrototypeOf(Login)).call(this, props));
-
-    _this.state = {
-      username: "admin",
-      password: "admin",
-      redMessage: ""
-    };
-    _this.handleInputChange = _this.handleInputChange.bind(_this);
-    _this.handleSubmit = _this.handleSubmit.bind(_this);
-    _this.onSuccess = props.onSuccess;
-    return _this;
-  }
-
-  _createClass(Login, [{
-    key: 'handleSubmit',
-    value: function handleSubmit(event) {
-      var _this2 = this;
-
-      console.log("submit");
-      event.preventDefault();
-
-      var _state = this.state,
-          username = _state.username,
-          password = _state.password;
-
-
-      fetch("/token", {
-        method: "POST",
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ username: username, password: password })
-      }).then(function (response) {
-        if (response.status == 201) {
-          return response.json();
-        } else {
-          return Promise.reject(response);
-        }
-      }).then(function (json) {
-        console.log(json);
-        var token = json.token.token;
-        _this2.onSuccess(username, password, token);
-      }).catch(function (response) {
-        console.log(response);
-        _this2.setState({ redMessage: "Please try again" });
-      });
-    }
-  }, {
-    key: 'handleInputChange',
-    value: function handleInputChange(event) {
-      var target = event.target;
-      var value = target.value;
-      var name = target.name;
-      this.setState(_defineProperty({}, name, value));
-    }
-  }, {
-    key: 'render',
-    value: function render() {
-      return _react2.default.createElement(
-        'div',
-        { 'class': 'container', align: 'center', id: 'centeredbox' },
-        _react2.default.createElement(
-          'form',
-          { 'class': 'form-horizontal', onSubmit: this.handleSubmit },
-          _react2.default.createElement(
-            'div',
-            { 'class': 'form-group' },
-            _react2.default.createElement(
-              'h1',
-              { align: 'center' },
-              'Login'
-            )
-          ),
-          _react2.default.createElement(
-            'div',
-            { 'class': 'form-group' },
-            _react2.default.createElement(
-              'label',
-              { 'class': 'control-label col-sm-2' },
-              ' User:'
-            ),
-            _react2.default.createElement(
-              'div',
-              { 'class': 'col-sm-8' },
-              _react2.default.createElement(
-                'div',
-                { 'class': 'input-group' },
-                _react2.default.createElement(
-                  'span',
-                  { 'class': 'input-group-addon' },
-                  _react2.default.createElement('i', { 'class': 'glyphicon glyphicon-user' })
-                ),
-                _react2.default.createElement('input', { type: 'text', 'class': 'form-control', name: 'username', value: this.state.username, onChange: this.handleInputChange })
-              )
-            )
-          ),
-          _react2.default.createElement(
-            'div',
-            { 'class': 'form-group' },
-            _react2.default.createElement(
-              'label',
-              { 'class': 'control-label col-sm-2' },
-              ' Password:'
-            ),
-            _react2.default.createElement(
-              'div',
-              { 'class': 'col-sm-8' },
-              _react2.default.createElement(
-                'div',
-                { 'class': 'input-group' },
-                _react2.default.createElement(
-                  'span',
-                  { 'class': 'input-group-addon' },
-                  _react2.default.createElement('i', { 'class': 'glyphicon glyphicon-lock' })
-                ),
-                _react2.default.createElement('input', { type: 'password', 'class': 'form-control', name: 'password', value: this.state.password, onChange: this.handleInputChange })
-              )
-            )
-          ),
-          _react2.default.createElement(
-            'div',
-            { 'class': 'form-group' },
-            _react2.default.createElement(
-              'div',
-              { 'class': 'col-sm-offset-9 col-sm-1' },
-              _react2.default.createElement(
-                'div',
-                { align: 'right' },
-                _react2.default.createElement(
-                  'button',
-                  { 'class': 'btn btn-primary', onClick: this.handleSubmit },
-                  'Submit'
-                )
-              )
-            ),
-            _react2.default.createElement(
-              'div',
-              { 'class': 'col-sm-2' },
-              _react2.default.createElement(
-                'div',
-                { align: 'left' },
-                _react2.default.createElement(
-                  'p',
-                  { id: 'tryagain' },
-                  this.state.redMessage
-                )
-              )
-            )
-          )
-        )
-      );
-    }
-  }]);
-
-  return Login;
-}(_react2.default.Component);
-
-},{"react":223,"react-dom":61,"whatwg-fetch":225}],237:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.MainScreen = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
-require('whatwg-fetch');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var MainScreen = exports.MainScreen = function (_React$Component) {
-    _inherits(MainScreen, _React$Component);
-
-    function MainScreen(props) {
-        _classCallCheck(this, MainScreen);
-
-        var _this = _possibleConstructorReturn(this, (MainScreen.__proto__ || Object.getPrototypeOf(MainScreen)).call(this, props));
-
-        _this.token = props.token;
-        return _this;
-    }
-
-    _createClass(MainScreen, [{
-        key: 'render',
-        value: function render() {
-            return _react2.default.createElement('div', null);
-        }
-    }]);
-
-    return MainScreen;
-}(_react2.default.Component);
-
-},{"react":223,"react-dom":61,"whatwg-fetch":225}],238:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
 exports.PagingDialog = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -46680,7 +46046,7 @@ var PagingDialog = exports.PagingDialog = function (_React$Component) {
     return PagingDialog;
 }(_react2.default.Component);
 
-},{"react":223,"react-dom":61}],239:[function(require,module,exports){
+},{"react":223,"react-dom":61}],236:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -46836,7 +46202,532 @@ var Row = exports.Row = function (_React$Component) {
     return Row;
 }(_react2.default.Component);
 
-},{"./Dialog":233,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],240:[function(require,module,exports){
+},{"./Dialog":233,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],237:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.BusinessUsers = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+require('whatwg-fetch');
+
+var _reactPopout = require('react-popout');
+
+var _reactPopout2 = _interopRequireDefault(_reactPopout);
+
+var _CrudTable2 = require('../table/CrudTable');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Strategy = function () {
+    function Strategy(token) {
+        _classCallCheck(this, Strategy);
+
+        this.token = token;
+    }
+
+    _createClass(Strategy, [{
+        key: 'getAll',
+        value: function getAll(query) {
+            var _this = this;
+
+            return fetch("/business-users" + query, {
+                method: "GET",
+
+                headers: {
+                    "Authorization": "api-key " + this.token
+                },
+                cache: "no-store"
+            }).then(function (res) {
+                return res.json();
+            }).then(function (jsn) {
+                _this.totalRecords = jsn.metadata.total;
+                var ret = jsn.businessUser;
+                ret.totalRecords = jsn.metadata.total;
+                return ret;
+            });
+        }
+    }, {
+        key: 'doUpdate',
+        value: function doUpdate(row, content) {
+            return fetch("/business-users/" + row.username, {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'api-key ' + this.token
+                },
+                body: JSON.stringify({
+                    username: row.username,
+                    password: content.password,
+                    name: content.name,
+                    surname: content.surname,
+                    roles: [content.role]
+                })
+            });
+        }
+    }, {
+        key: 'doDelete',
+        value: function doDelete(row) {
+            return fetch("/business-users/" + row.username, {
+                method: "DELETE",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'api-key ' + this.token
+                }
+            });
+        }
+    }, {
+        key: 'renderOpened',
+        value: function renderOpened(row) {
+            return _react2.default.createElement(
+                'span',
+                null,
+                _react2.default.createElement('br', null),
+                'Username: ',
+                row.username,
+                _react2.default.createElement('br', null),
+                'Name: ',
+                row.name,
+                _react2.default.createElement('br', null),
+                'Surname: ',
+                row.surname,
+                _react2.default.createElement('br', null),
+                'Roles: ',
+                row.roles.map(function (x) {
+                    return _react2.default.createElement(
+                        'span',
+                        { key: x },
+                        x,
+                        _react2.default.createElement('br', null)
+                    );
+                })
+            );
+        }
+    }, {
+        key: 'renderClosed',
+        value: function renderClosed(row) {
+            return _react2.default.createElement(
+                'span',
+                null,
+                ' Username: ',
+                row.username
+            );
+        }
+    }, {
+        key: 'createKey',
+        value: function createKey(row) {
+            return row.username + row.password + row.name + row.surname + row.roles.join("");
+        }
+    }, {
+        key: 'defaults',
+        value: function defaults(row) {
+            return {
+                Password: row.password,
+                Name: row.name,
+                Surname: row.surname,
+                Role: row.roles[0]
+            };
+        }
+    }, {
+        key: 'defaultCreationContent',
+        value: function defaultCreationContent() {
+            return {
+                username: "username",
+                password: "password",
+                name: "name",
+                surname: "surname",
+                role: "user"
+            };
+        }
+    }, {
+        key: 'doCreate',
+        value: function doCreate(content) {
+            return fetch("/business-users/", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'api-key ' + this.token
+                },
+                body: JSON.stringify({
+                    username: content.username,
+                    password: content.password,
+                    name: content.name,
+                    surname: content.surname,
+                    roles: content.role
+                })
+            });
+        }
+    }, {
+        key: 'getFilters',
+        value: function getFilters() {
+            return ["username", "name", "surname"];
+        }
+    }, {
+        key: 'orderBy',
+        value: function orderBy() {
+            return "username";
+        }
+    }]);
+
+    return Strategy;
+}();
+
+var BusinessUsers = exports.BusinessUsers = function (_CrudTable) {
+    _inherits(BusinessUsers, _CrudTable);
+
+    function BusinessUsers(props) {
+        _classCallCheck(this, BusinessUsers);
+
+        var strategy = new Strategy(props.token);
+        return _possibleConstructorReturn(this, (BusinessUsers.__proto__ || Object.getPrototypeOf(BusinessUsers)).call(this, props, strategy));
+    }
+
+    return BusinessUsers;
+}(_CrudTable2.CrudTable);
+
+},{"../table/CrudTable":232,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],238:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.Trips = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+require('whatwg-fetch');
+
+var _reactPopout = require('react-popout');
+
+var _reactPopout2 = _interopRequireDefault(_reactPopout);
+
+var _CrudTable2 = require('../table/CrudTable');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Strategy = function () {
+    function Strategy(token) {
+        _classCallCheck(this, Strategy);
+
+        this.token = token;
+    }
+
+    _createClass(Strategy, [{
+        key: 'getAll',
+        value: function getAll(query) {
+            var _this = this;
+
+            console.log("Iam getting all the things");
+            return fetch("/trips" + query, {
+                method: "GET",
+
+                headers: {
+                    "Authorization": "api-key " + this.token
+                },
+                cache: "no-store"
+            }).then(function (res) {
+                return res.json();
+            }).then(function (jsn) {
+                _this.totalRecords = jsn.metadata.total;
+                console.log("LOS Trips:");
+                console.log(jsn);
+                console.log(jsn.trips);
+
+                var ret = jsn.trips;
+                ret.totalRecords = jsn.metadata.total;
+                return ret;
+            });
+        }
+    }, {
+        key: 'doUpdate',
+        value: function doUpdate(row, content) {
+            return Promise.resolve("Cant");
+        }
+    }, {
+        key: 'doDelete',
+        value: function doDelete(row) {
+            return Promise.resolve("Cant");
+        }
+    }, {
+        key: 'renderOpened',
+        value: function renderOpened(row) {
+            return _react2.default.createElement(
+                'span',
+                null,
+                _react2.default.createElement('br', null),
+                'Id: ',
+                row.id,
+                _react2.default.createElement('br', null),
+                'ApplicationOwner: ',
+                row.applicationOwner,
+                _react2.default.createElement('br', null),
+                'Driver: ',
+                row.driver,
+                _react2.default.createElement('br', null),
+                'Passenger: ',
+                row.passenger,
+                _react2.default.createElement('br', null),
+                'Cost: ',
+                row.cost.value,
+                ' ',
+                row.cost.currency,
+                _react2.default.createElement('br', null)
+            );
+        }
+    }, {
+        key: 'renderClosed',
+        value: function renderClosed(row) {
+            return _react2.default.createElement(
+                'span',
+                null,
+                'Id: ',
+                row.id
+            );
+        }
+    }, {
+        key: 'createKey',
+        value: function createKey(row) {
+            return row.id + row.applicationOwner + row.driver + row.passenger + row.cost;
+        }
+    }, {
+        key: 'defaults',
+        value: function defaults(row) {
+            return {
+                username: "CANT UPDATE"
+            };
+        }
+    }, {
+        key: 'defaultCreationContent',
+        value: function defaultCreationContent() {
+            return {
+                type: "CANT CREATE"
+            };
+        }
+    }, {
+        key: 'doCreate',
+        value: function doCreate(content) {
+            return Promise.resolve(1);
+        }
+    }, {
+        key: 'getFilters',
+        value: function getFilters() {
+            return ["applicationOwner", "driver", "passenger", "startTimestamp", "startStreet", "startLat", "startLon", "endTimestamp", "endStreet", "endLat", "endLon", "totalTime", "waitTime", "travelTime", "distance"];
+        }
+    }, {
+        key: 'orderBy',
+        value: function orderBy() {
+            return "startTimestamp";
+        }
+    }]);
+
+    return Strategy;
+}();
+
+var Trips = exports.Trips = function (_CrudTable) {
+    _inherits(Trips, _CrudTable);
+
+    function Trips(props) {
+        _classCallCheck(this, Trips);
+
+        var strategy = new Strategy(props.token);
+        return _possibleConstructorReturn(this, (Trips.__proto__ || Object.getPrototypeOf(Trips)).call(this, props, strategy));
+    }
+
+    return Trips;
+}(_CrudTable2.CrudTable);
+
+},{"../table/CrudTable":232,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],239:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.Commits = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+require('whatwg-fetch');
+
+var _reactPopout = require('react-popout');
+
+var _reactPopout2 = _interopRequireDefault(_reactPopout);
+
+var _CrudTable2 = require('../../table/CrudTable');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var Strategy = function () {
+    function Strategy(token, ruleId) {
+        _classCallCheck(this, Strategy);
+
+        this.token = token;
+        this.ruleId = ruleId;
+    }
+
+    _createClass(Strategy, [{
+        key: 'getAll',
+        value: function getAll(query) {
+            var _this = this;
+
+            console.log("I am getting all the commits");
+            return fetch("/rules/" + this.ruleId + "/commits", {
+                method: "GET",
+
+                headers: {
+                    "Authorization": "api-key " + this.token
+                },
+                cache: "no-store"
+            }).then(function (res) {
+                return res.json();
+            }).then(function (jsn) {
+                _this.totalRecords = jsn.metadata.total;
+                console.log("LOS commits:");
+                console.log(jsn.commits);
+                var ret = jsn.commits;
+                ret.totalRecords = jsn.metadata.total;
+                return ret;
+            });
+        }
+    }, {
+        key: 'doUpdate',
+        value: function doUpdate(row, content) {
+            return Promise.resolve("NOPEEEEE");
+        }
+    }, {
+        key: 'doDelete',
+        value: function doDelete(row) {
+            return Promise.resolve("NOPEEEEE");
+        }
+    }, {
+        key: 'renderOpened',
+        value: function renderOpened(row) {
+            return _react2.default.createElement(
+                'span',
+                null,
+                _react2.default.createElement('br', null),
+                'Author: ',
+                row.author.username,
+                _react2.default.createElement('br', null),
+                'Blob: ',
+                row.message,
+                _react2.default.createElement('br', null),
+                'Sent: ',
+                new Date(row.timestamp).toString(),
+                _react2.default.createElement('br', null)
+            );
+        }
+    }, {
+        key: 'renderClosed',
+        value: function renderClosed(row) {
+            return _react2.default.createElement(
+                'span',
+                null,
+                'Sent: ',
+                new Date(row.timestamp).toString()
+            );
+        }
+    }, {
+        key: 'createKey',
+        value: function createKey(row) {
+            return row.author.username + row.message + row.timestamp;
+        }
+    }, {
+        key: 'defaults',
+        value: function defaults(row) {
+            return {
+                "language": "string",
+                "blob": "string",
+                "active": true
+            };
+        }
+    }, {
+        key: 'defaultCreationContent',
+        value: function defaultCreationContent() {
+            return {
+                "language": "string",
+                "blob": "string",
+                "active": true
+            };
+        }
+    }, {
+        key: 'doCreate',
+        value: function doCreate(content) {
+            return Promise.resolve("NOOOOOOPEEE");
+        }
+    }, {
+        key: 'getFilters',
+        value: function getFilters() {
+            return ["message", "timestamp"];
+        }
+    }, {
+        key: 'orderBy',
+        value: function orderBy() {
+            return "timestamp";
+        }
+    }]);
+
+    return Strategy;
+}();
+
+var Commits = exports.Commits = function (_CrudTable) {
+    _inherits(Commits, _CrudTable);
+
+    function Commits(props) {
+        _classCallCheck(this, Commits);
+
+        var strategy = new Strategy(props.token, props.ruleId);
+        return _possibleConstructorReturn(this, (Commits.__proto__ || Object.getPrototypeOf(Commits)).call(this, props, strategy));
+    }
+
+    return Commits;
+}(_CrudTable2.CrudTable);
+
+},{"../../table/CrudTable":232,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],240:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -46860,7 +46751,7 @@ var _reactPopout = require('react-popout');
 
 var _reactPopout2 = _interopRequireDefault(_reactPopout);
 
-var _CrudTable2 = require('./CrudTable');
+var _CrudTable2 = require('../../table/CrudTable');
 
 var _ViewCommitsButton = require('./ViewCommitsButton');
 
@@ -47035,7 +46926,91 @@ var Rules = exports.Rules = function (_CrudTable) {
     return Rules;
 }(_CrudTable2.CrudTable);
 
-},{"./CrudTable":232,"./ViewCommitsButton":245,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],241:[function(require,module,exports){
+},{"../../table/CrudTable":232,"./ViewCommitsButton":241,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],241:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.ViewCommitsButton = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _Commits = require('./Commits');
+
+var _reactPopout = require('react-popout');
+
+var _reactPopout2 = _interopRequireDefault(_reactPopout);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var ViewCommitsButton = exports.ViewCommitsButton = function (_React$Component) {
+    _inherits(ViewCommitsButton, _React$Component);
+
+    function ViewCommitsButton(props) {
+        _classCallCheck(this, ViewCommitsButton);
+
+        var _this = _possibleConstructorReturn(this, (ViewCommitsButton.__proto__ || Object.getPrototypeOf(ViewCommitsButton)).call(this, props));
+
+        _this.state = {
+            popup: _react2.default.createElement('span', null)
+        };
+        _this.token = props.token;
+        _this.ruleId = props.ruleId;
+        return _this;
+    }
+
+    _createClass(ViewCommitsButton, [{
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'span',
+                null,
+                _react2.default.createElement(
+                    'button',
+                    { onClick: this.onClick.bind(this) },
+                    ' View commits'
+                ),
+                this.state.popup
+            );
+        }
+    }, {
+        key: 'onClick',
+        value: function onClick(event) {
+            function closePopup() {
+                this.setState({ popup: _react2.default.createElement('span', null) });
+            }
+            var popup = _react2.default.createElement(
+                _reactPopout2.default,
+                { title: 'Window title', onClosing: closePopup.bind(this) },
+                _react2.default.createElement('link', { rel: 'stylesheet', href: 'style.css' }),
+                _react2.default.createElement('link', { rel: 'stylesheet', href: 'resources/css/bootstrap.min.css' }),
+                _react2.default.createElement('script', { src: 'https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js' }),
+                _react2.default.createElement('script', { src: 'resources/js/bootstrap.min.js' }),
+                _react2.default.createElement(_Commits.Commits, { ruleId: this.props.ruleId, token: this.props.token })
+            );
+            this.setState({ popup: popup });
+        }
+    }]);
+
+    return ViewCommitsButton;
+}(_react2.default.Component);
+
+},{"./Commits":239,"react":223,"react-dom":61,"react-popout":64}],242:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -47059,7 +47034,7 @@ var _reactPopout = require('react-popout');
 
 var _reactPopout2 = _interopRequireDefault(_reactPopout);
 
-var _CrudTable2 = require('./CrudTable');
+var _CrudTable2 = require('../../table/CrudTable');
 
 var _TokenCreatorButton = require('./TokenCreatorButton');
 
@@ -47234,7 +47209,7 @@ var Servers = exports.Servers = function (_CrudTable) {
     return Servers;
 }(_CrudTable2.CrudTable);
 
-},{"./CrudTable":232,"./TokenCreatorButton":242,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],242:[function(require,module,exports){
+},{"../../table/CrudTable":232,"./TokenCreatorButton":243,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],243:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -47382,13 +47357,13 @@ createToken(row){
     }
     */
 
-},{"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],243:[function(require,module,exports){
+},{"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],244:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.Trips = undefined;
+exports.CarEditorButton = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
@@ -47406,7 +47381,130 @@ var _reactPopout = require('react-popout');
 
 var _reactPopout2 = _interopRequireDefault(_reactPopout);
 
-var _CrudTable2 = require('./CrudTable');
+var _Cars = require('./Cars');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var CarEditorButton = exports.CarEditorButton = function (_React$Component) {
+    _inherits(CarEditorButton, _React$Component);
+
+    function CarEditorButton(props) {
+        _classCallCheck(this, CarEditorButton);
+
+        var _this = _possibleConstructorReturn(this, (CarEditorButton.__proto__ || Object.getPrototypeOf(CarEditorButton)).call(this, props));
+
+        _this.token = props.token;
+        _this.id = props.id;
+        _this.state = {
+            popup: _react2.default.createElement('span', null)
+        };
+        return _this;
+    }
+
+    _createClass(CarEditorButton, [{
+        key: 'onClick',
+        value: function onClick() {
+            var _this2 = this;
+
+            fetch("/users/" + this.id + "/cars", {
+                method: "GET",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'api-key ' + this.token
+                }
+            }).then(function (res) {
+                return res.json();
+            }).then(function (json) {
+                function closePopup() {
+                    this.setState({ popup: _react2.default.createElement('span', null) });
+                }
+                console.log("ESTE ES JASON");
+                console.log(json);
+                var popup = _react2.default.createElement(
+                    _reactPopout2.default,
+                    { title: 'Window title', onClosing: closePopup.bind(_this2) },
+                    _react2.default.createElement('link', { rel: 'stylesheet', href: 'style.css' }),
+                    _react2.default.createElement('link', { rel: 'stylesheet', href: 'resources/css/bootstrap.min.css' }),
+                    _react2.default.createElement('script', { src: 'https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js' }),
+                    _react2.default.createElement('script', { src: 'resources/js/bootstrap.min.js' }),
+                    _react2.default.createElement(_Cars.Cars, { token: _this2.token, userId: _this2.id })
+                );
+                _this2.setState({ popup: popup });
+            });
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'span',
+                null,
+                _react2.default.createElement(
+                    'button',
+                    { onClick: this.onClick.bind(this) },
+                    ' Show cars '
+                ),
+                this.state.popup
+            );
+        }
+    }]);
+
+    return CarEditorButton;
+}(_react2.default.Component);
+
+/*
+createToken(row){
+        fetch("/servers/"+row.id,{
+            method:"POST",
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'api-key '+this.token
+            },
+        })
+        .then((res)=>res.json())
+        .then((json)=>{
+            function closePopup(){
+                this.popup=<span></span>;
+            }
+            this.popup=<Popout  title='Window title' onClosing={closePopup.bind(this)}>
+                {json}
+            </Popout>
+            
+        })
+
+    }
+    */
+
+},{"./Cars":245,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],245:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.Cars = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+require('whatwg-fetch');
+
+var _reactPopout = require('react-popout');
+
+var _reactPopout2 = _interopRequireDefault(_reactPopout);
+
+var _CrudTable2 = require('../../table/CrudTable');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -47417,10 +47515,11 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Strategy = function () {
-    function Strategy(token) {
+    function Strategy(token, userId) {
         _classCallCheck(this, Strategy);
 
         this.token = token;
+        this.userId = userId;
     }
 
     _createClass(Strategy, [{
@@ -47428,8 +47527,7 @@ var Strategy = function () {
         value: function getAll(query) {
             var _this = this;
 
-            console.log("Iam getting all the things");
-            return fetch("/trips" + query, {
+            return fetch("/users/" + this.userId + "/cars" + query, {
                 method: "GET",
 
                 headers: {
@@ -47440,11 +47538,7 @@ var Strategy = function () {
                 return res.json();
             }).then(function (jsn) {
                 _this.totalRecords = jsn.metadata.total;
-                console.log("LOS Trips:");
-                console.log(jsn);
-                console.log(jsn.trips);
-
-                var ret = jsn.trips;
+                var ret = jsn.cars;
                 ret.totalRecords = jsn.metadata.total;
                 return ret;
             });
@@ -47452,12 +47546,18 @@ var Strategy = function () {
     }, {
         key: 'doUpdate',
         value: function doUpdate(row, content) {
-            return Promise.resolve("Cant");
+            return Promise.resolve("CANT UPDATE");
         }
     }, {
         key: 'doDelete',
         value: function doDelete(row) {
-            return Promise.resolve("Cant");
+            return fetch("/users/" + this.userId + "/cars/" + row.id, {
+                method: "DELETE",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'api-key ' + this.token
+                }
+            });
         }
     }, {
         key: 'renderOpened',
@@ -47465,24 +47565,25 @@ var Strategy = function () {
             return _react2.default.createElement(
                 'span',
                 null,
-                _react2.default.createElement('br', null),
-                'Id: ',
+                'id:',
                 row.id,
-                _react2.default.createElement('br', null),
-                'ApplicationOwner: ',
-                row.applicationOwner,
-                _react2.default.createElement('br', null),
-                'Driver: ',
-                row.driver,
-                _react2.default.createElement('br', null),
-                'Passenger: ',
-                row.passenger,
-                _react2.default.createElement('br', null),
-                'Cost: ',
-                row.cost.value,
-                ' ',
-                row.cost.currency,
-                _react2.default.createElement('br', null)
+                'owner:',
+                row.owner,
+                'properties:',
+                _react2.default.createElement(
+                    'ul',
+                    null,
+                    row.properties.map(function (prop) {
+                        var key = prop.name + prop.value;
+                        return _react2.default.createElement(
+                            'li',
+                            { key: key },
+                            prop.name,
+                            ':',
+                            prop.value
+                        );
+                    })
+                )
             );
         }
     }, {
@@ -47491,63 +47592,63 @@ var Strategy = function () {
             return _react2.default.createElement(
                 'span',
                 null,
-                'Id: ',
+                'id:',
                 row.id
             );
         }
     }, {
         key: 'createKey',
         value: function createKey(row) {
-            return row.id + row.applicationOwner + row.driver + row.passenger + row.cost;
+            return row.id + row.owner + row.properties.join("");
         }
     }, {
         key: 'defaults',
         value: function defaults(row) {
             return {
-                username: "CANT UPDATE"
+                name: "CANT UPDATE"
             };
         }
     }, {
         key: 'defaultCreationContent',
         value: function defaultCreationContent() {
             return {
-                type: "CANT CREATE"
+                name: "CANT CREATE"
             };
         }
     }, {
         key: 'doCreate',
         value: function doCreate(content) {
-            return Promise.resolve(1);
+            return Promise.resolve("yesss");
         }
     }, {
         key: 'getFilters',
         value: function getFilters() {
-            return ["applicationOwner", "driver", "passenger", "startTimestamp", "startStreet", "startLat", "startLon", "endTimestamp", "endStreet", "endLat", "endLon", "totalTime", "waitTime", "travelTime", "distance"];
+            return [];
         }
     }, {
         key: 'orderBy',
         value: function orderBy() {
-            return "startTimestamp";
+            return "id";
         }
     }]);
 
     return Strategy;
 }();
 
-var Trips = exports.Trips = function (_CrudTable) {
-    _inherits(Trips, _CrudTable);
+var Cars = exports.Cars = function (_CrudTable) {
+    _inherits(Cars, _CrudTable);
 
-    function Trips(props) {
-        _classCallCheck(this, Trips);
+    function Cars(props) {
+        _classCallCheck(this, Cars);
 
-        var strategy = new Strategy(props.token);
-        return _possibleConstructorReturn(this, (Trips.__proto__ || Object.getPrototypeOf(Trips)).call(this, props, strategy));
+        var strategy = new Strategy(props.token, props.userId);
+        return _possibleConstructorReturn(this, (Cars.__proto__ || Object.getPrototypeOf(Cars)).call(this, props, strategy));
     }
 
-    return Trips;
+    return Cars;
 }(_CrudTable2.CrudTable);
 
-},{"./CrudTable":232,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],244:[function(require,module,exports){
+},{"../../table/CrudTable":232,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],246:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -47571,7 +47672,7 @@ var _reactPopout = require('react-popout');
 
 var _reactPopout2 = _interopRequireDefault(_reactPopout);
 
-var _CrudTable2 = require('./CrudTable');
+var _CrudTable2 = require('../../table/CrudTable');
 
 var _CarEditorButton = require('./CarEditorButton');
 
@@ -47799,117 +47900,4 @@ var Users = exports.Users = function (_CrudTable) {
     return Users;
 }(_CrudTable2.CrudTable);
 
-},{"./CarEditorButton":228,"./CrudTable":232,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],245:[function(require,module,exports){
-'use strict';
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.ViewCommitsButton = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
-var _Commits = require('./Commits');
-
-var _reactPopout = require('react-popout');
-
-var _reactPopout2 = _interopRequireDefault(_reactPopout);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-
-var ViewCommitsButton = exports.ViewCommitsButton = function (_React$Component) {
-    _inherits(ViewCommitsButton, _React$Component);
-
-    function ViewCommitsButton(props) {
-        _classCallCheck(this, ViewCommitsButton);
-
-        var _this = _possibleConstructorReturn(this, (ViewCommitsButton.__proto__ || Object.getPrototypeOf(ViewCommitsButton)).call(this, props));
-
-        _this.state = {
-            popup: _react2.default.createElement('span', null)
-        };
-        _this.token = props.token;
-        _this.ruleId = props.ruleId;
-        return _this;
-    }
-
-    _createClass(ViewCommitsButton, [{
-        key: 'render',
-        value: function render() {
-            return _react2.default.createElement(
-                'span',
-                null,
-                _react2.default.createElement(
-                    'button',
-                    { onClick: this.onClick.bind(this) },
-                    ' View previous commits'
-                ),
-                this.state.popup
-            );
-        }
-    }, {
-        key: 'onClick',
-        value: function onClick(event) {
-            function closePopup() {
-                this.setState({ popup: _react2.default.createElement('span', null) });
-            }
-            var popup = _react2.default.createElement(
-                _reactPopout2.default,
-                { title: 'Window title', onClosing: closePopup.bind(this) },
-                _react2.default.createElement('link', { rel: 'stylesheet', href: 'style.css' }),
-                _react2.default.createElement('link', { rel: 'stylesheet', href: 'resources/css/bootstrap.min.css' }),
-                _react2.default.createElement('script', { src: 'https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js' }),
-                _react2.default.createElement('script', { src: 'resources/js/bootstrap.min.js' }),
-                _react2.default.createElement(_Commits.Commits, { ruleId: this.props.ruleId, token: this.props.token })
-            );
-            this.setState({ popup: popup });
-        }
-    }]);
-
-    return ViewCommitsButton;
-}(_react2.default.Component);
-
-},{"./Commits":230,"react":223,"react-dom":61,"react-popout":64}],246:[function(require,module,exports){
-'use strict';
-
-var _react = require('react');
-
-var _react2 = _interopRequireDefault(_react);
-
-var _reactDom = require('react-dom');
-
-var _reactDom2 = _interopRequireDefault(_reactDom);
-
-require('whatwg-fetch');
-
-var _App = require('./App');
-
-var _Login = require('./Login');
-
-var _MainScreen = require('./MainScreen');
-
-var _BusinessUsers = require('./BusinessUsers');
-
-var _Servers = require('./Servers');
-
-var _Users = require('./Users');
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-_reactDom2.default.render(_react2.default.createElement(_App.App, null), document.getElementById('root'));
-
-},{"./App":226,"./BusinessUsers":227,"./Login":236,"./MainScreen":237,"./Servers":241,"./Users":244,"react":223,"react-dom":61,"whatwg-fetch":225}]},{},[246]);
+},{"../../table/CrudTable":232,"./CarEditorButton":244,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}]},{},[230]);

@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import "whatwg-fetch";
 import Popout from 'react-popout';
-import {CrudTable} from "./CrudTable";
+import {CrudTable} from "../../table/CrudTable";
 import {CarEditorButton} from "./CarEditorButton";
 //import {TokenCreatorButton} from "./TokenCreatorButton"
 

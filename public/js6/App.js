@@ -3,11 +3,11 @@ import ReactDOM from 'react-dom';
 import "whatwg-fetch";
 import {Login} from "./Login";
 import {MainScreen} from "./MainScreen";
-import {BusinessUsers} from "./BusinessUsers";
-import {Servers} from "./Servers";
-import {Users} from "./Users";
-import {Trips} from "./Trips";
-import {Rules} from "./Rules";
+import {BusinessUsers} from "./tables/BusinessUsers";
+import {Servers} from "./tables/servers/Servers";
+import {Users} from "./tables/users/Users";
+import {Trips} from "./tables/Trips";
+import {Rules} from "./tables/rules/Rules";
 import {Heatmap} from "./Heatmap";
 
 export class App extends React.Component {
