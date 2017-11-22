@@ -47289,6 +47289,8 @@ var Strategy = function () {
     }, {
         key: 'renderOpened',
         value: function renderOpened(row) {
+            console.log(row);
+
             return _react2.default.createElement(
                 'span',
                 null,
@@ -47306,7 +47308,9 @@ var Strategy = function () {
                 row.passenger,
                 _react2.default.createElement('br', null),
                 'Cost: ',
-                row.cost,
+                row.cost.value,
+                ' ',
+                row.cost.currency,
                 _react2.default.createElement('br', null)
             );
         }

@@ -53,11 +53,10 @@ class Strategy{
             <br/>
             Passenger: {row.passenger}
             <br/>
-            Cost: {row.cost}
+            Cost: {row.cost.value} {row.cost.currency}
             <br/>
             
         </span>);
-        
     }
 
     renderClosed(row){
