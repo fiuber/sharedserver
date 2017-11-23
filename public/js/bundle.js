@@ -45467,6 +45467,10 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
             var padding = {
                 margin: "5px"
             };
+            var padding100 = {
+                margin: "5px",
+                width: "100%"
+            };
 
             var creationDialogOpener = function creationDialogOpener() {
                 return _react2.default.createElement(
@@ -45486,7 +45490,9 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
                 'div',
                 { id: 'mainContainer', style: {
                         display: "flex",
-                        flexDirection: "column"
+                        flexDirection: "column",
+                        flexGrow: "1",
+                        margin: "15px"
 
                     } },
                 _react2.default.createElement(
@@ -45510,7 +45516,7 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
                 this.strategy.doCreate ? creationDialogOpener() : "",
                 _react2.default.createElement(
                     'div',
-                    { id: 'listContainer', style: padding },
+                    { id: 'listContainer', style: padding100 },
                     _react2.default.createElement(
                         'table',
                         null,
@@ -45522,7 +45528,7 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
                                 null,
                                 _react2.default.createElement(
                                     'th',
-                                    null,
+                                    { style: { width: "100%" } },
                                     'Content'
                                 ),
                                 this.strategy.doUpdate ? _react2.default.createElement(
@@ -46834,7 +46840,7 @@ var RuleEditor = exports.RuleEditor = function (_React$Component) {
                 { style: { width: "100%", display: "flex", flexDirection: "row" } },
                 _react2.default.createElement(
                     'div',
-                    { style: { display: "flex", flexBasis: "30%" } },
+                    { style: { display: "flex", flexBasis: "50%" } },
                     _react2.default.createElement(_Rules.Rules, {
                         token: this.props.token,
                         securityLevel: this.props.securityLevel,
@@ -46845,7 +46851,7 @@ var RuleEditor = exports.RuleEditor = function (_React$Component) {
                     'div',
                     { style: {
                             display: "flex",
-                            flexBasis: "60%",
+                            flexBasis: "50%",
                             alignItems: "center",
                             flexDirection: "column",
                             margin: "10px"

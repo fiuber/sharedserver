@@ -170,6 +170,10 @@ export class CrudTable extends React.Component{
         let padding={
             margin:"5px"
         }
+        let padding100={
+            margin:"5px",
+            width:"100%"
+        }
 
         let creationDialogOpener=()=><div style={padding}>
             <CreationDialogOpener 
@@ -182,6 +186,8 @@ export class CrudTable extends React.Component{
         return <div id="mainContainer" style={{
                 display:"flex",
                 flexDirection:"column",
+                flexGrow:"1",
+                margin:"15px"
 
             }}>
             <div style={padding}>
@@ -201,11 +207,11 @@ export class CrudTable extends React.Component{
 
             {this.strategy.doCreate?creationDialogOpener():""}
 
-            <div id="listContainer" style={padding}>
+            <div id="listContainer" style={padding100}>
                 <table>
                     <tbody>
                     <tr>
-                        <th>Content</th>
+                        <th style={{width:"100%"}}>Content</th>
                         {this.strategy.doUpdate?<th>Edit</th>:""}
                         {this.strategy.doDelete?<th>Remove</th>:""}
                         {this.selectionCallback?<th>Select</th>:""}

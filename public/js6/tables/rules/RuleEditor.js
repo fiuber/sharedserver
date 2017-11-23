@@ -49,7 +49,7 @@ export class RuleEditor extends React.Component {
         let buttonClass="btn btn-primary "+((this.state.selectedRules.length>0)?"":"disabled");
 
         return <div style={{width:"100%",display:"flex",flexDirection:"row"}}>
-            <div style={{display:"flex",flexBasis:"30%"}}>
+            <div style={{display:"flex",flexBasis:"50%"}}>
                 <Rules 
                     token={this.props.token} 
                     securityLevel={this.props.securityLevel} 
@@ -58,7 +58,7 @@ export class RuleEditor extends React.Component {
             </div>
             <div style={{
                 display:"flex",
-                flexBasis:"60%",
+                flexBasis:"50%",
                 alignItems:"center",
                 flexDirection:"column", 
                 margin:"10px"
