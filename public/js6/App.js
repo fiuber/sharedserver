@@ -7,7 +7,7 @@ import {BusinessUsers} from "./tables/BusinessUsers";
 import {Servers} from "./tables/servers/Servers";
 import {Users} from "./tables/users/Users";
 import {Trips} from "./tables/Trips";
-import {Rules} from "./tables/rules/Rules";
+import {RuleEditor} from "./tables/rules/RuleEditor";
 import {Heatmap} from "./Heatmap";
 
 export class App extends React.Component {
@@ -22,7 +22,7 @@ export class App extends React.Component {
       this.servers=()=><Servers token={this.state.token} username={this.state.username} securityLevel={this.state.securityLevel} />
       this.users=()=><Users token={this.state.token} securityLevel={this.state.securityLevel} />
       this.trips=()=><Trips token={this.state.token} securityLevel={this.state.securityLevel} />
-      this.rules=()=><Rules token={this.state.token} securityLevel={this.state.securityLevel} />
+      this.rules=()=><RuleEditor token={this.state.token} securityLevel={this.state.securityLevel} />
       this.heatmap=()=><Heatmap token={this.state.token} securityLevel={this.state.securityLevel}/>
 
       

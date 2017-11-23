@@ -167,22 +167,41 @@ export class CrudTable extends React.Component{
 
     
     render(){
-        let creationDialogOpener=()=><CreationDialogOpener 
-            content={this.strategy.defaultCreationContent()} 
-            onSubmit={(o)=>this.onCreate(o)}
-        />
+        let padding={
+            margin:"5px"
+        }
 
-        return <div id="mainContainer" style={{display:"block"}}>
-            <PagingDialog 
-                page={this.state.page}
-                updatePageCallback={this.changePage.bind(this)} 
-                pages={Math.ceil(this.state.totalRecords/10)}/>
-            <FilterDialog shape={this.strategy.getFilters()} updateQueryCallback={this.updateQuery.bind(this)}/>
+        let creationDialogOpener=()=><div style={padding}>
+            <CreationDialogOpener 
+                content={this.strategy.defaultCreationContent()} 
+                onSubmit={(o)=>this.onCreate(o)}
+                style={padding}
+            />
+        </div>
 
-            <div id="listContainer" style={{display:"block"}}>
-                
-                {this.strategy.doCreate?creationDialogOpener():""}
-                
+        return <div id="mainContainer" style={{
+                display:"flex",
+                flexDirection:"column",
+
+            }}>
+            <div style={padding}>
+                <PagingDialog 
+                    page={this.state.page}
+                    updatePageCallback={this.changePage.bind(this)} 
+                    pages={Math.ceil(this.state.totalRecords/10)}
+                    />
+            </div>
+            <div style={padding}>
+                <FilterDialog 
+                    shape={this.strategy.getFilters()} 
+                    updateQueryCallback={this.updateQuery.bind(this)}
+                    style={padding}
+                    />
+            </div>
+
+            {this.strategy.doCreate?creationDialogOpener():""}
+
+            <div id="listContainer" style={padding}>
                 <table>
                     <tbody>
                     <tr>

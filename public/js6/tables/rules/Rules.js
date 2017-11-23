@@ -135,12 +135,14 @@ class Strategy{
 export class Rules extends CrudTable{
     constructor(props){
         let strategy=new Strategy(props.token);
+        /*
         let actualCallback=()=>{};
         let selectionCallback=(selection)=>{
             actualCallback(selection)
         }
-        super(props,strategy,selectionCallback);
-        actualCallback=this.selectionCallback.bind(this);
+        */
+        super(props,strategy,props.selectionCallback);
+        //actualCallback=this.selectionCallback.bind(this);
     }
 
     selectionCallback(selection){

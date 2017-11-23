@@ -43,14 +43,15 @@ export class FilterDialog extends React.Component{
             "marginRight":"2px"
         }
         let niceWidth={
-            width:"40%",
+            width:"180px",
             "display":"inline",
             "marginLeft":"2px",
             "marginRight":"2px"
         }
         let buttonStyle={
-            width:"20%",
-            align:"left"
+            width:"250px",
+            align:"left",
+            margin:"8px"
         }
         let searchLabel=<label style={displayInline} for="search">Search:</label>
         let searchInput=<input style={niceWidth} type="text" placeholder="search.." class="form-control" id="search" value={this.state.searchWord} onChange={this.handleInputChange.bind(this)}></input>;
@@ -59,7 +60,7 @@ export class FilterDialog extends React.Component{
                 filter by: {this.state.filterName}
                 <span class="caret"></span>
             </button>
-            <ul class="dropdown-menu">
+            <ul class="dropdown-menu" style={{width:"250px"}}>
                 {this.state.renderedFilteringOptions}
             </ul>
         </div> 

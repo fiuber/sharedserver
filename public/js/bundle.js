@@ -44381,7 +44381,7 @@ var _Users = require('./tables/users/Users');
 
 var _Trips = require('./tables/Trips');
 
-var _Rules = require('./tables/rules/Rules');
+var _RuleEditor = require('./tables/rules/RuleEditor');
 
 var _Heatmap = require('./Heatmap');
 
@@ -44422,7 +44422,7 @@ var App = exports.App = function (_React$Component) {
       return _react2.default.createElement(_Trips.Trips, { token: _this.state.token, securityLevel: _this.state.securityLevel });
     };
     _this.rules = function () {
-      return _react2.default.createElement(_Rules.Rules, { token: _this.state.token, securityLevel: _this.state.securityLevel });
+      return _react2.default.createElement(_RuleEditor.RuleEditor, { token: _this.state.token, securityLevel: _this.state.securityLevel });
     };
     _this.heatmap = function () {
       return _react2.default.createElement(_Heatmap.Heatmap, { token: _this.state.token, securityLevel: _this.state.securityLevel });
@@ -44667,7 +44667,7 @@ var App = exports.App = function (_React$Component) {
   return App;
 }(_react2.default.Component);
 
-},{"./Heatmap":227,"./Login":228,"./MainScreen":229,"./tables/BusinessUsers":237,"./tables/Trips":238,"./tables/rules/Rules":240,"./tables/servers/Servers":242,"./tables/users/Users":246,"react":223,"react-dom":61,"whatwg-fetch":225}],227:[function(require,module,exports){
+},{"./Heatmap":227,"./Login":228,"./MainScreen":229,"./tables/BusinessUsers":237,"./tables/Trips":238,"./tables/rules/RuleEditor":240,"./tables/servers/Servers":243,"./tables/users/Users":247,"react":223,"react-dom":61,"whatwg-fetch":225}],227:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45465,27 +45465,53 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
         value: function render() {
             var _this7 = this;
 
+            var padding = {
+                margin: "5px"
+            };
+
             var creationDialogOpener = function creationDialogOpener() {
-                return _react2.default.createElement(_CreateDialog.CreationDialogOpener, {
-                    content: _this7.strategy.defaultCreationContent(),
-                    onSubmit: function onSubmit(o) {
-                        return _this7.onCreate(o);
-                    }
-                });
+                return _react2.default.createElement(
+                    'div',
+                    { style: padding },
+                    _react2.default.createElement(_CreateDialog.CreationDialogOpener, {
+                        content: _this7.strategy.defaultCreationContent(),
+                        onSubmit: function onSubmit(o) {
+                            return _this7.onCreate(o);
+                        },
+                        style: padding
+                    })
+                );
             };
 
             return _react2.default.createElement(
                 'div',
-                { id: 'mainContainer', style: { display: "block" } },
-                _react2.default.createElement(_PagingDialog.PagingDialog, {
-                    page: this.state.page,
-                    updatePageCallback: this.changePage.bind(this),
-                    pages: Math.ceil(this.state.totalRecords / 10) }),
-                _react2.default.createElement(_FilterDialog.FilterDialog, { shape: this.strategy.getFilters(), updateQueryCallback: this.updateQuery.bind(this) }),
+                { id: 'mainContainer', style: {
+                        display: "flex",
+                        flexDirection: "column"
+
+                    } },
                 _react2.default.createElement(
                     'div',
-                    { id: 'listContainer', style: { display: "block" } },
-                    this.strategy.doCreate ? creationDialogOpener() : "",
+                    { style: padding },
+                    _react2.default.createElement(_PagingDialog.PagingDialog, {
+                        page: this.state.page,
+                        updatePageCallback: this.changePage.bind(this),
+                        pages: Math.ceil(this.state.totalRecords / 10)
+                    })
+                ),
+                _react2.default.createElement(
+                    'div',
+                    { style: padding },
+                    _react2.default.createElement(_FilterDialog.FilterDialog, {
+                        shape: this.strategy.getFilters(),
+                        updateQueryCallback: this.updateQuery.bind(this),
+                        style: padding
+                    })
+                ),
+                this.strategy.doCreate ? creationDialogOpener() : "",
+                _react2.default.createElement(
+                    'div',
+                    { id: 'listContainer', style: padding },
                     _react2.default.createElement(
                         'table',
                         null,
@@ -45859,14 +45885,15 @@ var FilterDialog = exports.FilterDialog = function (_React$Component) {
                 "marginRight": "2px"
             };
             var niceWidth = {
-                width: "40%",
+                width: "180px",
                 "display": "inline",
                 "marginLeft": "2px",
                 "marginRight": "2px"
             };
             var buttonStyle = {
-                width: "20%",
-                align: "left"
+                width: "250px",
+                align: "left",
+                margin: "8px"
             };
             var searchLabel = _react2.default.createElement(
                 'label',
@@ -45886,7 +45913,7 @@ var FilterDialog = exports.FilterDialog = function (_React$Component) {
                 ),
                 _react2.default.createElement(
                     'ul',
-                    { 'class': 'dropdown-menu' },
+                    { 'class': 'dropdown-menu', style: { width: "250px" } },
                     this.state.renderedFilteringOptions
                 )
             );
@@ -46722,6 +46749,75 @@ var Commits = exports.Commits = function (_CrudTable) {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.RuleEditor = undefined;
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = require('react');
+
+var _react2 = _interopRequireDefault(_react);
+
+var _reactDom = require('react-dom');
+
+var _reactDom2 = _interopRequireDefault(_reactDom);
+
+var _Rules = require('./Rules');
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var RuleEditor = exports.RuleEditor = function (_React$Component) {
+    _inherits(RuleEditor, _React$Component);
+
+    function RuleEditor(props) {
+        _classCallCheck(this, RuleEditor);
+
+        return _possibleConstructorReturn(this, (RuleEditor.__proto__ || Object.getPrototypeOf(RuleEditor)).call(this, props));
+    }
+
+    _createClass(RuleEditor, [{
+        key: 'render',
+        value: function render() {
+            return _react2.default.createElement(
+                'div',
+                { style: { width: "100%", display: "flex", flexDirection: "row" } },
+                _react2.default.createElement(
+                    'div',
+                    { style: { display: "flex", flexBasis: "30%" } },
+                    _react2.default.createElement(_Rules.Rules, {
+                        token: this.props.token,
+                        securityLevel: this.props.securityLevel,
+                        selectionCallback: this.selectionCallback.bind(this)
+                    })
+                ),
+                _react2.default.createElement(
+                    'div',
+                    { style: { display: "flex", flexBasis: "60%" } },
+                    'holi'
+                )
+            );
+        }
+    }, {
+        key: 'selectionCallback',
+        value: function selectionCallback(selectedRules) {
+            console.log(selectedRules);
+        }
+    }]);
+
+    return RuleEditor;
+}(_react2.default.Component);
+
+},{"./Rules":241,"react":223,"react-dom":61}],241:[function(require,module,exports){
+'use strict';
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
 exports.Rules = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -46909,15 +47005,14 @@ var Rules = exports.Rules = function (_CrudTable) {
         _classCallCheck(this, Rules);
 
         var strategy = new Strategy(props.token);
-        var actualCallback = function actualCallback() {};
-        var selectionCallback = function selectionCallback(selection) {
-            actualCallback(selection);
-        };
-
-        var _this2 = _possibleConstructorReturn(this, (Rules.__proto__ || Object.getPrototypeOf(Rules)).call(this, props, strategy, selectionCallback));
-
-        actualCallback = _this2.selectionCallback.bind(_this2);
-        return _this2;
+        /*
+        let actualCallback=()=>{};
+        let selectionCallback=(selection)=>{
+            actualCallback(selection)
+        }
+        */
+        return _possibleConstructorReturn(this, (Rules.__proto__ || Object.getPrototypeOf(Rules)).call(this, props, strategy, props.selectionCallback));
+        //actualCallback=this.selectionCallback.bind(this);
     }
 
     _createClass(Rules, [{
@@ -46930,7 +47025,7 @@ var Rules = exports.Rules = function (_CrudTable) {
     return Rules;
 }(_CrudTable2.CrudTable);
 
-},{"../../table/CrudTable":232,"./ViewCommitsButton":241,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],241:[function(require,module,exports){
+},{"../../table/CrudTable":232,"./ViewCommitsButton":242,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],242:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -47014,7 +47109,7 @@ var ViewCommitsButton = exports.ViewCommitsButton = function (_React$Component) 
     return ViewCommitsButton;
 }(_react2.default.Component);
 
-},{"./Commits":239,"react":223,"react-dom":61,"react-popout":64}],242:[function(require,module,exports){
+},{"./Commits":239,"react":223,"react-dom":61,"react-popout":64}],243:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -47213,7 +47308,7 @@ var Servers = exports.Servers = function (_CrudTable) {
     return Servers;
 }(_CrudTable2.CrudTable);
 
-},{"../../table/CrudTable":232,"./TokenCreatorButton":243,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],243:[function(require,module,exports){
+},{"../../table/CrudTable":232,"./TokenCreatorButton":244,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],244:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -47361,7 +47456,7 @@ createToken(row){
     }
     */
 
-},{"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],244:[function(require,module,exports){
+},{"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],245:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -47484,7 +47579,7 @@ createToken(row){
     }
     */
 
-},{"./Cars":245,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],245:[function(require,module,exports){
+},{"./Cars":246,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],246:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -47628,7 +47723,7 @@ var Cars = exports.Cars = function (_CrudTable) {
     return Cars;
 }(_CrudTable2.CrudTable);
 
-},{"../../table/CrudTable":232,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],246:[function(require,module,exports){
+},{"../../table/CrudTable":232,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],247:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -47880,4 +47975,4 @@ var Users = exports.Users = function (_CrudTable) {
     return Users;
 }(_CrudTable2.CrudTable);
 
-},{"../../table/CrudTable":232,"./CarEditorButton":244,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}]},{},[230]);
+},{"../../table/CrudTable":232,"./CarEditorButton":245,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}]},{},[230]);
