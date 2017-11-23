@@ -147,8 +147,8 @@ export class CrudTable extends React.Component{
         this.setState({
             selectedRows:current
         },this.updateRenderedRows.bind(this))
-        console.log(current);
-        //this.selectionCallback.bind(this,current)
+        this.selectionCallback(current);
+        
     }
     
 

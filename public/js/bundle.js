@@ -45444,8 +45444,7 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
             this.setState({
                 selectedRows: current
             }, this.updateRenderedRows.bind(this));
-            console.log(current);
-            //this.selectionCallback.bind(this,current)
+            this.selectionCallback(current);
         }
     }, {
         key: 'updateQuery',
@@ -46763,6 +46762,8 @@ var _reactDom2 = _interopRequireDefault(_reactDom);
 
 var _Rules = require('./Rules');
 
+require('whatwg-fetch');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -46777,17 +46778,57 @@ var RuleEditor = exports.RuleEditor = function (_React$Component) {
     function RuleEditor(props) {
         _classCallCheck(this, RuleEditor);
 
-        return _possibleConstructorReturn(this, (RuleEditor.__proto__ || Object.getPrototypeOf(RuleEditor)).call(this, props));
+        var _this = _possibleConstructorReturn(this, (RuleEditor.__proto__ || Object.getPrototypeOf(RuleEditor)).call(this, props));
+
+        _this.sentEditor = null;
+        _this.receivedEditor = null;
+        _this.state = {
+            selectedRules: []
+        };
+        return _this;
     }
 
     _createClass(RuleEditor, [{
         key: 'onClick',
         value: function onClick(event) {
-            console.log("run!");
+            var _this2 = this;
+
+            fetch("/rules/run", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'api-key ' + this.props.token
+                },
+                body: JSON.stringify({
+                    rules: this.state.selectedRules,
+                    facts: [{
+                        language: "node-rules",
+                        blob: this.sentEditor.getValue()
+                    }]
+                })
+            }).then(function (res) {
+                return res.json();
+            }).then(function (jsn) {
+                console.log("VUELVE", jsn);
+                if (jsn.facts && jsn.facts.length > 0) {
+                    console.log(jsn.facts[0].blob);
+                    var text = jsn.facts[0].blob;
+                    var object = JSON.parse(text);
+                    var prettyText = JSON.stringify(object, null, 2);
+                    _this2.receivedEditor.setValue(prettyText);
+                } else {
+                    var _prettyText = JSON.stringify(jsn, null, 2);
+                    _this2.receivedEditor.setValue(_prettyText);
+                }
+            });
         }
     }, {
         key: 'render',
         value: function render() {
+            console.log("EN RENDER");
+            console.log(this.state.selectedRules.length);
+            var buttonClass = "btn btn-primary " + (this.state.selectedRules.length > 0 ? "" : "disabled");
+
             return _react2.default.createElement(
                 'div',
                 { style: { width: "100%", display: "flex", flexDirection: "row" } },
@@ -46911,7 +46952,7 @@ var RuleEditor = exports.RuleEditor = function (_React$Component) {
                     ),
                     _react2.default.createElement(
                         'button',
-                        { 'class': 'btn btn-primary', onClick: this.onClick.bind(this) },
+                        { 'class': buttonClass, onClick: this.onClick.bind(this) },
                         'Run selected rules'
                     ),
                     _react2.default.createElement(
@@ -46965,14 +47006,14 @@ var RuleEditor = exports.RuleEditor = function (_React$Component) {
     }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
-            var sent = ace.edit("sent");
-            sent.setTheme("ace/theme/clouds");
-            sent.getSession().setMode("ace/mode/json");
+            this.sentEditor = ace.edit("sent");
+            this.sentEditor.setTheme("ace/theme/clouds");
+            this.sentEditor.getSession().setMode("ace/mode/json");
 
-            var received = ace.edit("received");
-            received.setTheme("ace/theme/clouds");
-            received.getSession().setMode("ace/mode/json");
-            received.setReadOnly(true);
+            this.receivedEditor = ace.edit("received");
+            this.receivedEditor.setTheme("ace/theme/clouds");
+            this.receivedEditor.getSession().setMode("ace/mode/json");
+            this.receivedEditor.setReadOnly(true);
 
             var thisReference = ace.edit("thisReference");
             thisReference.setTheme("ace/theme/clouds");
@@ -46987,14 +47028,17 @@ var RuleEditor = exports.RuleEditor = function (_React$Component) {
     }, {
         key: 'selectionCallback',
         value: function selectionCallback(selectedRules) {
+            console.log("AAAAAAAAAAAAAAAAAAAA");
             console.log(selectedRules);
+            this.setState({ selectedRules: selectedRules });
+            this.forceUpdate();
         }
     }]);
 
     return RuleEditor;
 }(_react2.default.Component);
 
-},{"./Rules":241,"react":223,"react-dom":61}],241:[function(require,module,exports){
+},{"./Rules":241,"react":223,"react-dom":61,"whatwg-fetch":225}],241:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -47196,13 +47240,6 @@ var Rules = exports.Rules = function (_CrudTable) {
         return _possibleConstructorReturn(this, (Rules.__proto__ || Object.getPrototypeOf(Rules)).call(this, props, strategy, props.selectionCallback));
         //actualCallback=this.selectionCallback.bind(this);
     }
-
-    _createClass(Rules, [{
-        key: 'selectionCallback',
-        value: function selectionCallback(selection) {
-            console.log(selection);
-        }
-    }]);
 
     return Rules;
 }(_CrudTable2.CrudTable);

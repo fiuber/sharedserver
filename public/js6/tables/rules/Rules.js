@@ -145,9 +145,6 @@ export class Rules extends CrudTable{
         //actualCallback=this.selectionCallback.bind(this);
     }
 
-    selectionCallback(selection){
-        console.log(selection)
-    }
 
     
 }

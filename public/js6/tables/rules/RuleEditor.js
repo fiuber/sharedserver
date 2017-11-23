@@ -1,15 +1,53 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Rules} from "./Rules"
+import "whatwg-fetch";
 
 export class RuleEditor extends React.Component {
     constructor(props){
         super(props);
+        this.sentEditor=null;
+        this.receivedEditor=null;
+        this.state={
+            selectedRules:[]
+        }
     }
     onClick(event){
-        console.log("run!")
+        fetch("/rules/run",{
+            method:"POST",
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': 'api-key '+this.props.token
+            },
+            body:JSON.stringify({
+                rules:this.state.selectedRules,
+                facts:[
+                    {
+                        language:"node-rules",
+                        blob:this.sentEditor.getValue()
+                    }
+                ]
+            })
+        }).then((res)=>res.json())
+        .then((jsn)=>{
+            console.log("VUELVE",jsn)
+            if(jsn.facts && jsn.facts.length>0){
+                console.log(jsn.facts[0].blob);
+                let text=jsn.facts[0].blob;
+                let object = JSON.parse(text)
+                let prettyText=JSON.stringify(object,null,2)
+                this.receivedEditor.setValue(prettyText)
+            }else{
+                let prettyText=JSON.stringify(jsn,null,2)
+                this.receivedEditor.setValue(prettyText)
+            }
+        })
     }
     render(){
+        console.log("EN RENDER")
+        console.log(this.state.selectedRules.length);
+        let buttonClass="btn btn-primary "+((this.state.selectedRules.length>0)?"":"disabled");
+
         return <div style={{width:"100%",display:"flex",flexDirection:"row"}}>
             <div style={{display:"flex",flexBasis:"30%"}}>
                 <Rules 
@@ -109,7 +147,7 @@ export class RuleEditor extends React.Component {
                             </div>
                         </div>
                     </div>
-                <button class="btn btn-primary" onClick={this.onClick.bind(this)}>Run selected rules</button>
+                <button class={buttonClass} onClick={this.onClick.bind(this)}>Run selected rules</button>
 
                 <h3>Fact received</h3>
                 <div id="received" style={{height:"300px",margin:"10px",width:"100%"}}>
@@ -158,30 +196,30 @@ export class RuleEditor extends React.Component {
         </div>
     }
     componentDidMount(){
-        var sent = ace.edit("sent");
-        sent.setTheme("ace/theme/clouds");
-        sent.getSession().setMode("ace/mode/json");
+        this.sentEditor = ace.edit("sent");
+        this.sentEditor.setTheme("ace/theme/clouds");
+        this.sentEditor.getSession().setMode("ace/mode/json");
 
-        var received = ace.edit("received");
-        received.setTheme("ace/theme/clouds");
-        received.getSession().setMode("ace/mode/json");
-        received.setReadOnly(true);
+        this.receivedEditor = ace.edit("received");
+        this.receivedEditor.setTheme("ace/theme/clouds");
+        this.receivedEditor.getSession().setMode("ace/mode/json");
+        this.receivedEditor.setReadOnly(true);
 
-        var thisReference = ace.edit("thisReference");
+        let thisReference = ace.edit("thisReference");
         thisReference.setTheme("ace/theme/clouds");
         thisReference.getSession().setMode("ace/mode/json");
         thisReference.setReadOnly(true);
 
-        var ruleReference = ace.edit("ruleReference");
+        let ruleReference = ace.edit("ruleReference");
         ruleReference.setTheme("ace/theme/clouds");
         ruleReference.getSession().setMode("ace/mode/json");
         ruleReference.setReadOnly(true);
-
-        
-
     }
 
     selectionCallback(selectedRules){
+        console.log("AAAAAAAAAAAAAAAAAAAA")
         console.log(selectedRules);
+        this.setState({selectedRules})
+        this.forceUpdate();
     }
 }
