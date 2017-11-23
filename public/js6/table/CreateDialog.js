@@ -9,31 +9,32 @@ export class CreationDialogOpener extends React.Component{
     constructor(props){
         super(props);
         this.onSubmitCallback=props.onSubmit;
-        this.noPopup=<button id="buttonNew" type="button" class="btn btn-primary" onClick={this.openPopup.bind(this)}>New</button>
-        this.yesPopup=<Popout  /*options={{width: '768px'}}*/ url={window.location.origin + "/dialog.html"} title='Creation' onClosing={this.closePopup.bind(this)}>
-            <Dialog content={props.content} onSubmit={this.onSubmit.bind(this)} />
-        </Popout>
-        this.state={
-            popup:this.noPopup
-        }
-        //<UpdateDialog token={this.token}/>
     }
     onSubmit(content){
-        this.closePopup();
+        this.props.gotoPrevious();
         this.onSubmitCallback(content);
     }
-    openPopup(){
-        this.setState({
-            popup:this.yesPopup
-        })
+    onReturn(){
+        this.props.gotoPrevious();
     }
-    closePopup(){
-        this.setState({
-            popup:this.noPopup
-        })
+    openPopup(){
+        this.props.goto(()=>
+            <Dialog 
+                content={this.props.content} 
+                onSubmit={this.onSubmit.bind(this)} 
+                onReturn={this.onReturn.bind(this)}
+            />
+        )
     }
 
     render(){
-        return this.state.popup;
+        return <button 
+            id="buttonNew" 
+            type="button" 
+            class="btn btn-primary" 
+            onClick={this.openPopup.bind(this)}
+            >
+                New
+        </button>
     }
 }

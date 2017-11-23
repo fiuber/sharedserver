@@ -19,14 +19,14 @@ export class App extends React.Component {
       super(props);
       this.handleSuccess=this.handleSuccess.bind(this);
   
-      this.login=()=><Login onSuccess={this.handleSuccess}/>;
-      this.main=()=><MainScreen token={this.state.token} securityLevel={this.state.securityLevel} />
-      this.businessUsers=()=><BusinessUsers token={this.state.token} securityLevel={this.state.securityLevel} />
-      this.servers=()=><Servers token={this.state.token} username={this.state.username} securityLevel={this.state.securityLevel} />
-      this.users=()=><Users token={this.state.token} securityLevel={this.state.securityLevel} />
-      this.trips=()=><Trips token={this.state.token} securityLevel={this.state.securityLevel} />
-      this.rules=()=><RuleEditor token={this.state.token} securityLevel={this.state.securityLevel} />
-      this.heatmap=()=><Heatmap token={this.state.token} securityLevel={this.state.securityLevel}/>
+      this.login=()=><Login onSuccess={this.handleSuccess} />;
+      this.main=()=><MainScreen token={this.state.token} securityLevel={this.state.securityLevel} goto={this.goto} gotoPrevious={this.gotoPrevious}/>
+      this.businessUsers=()=><BusinessUsers token={this.state.token} securityLevel={this.state.securityLevel} goto={this.goto} gotoPrevious={this.gotoPrevious}/>
+      this.servers=()=><Servers token={this.state.token} username={this.state.username} securityLevel={this.state.securityLevel} goto={this.goto} gotoPrevious={this.gotoPrevious}/>
+      this.users=()=><Users token={this.state.token} securityLevel={this.state.securityLevel} goto={this.goto} gotoPrevious={this.gotoPrevious}/>
+      this.trips=()=><Trips token={this.state.token} securityLevel={this.state.securityLevel} goto={this.goto} gotoPrevious={this.gotoPrevious}/>
+      this.rules=()=><RuleEditor token={this.state.token} securityLevel={this.state.securityLevel} goto={this.goto} gotoPrevious={this.gotoPrevious}/>
+      this.heatmap=()=><Heatmap token={this.state.token} securityLevel={this.state.securityLevel} goto={this.goto} gotoPrevious={this.gotoPrevious}/>
 
       
       this.state={
@@ -47,7 +47,19 @@ export class App extends React.Component {
       this.gotoTrips = this.gotoTrips.bind(this);
       this.gotoRules = this.gotoRules.bind(this);
       this.gotoHeatmap = this.gotoHeatmap.bind(this);
+
+      this.previous=[this.gotoHome];
+      this.goto=this.goto.bind(this);
+      this.gotoPrevious=this.gotoPrevious.bind(this);
+
     }
+    gotoPrevious(){
+      this.setState({
+        current:this.previous.pop()
+      })
+      console.log(this.previous)
+    }
+
     gotoLogin(event){
       this.setState({
         current:this.login,
@@ -63,23 +75,35 @@ export class App extends React.Component {
     }
 
     gotoBusinessUsers(event){
+        this.previous.push(this.state.current);
         this.setState({current:this.businessUsers, currentTab: 2});
     }
     gotoServers(event){
+        this.previous.push(this.state.current);
         this.setState({current:this.servers, currentTab: 3});
     }
     gotoUsers(event){
+      this.previous.push(this.state.current);
         this.setState({current:this.users, currentTab: 4});
     }
     gotoTrips(event){
+      this.previous.push(this.state.current);
         this.setState({current:this.trips, currentTab: 5});
     }
     gotoRules(event){
+      this.previous.push(this.state.current);
         this.setState({current:this.rules, currentTab: 6});
     }
 
     gotoHeatmap(event){
+      this.previous.push(this.state.current);
       this.setState({current:this.heatmap, currentTab: 7});
+    }
+
+    goto(next){
+      this.previous.push(this.state.current);
+      this.setState({current:next})
+      console.log(this.previous)
     }
 
 

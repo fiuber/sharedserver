@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import "whatwg-fetch";
-import Popout from 'react-popout';
 import {Row} from "./Row";
 import {CreationDialogOpener} from "./CreateDialog";
 import {FilterDialog} from "./FilterDialog";
@@ -180,6 +179,8 @@ export class CrudTable extends React.Component{
                 content={this.strategy.defaultCreationContent()} 
                 onSubmit={(o)=>this.onCreate(o)}
                 style={padding}
+                goto={this.props.goto}
+                gotoPrevious={this.props.gotoPrevious}
             />
         </div>
 

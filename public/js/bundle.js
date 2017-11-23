@@ -44410,25 +44410,25 @@ var App = exports.App = function (_React$Component) {
       return _react2.default.createElement(_Login.Login, { onSuccess: _this.handleSuccess });
     };
     _this.main = function () {
-      return _react2.default.createElement(_MainScreen.MainScreen, { token: _this.state.token, securityLevel: _this.state.securityLevel });
+      return _react2.default.createElement(_MainScreen.MainScreen, { token: _this.state.token, securityLevel: _this.state.securityLevel, goto: _this.goto, gotoPrevious: _this.gotoPrevious });
     };
     _this.businessUsers = function () {
-      return _react2.default.createElement(_BusinessUsers.BusinessUsers, { token: _this.state.token, securityLevel: _this.state.securityLevel });
+      return _react2.default.createElement(_BusinessUsers.BusinessUsers, { token: _this.state.token, securityLevel: _this.state.securityLevel, goto: _this.goto, gotoPrevious: _this.gotoPrevious });
     };
     _this.servers = function () {
-      return _react2.default.createElement(_Servers.Servers, { token: _this.state.token, username: _this.state.username, securityLevel: _this.state.securityLevel });
+      return _react2.default.createElement(_Servers.Servers, { token: _this.state.token, username: _this.state.username, securityLevel: _this.state.securityLevel, goto: _this.goto, gotoPrevious: _this.gotoPrevious });
     };
     _this.users = function () {
-      return _react2.default.createElement(_Users.Users, { token: _this.state.token, securityLevel: _this.state.securityLevel });
+      return _react2.default.createElement(_Users.Users, { token: _this.state.token, securityLevel: _this.state.securityLevel, goto: _this.goto, gotoPrevious: _this.gotoPrevious });
     };
     _this.trips = function () {
-      return _react2.default.createElement(_Trips.Trips, { token: _this.state.token, securityLevel: _this.state.securityLevel });
+      return _react2.default.createElement(_Trips.Trips, { token: _this.state.token, securityLevel: _this.state.securityLevel, goto: _this.goto, gotoPrevious: _this.gotoPrevious });
     };
     _this.rules = function () {
-      return _react2.default.createElement(_RuleEditor.RuleEditor, { token: _this.state.token, securityLevel: _this.state.securityLevel });
+      return _react2.default.createElement(_RuleEditor.RuleEditor, { token: _this.state.token, securityLevel: _this.state.securityLevel, goto: _this.goto, gotoPrevious: _this.gotoPrevious });
     };
     _this.heatmap = function () {
-      return _react2.default.createElement(_Heatmap.Heatmap, { token: _this.state.token, securityLevel: _this.state.securityLevel });
+      return _react2.default.createElement(_Heatmap.Heatmap, { token: _this.state.token, securityLevel: _this.state.securityLevel, goto: _this.goto, gotoPrevious: _this.gotoPrevious });
     };
 
     _this.state = {
@@ -44449,10 +44449,23 @@ var App = exports.App = function (_React$Component) {
     _this.gotoTrips = _this.gotoTrips.bind(_this);
     _this.gotoRules = _this.gotoRules.bind(_this);
     _this.gotoHeatmap = _this.gotoHeatmap.bind(_this);
+
+    _this.previous = [_this.gotoHome];
+    _this.goto = _this.goto.bind(_this);
+    _this.gotoPrevious = _this.gotoPrevious.bind(_this);
+
     return _this;
   }
 
   _createClass(App, [{
+    key: 'gotoPrevious',
+    value: function gotoPrevious() {
+      this.setState({
+        current: this.previous.pop()
+      });
+      console.log(this.previous);
+    }
+  }, {
     key: 'gotoLogin',
     value: function gotoLogin(event) {
       this.setState({
@@ -44471,32 +44484,45 @@ var App = exports.App = function (_React$Component) {
   }, {
     key: 'gotoBusinessUsers',
     value: function gotoBusinessUsers(event) {
+      this.previous.push(this.state.current);
       this.setState({ current: this.businessUsers, currentTab: 2 });
     }
   }, {
     key: 'gotoServers',
     value: function gotoServers(event) {
+      this.previous.push(this.state.current);
       this.setState({ current: this.servers, currentTab: 3 });
     }
   }, {
     key: 'gotoUsers',
     value: function gotoUsers(event) {
+      this.previous.push(this.state.current);
       this.setState({ current: this.users, currentTab: 4 });
     }
   }, {
     key: 'gotoTrips',
     value: function gotoTrips(event) {
+      this.previous.push(this.state.current);
       this.setState({ current: this.trips, currentTab: 5 });
     }
   }, {
     key: 'gotoRules',
     value: function gotoRules(event) {
+      this.previous.push(this.state.current);
       this.setState({ current: this.rules, currentTab: 6 });
     }
   }, {
     key: 'gotoHeatmap',
     value: function gotoHeatmap(event) {
+      this.previous.push(this.state.current);
       this.setState({ current: this.heatmap, currentTab: 7 });
+    }
+  }, {
+    key: 'goto',
+    value: function goto(next) {
+      this.previous.push(this.state.current);
+      this.setState({ current: next });
+      console.log(this.previous);
     }
   }, {
     key: 'handleSuccess',
@@ -45179,46 +45205,46 @@ var CreationDialogOpener = exports.CreationDialogOpener = function (_React$Compo
         var _this = _possibleConstructorReturn(this, (CreationDialogOpener.__proto__ || Object.getPrototypeOf(CreationDialogOpener)).call(this, props));
 
         _this.onSubmitCallback = props.onSubmit;
-        _this.noPopup = _react2.default.createElement(
-            'button',
-            { id: 'buttonNew', type: 'button', 'class': 'btn btn-primary', onClick: _this.openPopup.bind(_this) },
-            'New'
-        );
-        _this.yesPopup = _react2.default.createElement(
-            _reactPopout2.default /*options={{width: '768px'}}*/,
-            { url: window.location.origin + "/dialog.html", title: 'Creation', onClosing: _this.closePopup.bind(_this) },
-            _react2.default.createElement(_Dialog.Dialog, { content: props.content, onSubmit: _this.onSubmit.bind(_this) })
-        );
-        _this.state = {
-            popup: _this.noPopup
-            //<UpdateDialog token={this.token}/>
-        };return _this;
+        return _this;
     }
 
     _createClass(CreationDialogOpener, [{
         key: 'onSubmit',
         value: function onSubmit(content) {
-            this.closePopup();
+            this.props.gotoPrevious();
             this.onSubmitCallback(content);
+        }
+    }, {
+        key: 'onReturn',
+        value: function onReturn() {
+            this.props.gotoPrevious();
         }
     }, {
         key: 'openPopup',
         value: function openPopup() {
-            this.setState({
-                popup: this.yesPopup
-            });
-        }
-    }, {
-        key: 'closePopup',
-        value: function closePopup() {
-            this.setState({
-                popup: this.noPopup
+            var _this2 = this;
+
+            this.props.goto(function () {
+                return _react2.default.createElement(_Dialog.Dialog, {
+                    content: _this2.props.content,
+                    onSubmit: _this2.onSubmit.bind(_this2),
+                    onReturn: _this2.onReturn.bind(_this2)
+                });
             });
         }
     }, {
         key: 'render',
         value: function render() {
-            return this.state.popup;
+            return _react2.default.createElement(
+                'button',
+                {
+                    id: 'buttonNew',
+                    type: 'button',
+                    'class': 'btn btn-primary',
+                    onClick: this.openPopup.bind(this)
+                },
+                'New'
+            );
         }
     }]);
 
@@ -45244,10 +45270,6 @@ var _reactDom = require('react-dom');
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
 require('whatwg-fetch');
-
-var _reactPopout = require('react-popout');
-
-var _reactPopout2 = _interopRequireDefault(_reactPopout);
 
 var _Row = require('./Row');
 
@@ -45484,7 +45506,9 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
                         onSubmit: function onSubmit(o) {
                             return _this7.onCreate(o);
                         },
-                        style: padding
+                        style: padding,
+                        goto: _this7.props.goto,
+                        gotoPrevious: _this7.props.gotoPrevious
                     })
                 );
             };
@@ -45561,7 +45585,7 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
     return CrudTable;
 }(_react2.default.Component);
 
-},{"./CreateDialog":231,"./FilterDialog":234,"./PagingDialog":235,"./Row":236,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],233:[function(require,module,exports){
+},{"./CreateDialog":231,"./FilterDialog":234,"./PagingDialog":235,"./Row":236,"react":223,"react-dom":61,"whatwg-fetch":225}],233:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45611,6 +45635,7 @@ var Dialog = exports.Dialog = function (_React$Component) {
         _this.renderContent = _this.renderContent.bind(_this);
 
         _this.exteriorOnSubmit = props.onSubmit;
+
         var content = props.content;
         var roles = new Set();
         _this.state = {
@@ -45795,6 +45820,11 @@ var Dialog = exports.Dialog = function (_React$Component) {
                                 'button',
                                 { 'class': 'btn btn-default', onClick: this.onSubmit },
                                 'Submit'
+                            ),
+                            _react2.default.createElement(
+                                'button',
+                                { 'class': 'btn btn-default', onClick: this.props.onReturn },
+                                'Return'
                             )
                         )
                     )

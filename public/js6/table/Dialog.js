@@ -19,6 +19,7 @@ export class Dialog extends React.Component {
         this.renderContent=this.renderContent.bind(this);
 
         this.exteriorOnSubmit=props.onSubmit;
+
         let content=props.content;
         let roles = new Set();
         this.state={
@@ -142,6 +143,8 @@ export class Dialog extends React.Component {
                 <div class="form-group">        
                     <div class="col-sm-offset-2 col-sm-10">
                         <button class="btn btn-default" onClick={this.onSubmit}>Submit</button>
+                        <button class="btn btn-default" onClick={this.props.onReturn}>Return</button>
+                        
                     </div>
                 </div>
             </form>
@@ -149,6 +152,7 @@ export class Dialog extends React.Component {
                 $('#ACTIVE').bootstrapToggle();
                 $('#TYPE').bootstrapToggle();
             </script>
+
         </div>
     }
 }
