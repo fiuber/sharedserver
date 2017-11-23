@@ -34,7 +34,7 @@ export class CarEditorButton extends React.Component{
                 <link rel="stylesheet" href="resources/css/bootstrap.min.css"/>
 		        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 		        <script src="resources/js/bootstrap.min.js"></script>
-                <Cars token={this.token} userId={this.id}/>
+                <Cars token={this.token} userId={this.id} securityLevel={this.props.securityLevel}/>
             </Popout>
             this.setState({popup});
         });

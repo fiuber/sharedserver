@@ -20,6 +20,8 @@ class Strategy{
         })
         .then((res)=>res.json())
         .then((jsn)=>{
+            console.log("CARS")
+            console.log(jsn);
             this.totalRecords=jsn.metadata.total;
             let ret=jsn.cars;
             ret.totalRecords=jsn.metadata.total;
@@ -74,6 +76,9 @@ class Strategy{
 export class Cars extends CrudTable{
     constructor(props){
         let strategy=new Strategy(props.token,props.userId);
+        if(props.securityLevel==1){
+            strategy.doDelete=null;
+        }
         super(props,strategy);
     }
 }

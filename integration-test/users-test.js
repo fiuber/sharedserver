@@ -263,6 +263,7 @@ describe("using users",function(){
                 ]
             }).expect(200)
             .expect(function(res){
+                log(res.body);
                 assert.include(res.body.user,{
                     name:"Josecito",
                     birthdate:"q"

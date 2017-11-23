@@ -8,8 +8,9 @@ import {ViewCommitsButton} from "./ViewCommitsButton"
 
 
 class Strategy{
-    constructor(token){
+    constructor(token,securityLevel){
         this.token=token;
+        this.securityLevel=securityLevel;
     }
     getAll(query){
         console.log("Iam getting all the things")
@@ -23,6 +24,8 @@ class Strategy{
         })
         .then((res)=>res.json())
         .then((jsn)=>{
+            console.log("RULESSSSS:")
+            console.log(jsn)
             this.totalRecords=jsn.metadata.total;
             console.log("LOS rules:")
             console.log(jsn.rules)
@@ -74,7 +77,7 @@ class Strategy{
             Active: {row.active}
             <br/>
 
-            <ViewCommitsButton ruleId={row.id} token={this.token}/>
+            {(this.securityLevel>1)?<ViewCommitsButton ruleId={row.id} token={this.token}/>:""}
             
         </span>);
         
@@ -134,15 +137,14 @@ class Strategy{
 
 export class Rules extends CrudTable{
     constructor(props){
-        let strategy=new Strategy(props.token);
-        /*
-        let actualCallback=()=>{};
-        let selectionCallback=(selection)=>{
-            actualCallback(selection)
+        let strategy=new Strategy(props.token,props.securityLevel);
+        if(props.securityLevel==1){
+            strategy.doCreate=null;
+            strategy.doDelete=null;
+            strategy.doUpdate=null;
         }
-        */
         super(props,strategy,props.selectionCallback);
-        //actualCallback=this.selectionCallback.bind(this);
+
     }
 
 

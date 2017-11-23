@@ -1,6 +1,6 @@
 const users=require("./users");
 const assert=require("chai").assert;
-
+const log=require("debug")("fiuber:tests")
 
 describe("Using the users model",function(){
     let firstId=null;
@@ -209,18 +209,19 @@ describe("Using the users model",function(){
 
         it("the car is there",function(){
             return users.getCars(firstId).then((cars)=>{
-                let windowIncluded=cars[0].properties.some((prop)=>
+                log(cars)
+                let windowIncluded=cars.cars[0].properties.some((prop)=>
                     prop.name==="ventana" && prop.value==="100.5"
                 )
                 assert.isTrue(windowIncluded,"The window is not included");
 
-                let seatIncluded=cars[0].properties.some((prop)=>
+                let seatIncluded=cars.cars[0].properties.some((prop)=>
                     prop.name==="asiento" && prop.value==="10000.33"
                 )
                 assert.isTrue(seatIncluded,"The seat is not included");
                 
-                myCarId=cars[0].id;
-                myCarRef=cars[0]._ref;
+                myCarId=cars.cars[0].id;
+                myCarRef=cars.cars[0]._ref;
             })
         })
 
@@ -261,7 +262,7 @@ describe("Using the users model",function(){
 
         it("The user has no cars",function(){
             return users.getCars(firstId).then((cars)=>{
-                assert.equal(cars.length,0);
+                assert.equal(cars.quantity,0);
             })
         })
 

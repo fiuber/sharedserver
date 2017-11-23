@@ -10,6 +10,9 @@ import {Trips} from "./tables/Trips";
 import {RuleEditor} from "./tables/rules/RuleEditor";
 import {Heatmap} from "./Heatmap";
 
+/**
+ * Admin: puede hacer lo que quiera con business-users, y puede ejecutar reglas
+ */
 export class App extends React.Component {
     
     constructor(props){
@@ -135,15 +138,15 @@ export class App extends React.Component {
                   <li class={this.state.currentTab == 1 ? 'active' : ''}><a onClick={this.gotoHome}>Home</a></li>
                   <li style={{display: this.state.securityLevel >= 3 ? '' : 'none'}}
                       class={this.state.currentTab == 2 ? 'active' : ''}><a onClick={this.gotoBusinessUsers}>Business Users</a></li>
-                  <li style={{display: this.state.securityLevel >= 2 ? '' : 'none'}}
+                  <li style={{display: this.state.securityLevel >= 1 ? '' : 'none'}}
                       class={this.state.currentTab == 3 ? 'active' : ''}><a onClick={this.gotoServers}>Servers</a></li>
                   <li style={{display: this.state.securityLevel >= 1 ? '' : 'none'}}
                       class={this.state.currentTab == 4 ? 'active' : ''}><a onClick={this.gotoUsers}>Users</a></li>
                   <li style={{display: this.state.securityLevel >= 1 ? '' : 'none'}}
                       class={this.state.currentTab == 5 ? 'active' : ''}><a onClick={this.gotoTrips}>Trips</a></li>
-                  <li style={{display: this.state.securityLevel >= 2 ? '' : 'none'}}
+                  <li style={{display: this.state.securityLevel >= 1 ? '' : 'none'}}
                       class={this.state.currentTab == 6 ? 'active' : ''}><a onClick={this.gotoRules}>Rules</a></li>
-                  <li style={{display: this.state.securityLevel >= 2 ? '' : 'none'}}
+                  <li style={{display: this.state.securityLevel >= 1 ? '' : 'none'}}
                       class={this.state.currentTab == 7 ? 'active' : ''}><a onClick={this.gotoHeatmap}>Heatmap</a></li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right">

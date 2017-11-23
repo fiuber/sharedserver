@@ -129,6 +129,7 @@ export class BusinessUsers extends CrudTable{
     
         constructor(props){
             let strategy=new Strategy(props.token);
+
             super(props,strategy);
         }
         

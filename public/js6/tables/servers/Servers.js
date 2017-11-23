@@ -7,7 +7,7 @@ import {CrudTable} from "../../table/CrudTable";
 import {TokenCreatorButton} from "./TokenCreatorButton"
 
 class Strategy{
-    constructor(token, username){
+    constructor(token, username,securityLevel){
         this.token=token;
         this.username=username;
     }
@@ -74,7 +74,7 @@ class Strategy{
                 style={{color: row.lastConnection < new Date().getTime() - 3600000/*1hora*/ ?  "red" : "green", padding: "2px"}}></span>
             LastConnection: {new Date(row.lastConnection).toString()}
             <br/>
-            <TokenCreatorButton token={this.token} id={row.id} />
+            {(this.securityLevel>1)?<TokenCreatorButton token={this.token} id={row.id} />:""}
             
         </span>);
     }
@@ -134,7 +134,12 @@ class Strategy{
 
 export class Servers extends CrudTable{
     constructor(props){
-        let strategy=new Strategy(props.token, props.username);
+        let strategy=new Strategy(props.token, props.username,props.securityLevel);
+        if(props.securityLevel==1){
+            strategy.doCreate=null;
+            strategy.doDelete=null;
+            strategy.doUpdate=null;
+        }
         super(props,strategy);
     }
 }

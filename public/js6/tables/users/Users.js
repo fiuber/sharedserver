@@ -24,6 +24,8 @@ class Strategy{
         })
         .then((res)=>res.json())
         .then((jsn)=>{
+            console.log("USERS")
+            console.log(jsn);
             this.totalRecords=jsn.metadata.total;
             console.log("LOS USERS:")
             console.log(jsn.users)
@@ -99,7 +101,7 @@ class Strategy{
             <br/>
             Image: {row.images[0]}
             <br/>
-            <CarEditorButton token={this.token} id={row.id}/>
+            <CarEditorButton token={this.token} id={row.id} securityLevel={this.securityLevel}/>
             
             
         </span>);
@@ -194,6 +196,12 @@ class Strategy{
 export class Users extends CrudTable{
     constructor(props){
         let strategy=new Strategy(props.token, props.securityLevel);
+        if(props.securityLevel==1){
+            strategy.doCreate=null;
+            strategy.doDelete=null;
+            strategy.doUpdate=null;
+
+        }
         super(props,strategy);
     }
 }

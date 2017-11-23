@@ -44393,6 +44393,9 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+/**
+ * Admin: puede hacer lo que quiera con business-users, y puede ejecutar reglas
+ */
 var App = exports.App = function (_React$Component) {
   _inherits(App, _React$Component);
 
@@ -44589,7 +44592,7 @@ var App = exports.App = function (_React$Component) {
                 ),
                 _react2.default.createElement(
                   'li',
-                  { style: { display: this.state.securityLevel >= 2 ? '' : 'none' },
+                  { style: { display: this.state.securityLevel >= 1 ? '' : 'none' },
                     'class': this.state.currentTab == 3 ? 'active' : '' },
                   _react2.default.createElement(
                     'a',
@@ -44619,7 +44622,7 @@ var App = exports.App = function (_React$Component) {
                 ),
                 _react2.default.createElement(
                   'li',
-                  { style: { display: this.state.securityLevel >= 2 ? '' : 'none' },
+                  { style: { display: this.state.securityLevel >= 1 ? '' : 'none' },
                     'class': this.state.currentTab == 6 ? 'active' : '' },
                   _react2.default.createElement(
                     'a',
@@ -44629,7 +44632,7 @@ var App = exports.App = function (_React$Component) {
                 ),
                 _react2.default.createElement(
                   'li',
-                  { style: { display: this.state.securityLevel >= 2 ? '' : 'none' },
+                  { style: { display: this.state.securityLevel >= 1 ? '' : 'none' },
                     'class': this.state.currentTab == 7 ? 'active' : '' },
                   _react2.default.createElement(
                     'a',
@@ -46479,6 +46482,7 @@ var BusinessUsers = exports.BusinessUsers = function (_CrudTable) {
         _classCallCheck(this, BusinessUsers);
 
         var strategy = new Strategy(props.token);
+
         return _possibleConstructorReturn(this, (BusinessUsers.__proto__ || Object.getPrototypeOf(BusinessUsers)).call(this, props, strategy));
     }
 
@@ -46835,201 +46839,207 @@ var RuleEditor = exports.RuleEditor = function (_React$Component) {
             console.log(this.state.selectedRules.length);
             var buttonClass = "btn btn-primary " + (this.state.selectedRules.length > 0 ? "" : "disabled");
 
+            var ruleEditor = _react2.default.createElement(
+                'div',
+                { style: {
+                        display: "flex",
+                        flexBasis: this.props.securityLevel < 3 ? "0%" : "50%",
+                        alignItems: "center",
+                        flexDirection: "column",
+                        margin: "10px",
+                        visibility: this.props.securityLevel < 3 ? "hidden" : "visible"
+                    } },
+                _react2.default.createElement(
+                    'h3',
+                    null,
+                    'Fact to be sent'
+                ),
+                _react2.default.createElement(
+                    'div',
+                    { id: 'sent', style: { height: "300px", margin: "10px", width: "100%" } },
+                    'asdddd'
+                ),
+                _react2.default.createElement(
+                    'div',
+                    { 'class': 'panel panel-default', style: { width: "100%" } },
+                    _react2.default.createElement(
+                        'div',
+                        { 'class': 'panel-heading' },
+                        _react2.default.createElement(
+                            'h4',
+                            { 'class': 'panel-title' },
+                            _react2.default.createElement(
+                                'a',
+                                { 'data-toggle': 'collapse', href: '#collapse2' },
+                                '"this" object reference'
+                            )
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { id: 'collapse2', 'class': 'panel-collapse collapse' },
+                        _react2.default.createElement(
+                            'div',
+                            { 'class': 'panel-body' },
+                            _react2.default.createElement(
+                                'div',
+                                { id: 'thisReference', style: {
+                                        width: "100%",
+                                        height: "400px"
+                                    } },
+                                JSON.stringify({ id: 'string',
+                                    applicationOwner: 1,
+                                    driver: { id: 1,
+                                        _ref: '229.06346204048654',
+                                        applicationOwner: '1',
+                                        password: '5159',
+                                        type: 'passenger',
+                                        username: 'soyyo5159',
+                                        name: 'José',
+                                        surname: 'Ignacio',
+                                        country: 'Argentina',
+                                        email: 'soyyo5159@hotmail.com',
+                                        birthdate: 'oneday',
+                                        fbUserId: null,
+                                        fbAuthToken: null,
+                                        balance: [],
+                                        cars: [],
+                                        images: ['muy serio.png', 'playa.png', 'serio.png'],
+                                        tripsThisMonth: 0,
+                                        tripsToday: 0,
+                                        antiqueness: 393339611,
+                                        tripsLastHour: 0,
+                                        tripsLast30m: 0,
+                                        tripsLast10m: 0 },
+                                    passenger: { id: 2,
+                                        _ref: '427.3095411010006',
+                                        applicationOwner: '1',
+                                        password: null,
+                                        type: 'passenger',
+                                        username: 'fayo5159',
+                                        name: 'Facé',
+                                        surname: 'Igfacio',
+                                        country: 'Argentina',
+                                        email: 'soyyo5159@hotmail.com',
+                                        birthdate: 'oneday',
+                                        fbUserId: 'face',
+                                        fbAuthToken: 'face',
+                                        balance: [],
+                                        cars: [],
+                                        images: ['muy serio.png', 'playa.png', 'serio.png'],
+                                        tripsThisMonth: 0,
+                                        tripsToday: 0,
+                                        antiqueness: 393339684,
+                                        tripsLastHour: 0,
+                                        tripsLast30m: 0,
+                                        tripsLast10m: 0 },
+                                    start: { timestamp: 4578999874,
+                                        address: { street: 'las heras', location: [Object] } },
+                                    end: { timestamp: 4865454687,
+                                        address: { street: 'zeballos', location: [Object] } },
+                                    totalTime: 2400,
+                                    waitTime: 300,
+                                    travelTime: 2880,
+                                    distance: 1200,
+                                    route: [],
+                                    cost: 1000,
+                                    date: '2017-11-04T13:15:39.727Z',
+                                    result: true }, null, 2)
+                            )
+                        )
+                    )
+                ),
+                _react2.default.createElement(
+                    'button',
+                    { 'class': buttonClass, onClick: this.onClick.bind(this) },
+                    'Run selected rules'
+                ),
+                _react2.default.createElement(
+                    'h3',
+                    null,
+                    'Fact received'
+                ),
+                _react2.default.createElement('div', { id: 'received', style: { height: "300px", margin: "10px", width: "100%" } }),
+                _react2.default.createElement(
+                    'div',
+                    { 'class': 'panel panel-default', style: { width: "100%" } },
+                    _react2.default.createElement(
+                        'div',
+                        { 'class': 'panel-heading' },
+                        _react2.default.createElement(
+                            'h4',
+                            { 'class': 'panel-title' },
+                            _react2.default.createElement(
+                                'a',
+                                { 'data-toggle': 'collapse', href: '#collapse1' },
+                                'Rule reference'
+                            )
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'div',
+                        { id: 'collapse1', 'class': 'panel-collapse collapse' },
+                        _react2.default.createElement(
+                            'div',
+                            { 'class': 'panel-body' },
+                            _react2.default.createElement(
+                                'div',
+                                { id: 'ruleReference', style: {
+                                        width: "100%",
+                                        height: "180px"
+                                    } },
+                                JSON.stringify({
+                                    "name": "transaction minimum",
+                                    "priority": 3,
+                                    "on": true,
+                                    "condition": "function(R) {" + "R.when(this.transactionTotal < 500);" + "}",
+                                    "consequence": "function(R) {" + "this.result = false;" + "R.stop();//R.restart()//R.next()" + "}"
+                                }, null, 2)
+                            )
+                        )
+                    )
+                )
+            );
+
             return _react2.default.createElement(
                 'div',
                 { style: { width: "100%", display: "flex", flexDirection: "row" } },
                 _react2.default.createElement(
                     'div',
-                    { style: { display: "flex", flexBasis: "50%" } },
+                    { style: { display: "flex", flexBasis: this.props.securityLevel < 3 ? "100%" : "50%" } },
                     _react2.default.createElement(_Rules.Rules, {
                         token: this.props.token,
                         securityLevel: this.props.securityLevel,
                         selectionCallback: this.selectionCallback.bind(this)
                     })
                 ),
-                _react2.default.createElement(
-                    'div',
-                    { style: {
-                            display: "flex",
-                            flexBasis: "50%",
-                            alignItems: "center",
-                            flexDirection: "column",
-                            margin: "10px"
-                        } },
-                    _react2.default.createElement(
-                        'h3',
-                        null,
-                        'Fact to be sent'
-                    ),
-                    _react2.default.createElement(
-                        'div',
-                        { id: 'sent', style: { height: "300px", margin: "10px", width: "100%" } },
-                        'asdddd'
-                    ),
-                    _react2.default.createElement(
-                        'div',
-                        { 'class': 'panel panel-default', style: { width: "100%" } },
-                        _react2.default.createElement(
-                            'div',
-                            { 'class': 'panel-heading' },
-                            _react2.default.createElement(
-                                'h4',
-                                { 'class': 'panel-title' },
-                                _react2.default.createElement(
-                                    'a',
-                                    { 'data-toggle': 'collapse', href: '#collapse2' },
-                                    '"this" object reference'
-                                )
-                            )
-                        ),
-                        _react2.default.createElement(
-                            'div',
-                            { id: 'collapse2', 'class': 'panel-collapse collapse' },
-                            _react2.default.createElement(
-                                'div',
-                                { 'class': 'panel-body' },
-                                _react2.default.createElement(
-                                    'div',
-                                    { id: 'thisReference', style: {
-                                            width: "100%",
-                                            height: "400px"
-                                        } },
-                                    JSON.stringify({ id: 'string',
-                                        applicationOwner: 1,
-                                        driver: { id: 1,
-                                            _ref: '229.06346204048654',
-                                            applicationOwner: '1',
-                                            password: '5159',
-                                            type: 'passenger',
-                                            username: 'soyyo5159',
-                                            name: 'José',
-                                            surname: 'Ignacio',
-                                            country: 'Argentina',
-                                            email: 'soyyo5159@hotmail.com',
-                                            birthdate: 'oneday',
-                                            fbUserId: null,
-                                            fbAuthToken: null,
-                                            balance: [],
-                                            cars: [],
-                                            images: ['muy serio.png', 'playa.png', 'serio.png'],
-                                            tripsThisMonth: 0,
-                                            tripsToday: 0,
-                                            antiqueness: 393339611,
-                                            tripsLastHour: 0,
-                                            tripsLast30m: 0,
-                                            tripsLast10m: 0 },
-                                        passenger: { id: 2,
-                                            _ref: '427.3095411010006',
-                                            applicationOwner: '1',
-                                            password: null,
-                                            type: 'passenger',
-                                            username: 'fayo5159',
-                                            name: 'Facé',
-                                            surname: 'Igfacio',
-                                            country: 'Argentina',
-                                            email: 'soyyo5159@hotmail.com',
-                                            birthdate: 'oneday',
-                                            fbUserId: 'face',
-                                            fbAuthToken: 'face',
-                                            balance: [],
-                                            cars: [],
-                                            images: ['muy serio.png', 'playa.png', 'serio.png'],
-                                            tripsThisMonth: 0,
-                                            tripsToday: 0,
-                                            antiqueness: 393339684,
-                                            tripsLastHour: 0,
-                                            tripsLast30m: 0,
-                                            tripsLast10m: 0 },
-                                        start: { timestamp: 4578999874,
-                                            address: { street: 'las heras', location: [Object] } },
-                                        end: { timestamp: 4865454687,
-                                            address: { street: 'zeballos', location: [Object] } },
-                                        totalTime: 2400,
-                                        waitTime: 300,
-                                        travelTime: 2880,
-                                        distance: 1200,
-                                        route: [],
-                                        cost: 1000,
-                                        date: '2017-11-04T13:15:39.727Z',
-                                        result: true }, null, 2)
-                                )
-                            )
-                        )
-                    ),
-                    _react2.default.createElement(
-                        'button',
-                        { 'class': buttonClass, onClick: this.onClick.bind(this) },
-                        'Run selected rules'
-                    ),
-                    _react2.default.createElement(
-                        'h3',
-                        null,
-                        'Fact received'
-                    ),
-                    _react2.default.createElement('div', { id: 'received', style: { height: "300px", margin: "10px", width: "100%" } }),
-                    _react2.default.createElement(
-                        'div',
-                        { 'class': 'panel panel-default', style: { width: "100%" } },
-                        _react2.default.createElement(
-                            'div',
-                            { 'class': 'panel-heading' },
-                            _react2.default.createElement(
-                                'h4',
-                                { 'class': 'panel-title' },
-                                _react2.default.createElement(
-                                    'a',
-                                    { 'data-toggle': 'collapse', href: '#collapse1' },
-                                    'Rule reference'
-                                )
-                            )
-                        ),
-                        _react2.default.createElement(
-                            'div',
-                            { id: 'collapse1', 'class': 'panel-collapse collapse' },
-                            _react2.default.createElement(
-                                'div',
-                                { 'class': 'panel-body' },
-                                _react2.default.createElement(
-                                    'div',
-                                    { id: 'ruleReference', style: {
-                                            width: "100%",
-                                            height: "180px"
-                                        } },
-                                    JSON.stringify({
-                                        "name": "transaction minimum",
-                                        "priority": 3,
-                                        "on": true,
-                                        "condition": "function(R) {" + "R.when(this.transactionTotal < 500);" + "}",
-                                        "consequence": "function(R) {" + "this.result = false;" + "R.stop();//R.restart()//R.next()" + "}"
-                                    }, null, 2)
-                                )
-                            )
-                        )
-                    )
-                )
+                this.props.securityLevel < 3 ? "" : ruleEditor
             );
         }
     }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
-            this.sentEditor = ace.edit("sent");
-            this.sentEditor.setTheme("ace/theme/clouds");
-            this.sentEditor.getSession().setMode("ace/mode/json");
 
-            this.receivedEditor = ace.edit("received");
-            this.receivedEditor.setTheme("ace/theme/clouds");
-            this.receivedEditor.getSession().setMode("ace/mode/json");
-            this.receivedEditor.setReadOnly(true);
+            if (this.props.securityLevel == 3) {
+                this.sentEditor = ace.edit("sent");
+                this.sentEditor.setTheme("ace/theme/clouds");
+                this.sentEditor.getSession().setMode("ace/mode/json");
 
-            var thisReference = ace.edit("thisReference");
-            thisReference.setTheme("ace/theme/clouds");
-            thisReference.getSession().setMode("ace/mode/json");
-            thisReference.setReadOnly(true);
+                this.receivedEditor = ace.edit("received");
+                this.receivedEditor.setTheme("ace/theme/clouds");
+                this.receivedEditor.getSession().setMode("ace/mode/json");
+                this.receivedEditor.setReadOnly(true);
 
-            var ruleReference = ace.edit("ruleReference");
-            ruleReference.setTheme("ace/theme/clouds");
-            ruleReference.getSession().setMode("ace/mode/json");
-            ruleReference.setReadOnly(true);
+                var thisReference = ace.edit("thisReference");
+                thisReference.setTheme("ace/theme/clouds");
+                thisReference.getSession().setMode("ace/mode/json");
+                thisReference.setReadOnly(true);
+
+                var ruleReference = ace.edit("ruleReference");
+                ruleReference.setTheme("ace/theme/clouds");
+                ruleReference.getSession().setMode("ace/mode/json");
+                ruleReference.setReadOnly(true);
+            }
         }
     }, {
         key: 'selectionCallback',
@@ -47081,10 +47091,11 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Strategy = function () {
-    function Strategy(token) {
+    function Strategy(token, securityLevel) {
         _classCallCheck(this, Strategy);
 
         this.token = token;
+        this.securityLevel = securityLevel;
     }
 
     _createClass(Strategy, [{
@@ -47103,6 +47114,8 @@ var Strategy = function () {
             }).then(function (res) {
                 return res.json();
             }).then(function (jsn) {
+                console.log("RULESSSSS:");
+                console.log(jsn);
                 _this.totalRecords = jsn.metadata.total;
                 console.log("LOS rules:");
                 console.log(jsn.rules);
@@ -47160,7 +47173,7 @@ var Strategy = function () {
                 'Active: ',
                 row.active,
                 _react2.default.createElement('br', null),
-                _react2.default.createElement(_ViewCommitsButton.ViewCommitsButton, { ruleId: row.id, token: this.token })
+                this.securityLevel > 1 ? _react2.default.createElement(_ViewCommitsButton.ViewCommitsButton, { ruleId: row.id, token: this.token }) : ""
             );
         }
     }, {
@@ -47236,15 +47249,13 @@ var Rules = exports.Rules = function (_CrudTable) {
     function Rules(props) {
         _classCallCheck(this, Rules);
 
-        var strategy = new Strategy(props.token);
-        /*
-        let actualCallback=()=>{};
-        let selectionCallback=(selection)=>{
-            actualCallback(selection)
+        var strategy = new Strategy(props.token, props.securityLevel);
+        if (props.securityLevel == 1) {
+            strategy.doCreate = null;
+            strategy.doDelete = null;
+            strategy.doUpdate = null;
         }
-        */
         return _possibleConstructorReturn(this, (Rules.__proto__ || Object.getPrototypeOf(Rules)).call(this, props, strategy, props.selectionCallback));
-        //actualCallback=this.selectionCallback.bind(this);
     }
 
     return Rules;
@@ -47371,7 +47382,7 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Strategy = function () {
-    function Strategy(token, username) {
+    function Strategy(token, username, securityLevel) {
         _classCallCheck(this, Strategy);
 
         this.token = token;
@@ -47453,7 +47464,7 @@ var Strategy = function () {
                 'LastConnection: ',
                 new Date(row.lastConnection).toString(),
                 _react2.default.createElement('br', null),
-                _react2.default.createElement(_TokenCreatorButton.TokenCreatorButton, { token: this.token, id: row.id })
+                this.securityLevel > 1 ? _react2.default.createElement(_TokenCreatorButton.TokenCreatorButton, { token: this.token, id: row.id }) : ""
             );
         }
     }, {
@@ -47526,7 +47537,12 @@ var Servers = exports.Servers = function (_CrudTable) {
     function Servers(props) {
         _classCallCheck(this, Servers);
 
-        var strategy = new Strategy(props.token, props.username);
+        var strategy = new Strategy(props.token, props.username, props.securityLevel);
+        if (props.securityLevel == 1) {
+            strategy.doCreate = null;
+            strategy.doDelete = null;
+            strategy.doUpdate = null;
+        }
         return _possibleConstructorReturn(this, (Servers.__proto__ || Object.getPrototypeOf(Servers)).call(this, props, strategy));
     }
 
@@ -47757,7 +47773,7 @@ var CarEditorButton = exports.CarEditorButton = function (_React$Component) {
                     _react2.default.createElement('link', { rel: 'stylesheet', href: 'resources/css/bootstrap.min.css' }),
                     _react2.default.createElement('script', { src: 'https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js' }),
                     _react2.default.createElement('script', { src: 'resources/js/bootstrap.min.js' }),
-                    _react2.default.createElement(_Cars.Cars, { token: _this2.token, userId: _this2.id })
+                    _react2.default.createElement(_Cars.Cars, { token: _this2.token, userId: _this2.id, securityLevel: _this2.props.securityLevel })
                 );
                 _this2.setState({ popup: popup });
             });
@@ -47861,6 +47877,8 @@ var Strategy = function () {
             }).then(function (res) {
                 return res.json();
             }).then(function (jsn) {
+                console.log("CARS");
+                console.log(jsn);
                 _this.totalRecords = jsn.metadata.total;
                 var ret = jsn.cars;
                 ret.totalRecords = jsn.metadata.total;
@@ -47942,6 +47960,9 @@ var Cars = exports.Cars = function (_CrudTable) {
         _classCallCheck(this, Cars);
 
         var strategy = new Strategy(props.token, props.userId);
+        if (props.securityLevel == 1) {
+            strategy.doDelete = null;
+        }
         return _possibleConstructorReturn(this, (Cars.__proto__ || Object.getPrototypeOf(Cars)).call(this, props, strategy));
     }
 
@@ -48009,6 +48030,8 @@ var Strategy = function () {
             }).then(function (res) {
                 return res.json();
             }).then(function (jsn) {
+                console.log("USERS");
+                console.log(jsn);
                 _this.totalRecords = jsn.metadata.total;
                 console.log("LOS USERS:");
                 console.log(jsn.users);
@@ -48095,7 +48118,7 @@ var Strategy = function () {
                 'Image: ',
                 row.images[0],
                 _react2.default.createElement('br', null),
-                _react2.default.createElement(_CarEditorButton.CarEditorButton, { token: this.token, id: row.id })
+                _react2.default.createElement(_CarEditorButton.CarEditorButton, { token: this.token, id: row.id, securityLevel: this.securityLevel })
             );
         }
     }, {
@@ -48194,6 +48217,11 @@ var Users = exports.Users = function (_CrudTable) {
         _classCallCheck(this, Users);
 
         var strategy = new Strategy(props.token, props.securityLevel);
+        if (props.securityLevel == 1) {
+            strategy.doCreate = null;
+            strategy.doDelete = null;
+            strategy.doUpdate = null;
+        }
         return _possibleConstructorReturn(this, (Users.__proto__ || Object.getPrototypeOf(Users)).call(this, props, strategy));
     }
 
