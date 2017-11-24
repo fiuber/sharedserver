@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import "whatwg-fetch";
-import Popout from 'react-popout';
 import {Dialog} from "./Dialog";
 
 
@@ -11,8 +10,17 @@ export class CreationDialogOpener extends React.Component{
         this.onSubmitCallback=props.onSubmit;
     }
     onSubmit(content){
-        this.props.gotoPrevious();
-        this.onSubmitCallback(content);
+        console.log("==================");
+        //ANDA MAL
+        //this.onSubmitCallback(content);
+        //this.props.gotoPrevious();
+        // ANDA PEOR
+        this.onSubmitCallback(content).then(()=>{
+            this.props.gotoPrevious();
+        });
+        
+        
+        
     }
     onReturn(){
         this.props.gotoPrevious();

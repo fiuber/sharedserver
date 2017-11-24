@@ -137,17 +137,26 @@ export class Dialog extends React.Component {
 
     }*/
     render(){
-        return <div  class="container" id="formNew" onSubmit={this.onSubmit}>
-            <form class="form-horizontal">
+        return <div  class="dialogContainer" id="formNew" onSubmit={this.onSubmit}>
+            <div class="form-horizontal" style={{
+                margin:"30px"
+            }}>
                 {this.state.renderedParts}
                 <div class="form-group">        
-                    <div class="col-sm-offset-2 col-sm-10">
-                        <button class="btn btn-default" onClick={this.onSubmit}>Submit</button>
-                        <button class="btn btn-default" onClick={this.props.onReturn}>Return</button>
+                    <div class="col-sm-offset-2 col-sm-10" style={{
+                        display:"flex",
+                        flexDirection:"row",
+                        justifyContent:"space-between"
+                    }}>
+
+                        <button style={{align:"left"}} class="btn btn-default" onClick={this.props.onReturn}>Return</button>
+
+
+                        <button style={{align:"right"}} class="btn btn-primary" onClick={this.onSubmit}>Submit</button>
                         
                     </div>
                 </div>
-            </form>
+            </div>
             <script>
                 $('#ACTIVE').bootstrapToggle();
                 $('#TYPE').bootstrapToggle();

@@ -10,7 +10,6 @@ export class Row extends React.Component{
         this.state={
             row:props.data,
             expanded:false,
-            popup:<span></span>
         }
         this.renderOpened=props.renderOpened;
         this.renderClosed=props.renderClosed;
@@ -25,23 +24,23 @@ export class Row extends React.Component{
     }
 
     onSubmit(content){
-        this.removePopup();
-        this.updateCallback(content);
+        this.updateCallback(content).then(()=>{
+            this.props.gotoPrevious();
+        })
     }
 
-    removePopup(){
-        this.setState({popup:<span></span>});
+    onReturn(){
+        this.props.gotoPrevious();
     }
 
 
     onUpdate(){
         let username=this.state.row.username;
-        let popup=(
-        <Popout  title='Updating' url={window.location.origin + "/dialog.html"} onClosing={this.removePopup.bind(this)}>
-            <Dialog content={this.state.row} onSubmit={this.onSubmit.bind(this)} />
-        </Popout>
-        );
-        this.setState({popup});
+        this.props.goto(()=><Dialog 
+            content={this.state.row} 
+            onSubmit={this.onSubmit.bind(this)} 
+            onReturn={this.onReturn.bind(this)}    
+        />)
     }
 
     onOpen(){
@@ -62,7 +61,7 @@ export class Row extends React.Component{
             renderedRowData=<span><a onClick={this.onOpen }>(+)</a>{this.renderClosed()}</span>;
         }
 
-        let updateCell=<td><a onClick={this.onUpdate}>{this.state.popup}<span align="center" class="glyphicon glyphicon-edit"></span></a></td>;
+        let updateCell=<td><a onClick={this.onUpdate}><span align="center" class="glyphicon glyphicon-edit"></span></a></td>;
         let removeCell=<td><a onClick={this.removeCallback}><span align="center" class="glyphicon glyphicon-remove"></span></a></td>;
         let selectCell=()=><td><input type="checkbox" checked={this.props.checked} onChange={this.props.onChange}/></td>
 

@@ -44474,7 +44474,8 @@ var App = exports.App = function (_React$Component) {
         username: "",
         password: "",
         token: "",
-        currentTab: 1 });
+        currentTab: 1
+      });
     }
   }, {
     key: 'gotoHome',
@@ -45182,10 +45183,6 @@ var _reactDom2 = _interopRequireDefault(_reactDom);
 
 require('whatwg-fetch');
 
-var _reactPopout = require('react-popout');
-
-var _reactPopout2 = _interopRequireDefault(_reactPopout);
-
 var _Dialog = require('./Dialog');
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
@@ -45211,8 +45208,16 @@ var CreationDialogOpener = exports.CreationDialogOpener = function (_React$Compo
     _createClass(CreationDialogOpener, [{
         key: 'onSubmit',
         value: function onSubmit(content) {
-            this.props.gotoPrevious();
-            this.onSubmitCallback(content);
+            var _this2 = this;
+
+            console.log("==================");
+            //ANDA MAL
+            //this.onSubmitCallback(content);
+            //this.props.gotoPrevious();
+            // ANDA PEOR
+            this.onSubmitCallback(content).then(function () {
+                _this2.props.gotoPrevious();
+            });
         }
     }, {
         key: 'onReturn',
@@ -45222,13 +45227,13 @@ var CreationDialogOpener = exports.CreationDialogOpener = function (_React$Compo
     }, {
         key: 'openPopup',
         value: function openPopup() {
-            var _this2 = this;
+            var _this3 = this;
 
             this.props.goto(function () {
                 return _react2.default.createElement(_Dialog.Dialog, {
-                    content: _this2.props.content,
-                    onSubmit: _this2.onSubmit.bind(_this2),
-                    onReturn: _this2.onReturn.bind(_this2)
+                    content: _this3.props.content,
+                    onSubmit: _this3.onSubmit.bind(_this3),
+                    onReturn: _this3.onReturn.bind(_this3)
                 });
             });
         }
@@ -45251,7 +45256,7 @@ var CreationDialogOpener = exports.CreationDialogOpener = function (_React$Compo
     return CreationDialogOpener;
 }(_react2.default.Component);
 
-},{"./Dialog":233,"react":223,"react-dom":61,"react-popout":64,"whatwg-fetch":225}],232:[function(require,module,exports){
+},{"./Dialog":233,"react":223,"react-dom":61,"whatwg-fetch":225}],232:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -45365,7 +45370,7 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
                     totalRecords: all.totalRecords
                 });
 
-                return Math.ceil(all.totalRecords / 10);
+                return Promise.resolve(Math.ceil(all.totalRecords / 10));
             });
         }
     }, {
@@ -45378,12 +45383,16 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
         value: function onUpdate(row, content) {
             var _this3 = this;
 
-            this.strategy.doUpdate(row, content).then(function (response) {
+            return this.strategy.doUpdate(row, content).then(function (response) {
                 console.log(response);
                 if (response.status == 200) {
-                    _this3.refresh();
+                    return _this3.refresh();
                 } else {
                     alert("unauthorized!");
+                    return response.json().then(function (e) {
+                        console.log(e);
+                        return Promise.reject("unauthorized");
+                    });
                 }
             });
         }
@@ -45392,12 +45401,12 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
         value: function onCreate(object) {
             var _this4 = this;
 
-            this.strategy.doCreate(object).then(function (response) {
-                console.log(response);
+            return this.strategy.doCreate(object).then(function (response) {
                 if (response.status == 201) {
-                    _this4.refresh();
+                    return _this4.refresh();
                 } else {
                     alert("unauthorized!");
+                    return Promise.reject("unauthorized");
                 }
             });
         }
@@ -45452,7 +45461,9 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
                 renderOpened: renderOpened,
                 renderClosed: renderClosed,
                 checked: this.state.selectedRows.includes(key),
-                onChange: this.selectionCallback ? this.changeCheck.bind(this, key) : null
+                onChange: this.selectionCallback ? this.changeCheck.bind(this, key) : null,
+                goto: this.props.goto,
+                gotoPrevious: this.props.gotoPrevious
             });
         }
     }, {
@@ -45805,26 +45816,32 @@ var Dialog = exports.Dialog = function (_React$Component) {
         value: function render() {
             return _react2.default.createElement(
                 'div',
-                { 'class': 'container', id: 'formNew', onSubmit: this.onSubmit },
+                { 'class': 'dialogContainer', id: 'formNew', onSubmit: this.onSubmit },
                 _react2.default.createElement(
-                    'form',
-                    { 'class': 'form-horizontal' },
+                    'div',
+                    { 'class': 'form-horizontal', style: {
+                            margin: "30px"
+                        } },
                     this.state.renderedParts,
                     _react2.default.createElement(
                         'div',
                         { 'class': 'form-group' },
                         _react2.default.createElement(
                             'div',
-                            { 'class': 'col-sm-offset-2 col-sm-10' },
+                            { 'class': 'col-sm-offset-2 col-sm-10', style: {
+                                    display: "flex",
+                                    flexDirection: "row",
+                                    justifyContent: "space-between"
+                                } },
                             _react2.default.createElement(
                                 'button',
-                                { 'class': 'btn btn-default', onClick: this.onSubmit },
-                                'Submit'
+                                { style: { align: "left" }, 'class': 'btn btn-default', onClick: this.props.onReturn },
+                                'Return'
                             ),
                             _react2.default.createElement(
                                 'button',
-                                { 'class': 'btn btn-default', onClick: this.props.onReturn },
-                                'Return'
+                                { style: { align: "right" }, 'class': 'btn btn-primary', onClick: this.onSubmit },
+                                'Submit'
                             )
                         )
                     )
@@ -46194,8 +46211,7 @@ var Row = exports.Row = function (_React$Component) {
 
         _this.state = {
             row: props.data,
-            expanded: false,
-            popup: _react2.default.createElement('span', null)
+            expanded: false
         };
         _this.renderOpened = props.renderOpened;
         _this.renderClosed = props.renderClosed;
@@ -46213,24 +46229,30 @@ var Row = exports.Row = function (_React$Component) {
     _createClass(Row, [{
         key: 'onSubmit',
         value: function onSubmit(content) {
-            this.removePopup();
-            this.updateCallback(content);
+            var _this2 = this;
+
+            this.updateCallback(content).then(function () {
+                _this2.props.gotoPrevious();
+            });
         }
     }, {
-        key: 'removePopup',
-        value: function removePopup() {
-            this.setState({ popup: _react2.default.createElement('span', null) });
+        key: 'onReturn',
+        value: function onReturn() {
+            this.props.gotoPrevious();
         }
     }, {
         key: 'onUpdate',
         value: function onUpdate() {
+            var _this3 = this;
+
             var username = this.state.row.username;
-            var popup = _react2.default.createElement(
-                _reactPopout2.default,
-                { title: 'Updating', url: window.location.origin + "/dialog.html", onClosing: this.removePopup.bind(this) },
-                _react2.default.createElement(_Dialog.Dialog, { content: this.state.row, onSubmit: this.onSubmit.bind(this) })
-            );
-            this.setState({ popup: popup });
+            this.props.goto(function () {
+                return _react2.default.createElement(_Dialog.Dialog, {
+                    content: _this3.state.row,
+                    onSubmit: _this3.onSubmit.bind(_this3),
+                    onReturn: _this3.onReturn.bind(_this3)
+                });
+            });
         }
     }, {
         key: 'onOpen',
@@ -46245,7 +46267,7 @@ var Row = exports.Row = function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
-            var _this2 = this;
+            var _this4 = this;
 
             var renderedRowData = _react2.default.createElement('span', null);
             var row = this.state.row;
@@ -46279,7 +46301,6 @@ var Row = exports.Row = function (_React$Component) {
                 _react2.default.createElement(
                     'a',
                     { onClick: this.onUpdate },
-                    this.state.popup,
                     _react2.default.createElement('span', { align: 'center', 'class': 'glyphicon glyphicon-edit' })
                 )
             );
@@ -46296,7 +46317,7 @@ var Row = exports.Row = function (_React$Component) {
                 return _react2.default.createElement(
                     'td',
                     null,
-                    _react2.default.createElement('input', { type: 'checkbox', checked: _this2.props.checked, onChange: _this2.props.onChange })
+                    _react2.default.createElement('input', { type: 'checkbox', checked: _this4.props.checked, onChange: _this4.props.onChange })
                 );
             };
 
@@ -46383,6 +46404,9 @@ var Strategy = function () {
     }, {
         key: 'doUpdate',
         value: function doUpdate(row, content) {
+            console.log("ACTUALIZO BUSINESS USERS");
+            console.log(content);
+            console.log(row);
             return fetch("/business-users/" + row.username, {
                 method: "PUT",
                 headers: {
@@ -46394,8 +46418,17 @@ var Strategy = function () {
                     password: content.password,
                     name: content.name,
                     surname: content.surname,
-                    roles: [content.role]
+                    roles: content.role,
+                    _ref: row._ref
                 })
+            }).then(function (e) {
+                console.log("·············");
+                console.log(e);
+                return e.json();
+            }).then(function (json) {
+                console.log(4444);
+                console.log(json);
+                return json;
             });
         }
     }, {
@@ -48076,28 +48109,16 @@ var Strategy = function () {
     }, {
         key: 'doUpdate',
         value: function doUpdate(row, content) {
+            console.log("ACTUALIZO USERES");
+            console.log(content);
+            console.log(row);
             return fetch("/users/" + row.id, {
                 method: "PUT",
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': 'api-key ' + this.token
                 },
-                body: JSON.stringify({
-                    "_ref": "string",
-                    "type": "string",
-                    "username": "string",
-                    "password": "string",
-                    "fb": {
-                        "userId": "string",
-                        "authToken": "string"
-                    },
-                    "firstName": "string",
-                    "lastName": "string",
-                    "country": "string",
-                    "email": "string",
-                    "birthdate": "string",
-                    "images": ["string"]
-                })
+                body: JSON.stringify(content)
             });
         }
     }, {

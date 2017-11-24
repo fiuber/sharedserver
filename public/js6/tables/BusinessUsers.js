@@ -27,6 +27,9 @@ class Strategy {
     }
 
     doUpdate(row,content){
+        console.log("ACTUALIZO BUSINESS USERS")
+        console.log(content);
+        console.log(row);
         return fetch("/business-users/"+row.username,{
             method:"PUT",
             headers: {
@@ -38,8 +41,17 @@ class Strategy {
                 password:content.password,
                 name:content.name,
                 surname:content.surname,
-                roles:[content.role]
+                roles:content.role,
+                _ref:row._ref
             })
+        }).then((e)=>{
+            console.log("·············")
+            console.log(e);
+            return e.json();
+        }).then((json)=>{
+            console.log(4444)
+            console.log(json);
+            return json;
         })
     }
 

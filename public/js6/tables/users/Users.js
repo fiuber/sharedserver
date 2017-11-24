@@ -39,30 +39,16 @@ class Strategy{
     }
 
     doUpdate(row,content){
+        console.log("ACTUALIZO USERES")
+        console.log(content);
+        console.log(row);
         return fetch("/users/"+row.id,{
             method:"PUT",
             headers: {
               'Content-Type': 'application/json',
               'Authorization': 'api-key '+this.token
             },
-            body:JSON.stringify({
-                "_ref": "string",
-                "type": "string",
-                "username": "string",
-                "password": "string",
-                "fb": {
-                  "userId": "string",
-                  "authToken": "string"
-                },
-                "firstName": "string",
-                "lastName": "string",
-                "country": "string",
-                "email": "string",
-                "birthdate": "string",
-                "images": [
-                  "string"
-                ]
-            })
+            body:JSON.stringify(content)
         })
     }
 
