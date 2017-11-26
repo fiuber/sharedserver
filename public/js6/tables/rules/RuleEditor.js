@@ -184,6 +184,8 @@ export class RuleEditor extends React.Component {
                     token={this.props.token} 
                     securityLevel={this.props.securityLevel} 
                     selectionCallback={this.selectionCallback.bind(this)}
+                    goto={this.props.goto}
+                    gotoPrevious={this.props.gotoPrevious} 
                     />
             </div>
             {(this.props.securityLevel<3)?"":ruleEditor}

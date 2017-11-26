@@ -46,11 +46,9 @@ export class Dialog extends React.Component {
                         </div>
                     break;
                 case "ACTIVE":
-                    return <Toggle onClick={this.boolSlide} name={key} on="Active" off="Inactive" onstyle="success" offstyle="danger" active={this.state.toggleActive}/>
+                return <span>Active:<input type="checkbox" onClick={this.boolSlide} name={key} checked={this.state.toggleActive}/></span>
+                    //return <div><Toggle onClick={this.boolSlide} name={key} on="Active" off="Inactive" onstyle="success" offstyle="danger" active={this.state.toggleActive}/></div>
                     break;
-                //case "TYPE":
-                //    return <input onChange={this.typeSlide} id={key.toUpperCase()} type="checkbox" name={key} checked data-toggle="toggle" data-on="Passenger" data-off="Driver" data-onstyle="primary" data-offstyle="success" data-style="ios"/>
-                //    break;
                 default:
                     return <div class="form-group">
                             <label class="control-label col-sm-2">{key}:</label>        
@@ -99,7 +97,7 @@ export class Dialog extends React.Component {
 
         let state = !this.state.toggleActive;
         this.setState({
-            toggleActive: event,
+            toggleActive: event.target.checked,//event solo, con el slider reeee lindo
         },()=>{
             this.setState({
                 renderedParts:this.renderContent(this.state.content)

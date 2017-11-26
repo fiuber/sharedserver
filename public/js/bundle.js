@@ -45703,11 +45703,14 @@ var Dialog = exports.Dialog = function (_React$Component) {
                         );
                         break;
                     case "ACTIVE":
-                        return _react2.default.createElement(_reactBootstrapToggle2.default, { onClick: _this2.boolSlide, name: key, on: 'Active', off: 'Inactive', onstyle: 'success', offstyle: 'danger', active: _this2.state.toggleActive });
+                        return _react2.default.createElement(
+                            'span',
+                            null,
+                            'Active:',
+                            _react2.default.createElement('input', { type: 'checkbox', onClick: _this2.boolSlide, name: key, checked: _this2.state.toggleActive })
+                        );
+                        //return <div><Toggle onClick={this.boolSlide} name={key} on="Active" off="Inactive" onstyle="success" offstyle="danger" active={this.state.toggleActive}/></div>
                         break;
-                    //case "TYPE":
-                    //    return <input onChange={this.typeSlide} id={key.toUpperCase()} type="checkbox" name={key} checked data-toggle="toggle" data-on="Passenger" data-off="Driver" data-onstyle="primary" data-offstyle="success" data-style="ios"/>
-                    //    break;
                     default:
                         return _react2.default.createElement(
                             'div',
@@ -45770,7 +45773,7 @@ var Dialog = exports.Dialog = function (_React$Component) {
 
             var state = !this.state.toggleActive;
             this.setState({
-                toggleActive: event
+                toggleActive: event.target.checked //event solo, con el slider reeee lindo
             }, function () {
                 _this4.setState({
                     renderedParts: _this4.renderContent(_this4.state.content)
@@ -47073,7 +47076,9 @@ var RuleEditor = exports.RuleEditor = function (_React$Component) {
                     _react2.default.createElement(_Rules.Rules, {
                         token: this.props.token,
                         securityLevel: this.props.securityLevel,
-                        selectionCallback: this.selectionCallback.bind(this)
+                        selectionCallback: this.selectionCallback.bind(this),
+                        goto: this.props.goto,
+                        gotoPrevious: this.props.gotoPrevious
                     })
                 ),
                 this.props.securityLevel < 3 ? "" : ruleEditor
