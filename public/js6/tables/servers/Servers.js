@@ -10,6 +10,7 @@ class Strategy{
     constructor(token, username,securityLevel){
         this.token=token;
         this.username=username;
+        this.securityLevel=securityLevel;
     }
     getAll(query){
         return fetch("/servers"+query,{

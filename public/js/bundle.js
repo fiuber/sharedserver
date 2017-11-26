@@ -47450,6 +47450,7 @@ var Strategy = function () {
 
         this.token = token;
         this.username = username;
+        this.securityLevel = securityLevel;
     }
 
     _createClass(Strategy, [{
