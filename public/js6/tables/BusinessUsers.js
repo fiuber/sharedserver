@@ -30,6 +30,20 @@ class Strategy {
         console.log("ACTUALIZO BUSINESS USERS")
         console.log(content);
         console.log(row);
+        console.log({
+            username:row.username,
+            password:content.Password,
+            name:content.Name,
+            surname:content.Surname,
+            roles:row.roles.concat(content.roles),
+            _ref:row._ref
+        });
+        let newRoles=null;
+        if(content.Role==undefined || newRoles==null){
+            newRoles=[]
+        }else{
+            newRoles=content.Role;
+        }
         return fetch("/business-users/"+row.username,{
             method:"PUT",
             headers: {
@@ -38,20 +52,12 @@ class Strategy {
             },
             body:JSON.stringify({
                 username:row.username,
-                password:content.password,
-                name:content.name,
-                surname:content.surname,
-                roles:content.role,
+                password:content.Password,
+                name:content.Name,
+                surname:content.Surname,
+                roles:row.roles.concat(newRoles),
                 _ref:row._ref
             })
-        }).then((e)=>{
-            console.log("·············")
-            console.log(e);
-            return e.json();
-        }).then((json)=>{
-            console.log(4444)
-            console.log(json);
-            return json;
         })
     }
 

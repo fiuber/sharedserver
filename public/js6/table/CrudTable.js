@@ -75,6 +75,7 @@ export class CrudTable extends React.Component {
                     return this.refresh();
                 } else {
                     alert("unauthorized!")
+                    console.log(response)
                     return response.json().then((e)=>{
                         console.log(e)
                         return Promise.reject("unauthorized")

@@ -44,7 +44,6 @@ function ifExists(id,fun,nonexistent){
 }
 
 exports.ping=function(nonexistent,badRevision,me){
-    console.log("ENTRA")
     let expiresAtDate = new Date();
     expiresAtDate.setDate(expiresAtDate.getDate()+3);
     let expiresAt = expiresAtDate.getTime();

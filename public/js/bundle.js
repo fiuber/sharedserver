@@ -45389,6 +45389,7 @@ var CrudTable = exports.CrudTable = function (_React$Component) {
                     return _this3.refresh();
                 } else {
                     alert("unauthorized!");
+                    console.log(response);
                     return response.json().then(function (e) {
                         console.log(e);
                         return Promise.reject("unauthorized");
@@ -46410,6 +46411,20 @@ var Strategy = function () {
             console.log("ACTUALIZO BUSINESS USERS");
             console.log(content);
             console.log(row);
+            console.log({
+                username: row.username,
+                password: content.Password,
+                name: content.Name,
+                surname: content.Surname,
+                roles: row.roles.concat(content.roles),
+                _ref: row._ref
+            });
+            var newRoles = null;
+            if (content.Role == undefined || newRoles == null) {
+                newRoles = [];
+            } else {
+                newRoles = content.Role;
+            }
             return fetch("/business-users/" + row.username, {
                 method: "PUT",
                 headers: {
@@ -46418,20 +46433,12 @@ var Strategy = function () {
                 },
                 body: JSON.stringify({
                     username: row.username,
-                    password: content.password,
-                    name: content.name,
-                    surname: content.surname,
-                    roles: content.role,
+                    password: content.Password,
+                    name: content.Name,
+                    surname: content.Surname,
+                    roles: row.roles.concat(newRoles),
                     _ref: row._ref
                 })
-            }).then(function (e) {
-                console.log("·············");
-                console.log(e);
-                return e.json();
-            }).then(function (json) {
-                console.log(4444);
-                console.log(json);
-                return json;
             });
         }
     }, {
