@@ -126,7 +126,10 @@ export class Dialog extends React.Component {
     }
 
     onSubmit(){
-       this.exteriorOnSubmit(this.state.content);
+        if(this.exteriorOnSubmit){
+            this.exteriorOnSubmit(this.state.content);
+        }
+       
     }
 
     /*componentDidMount() {
@@ -146,10 +149,11 @@ export class Dialog extends React.Component {
                         flexDirection:"row",
                         justifyContent:"space-between"
                     }}>
+                        {this.props.onReturn?
+                        <button style={{align:"left"}} class="btn btn-default" onClick={this.props.onReturn}>Return</button>:
+                        ""}
 
-                        <button style={{align:"left"}} class="btn btn-default" onClick={this.props.onReturn}>Return</button>
-
-
+                        
                         <button style={{align:"right"}} class="btn btn-primary" onClick={this.onSubmit}>Submit</button>
                         
                     </div>

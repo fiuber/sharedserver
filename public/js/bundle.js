@@ -44460,6 +44460,9 @@ var App = exports.App = function (_React$Component) {
   _createClass(App, [{
     key: 'gotoPrevious',
     value: function gotoPrevious() {
+      if (this.previous.length == 0) {
+        this.previous.push(this.gotoHome);
+      }
       this.setState({
         current: this.previous.pop()
       });
@@ -45116,6 +45119,8 @@ var _reactDom2 = _interopRequireDefault(_reactDom);
 
 require('whatwg-fetch');
 
+var _Dialog = require('./table/Dialog');
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -45133,20 +45138,126 @@ var MainScreen = exports.MainScreen = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (MainScreen.__proto__ || Object.getPrototypeOf(MainScreen)).call(this, props));
 
         _this.token = props.token;
+        _this.state = {
+            me: {
+                "username": "(loading)",
+                "name": "(loading)",
+                "surname": "(loading)",
+                "roles": []
+            }
+        };
+        _this.content = {
+            "password": "pa$$word",
+            "name": "string",
+            "surname": "string"
+        };
+
+        fetch("/business-users/me", {
+            method: "GET",
+            headers: {
+                'Authorization': 'api-key ' + _this.token
+            }
+        }).then(function (res) {
+            return res.json();
+        }).then(function (jsn) {
+            _this.setState({
+                me: jsn.businessUser
+            });
+        });
+
         return _this;
     }
 
     _createClass(MainScreen, [{
+        key: 'onSubmit',
+        value: function onSubmit(values) {
+            var _this2 = this;
+
+            console.log("3333333333333333333333333333333");
+            console.log(values);
+            console.log({
+                "_ref": this.state.me._ref,
+                "username": this.state.me.username,
+                "password": values.password,
+                "name": values.name,
+                "surname": values.surname,
+                "roles": []
+            });
+            return fetch("/business-users/me", {
+                method: "PUT",
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'api-key ' + this.token
+                },
+                body: JSON.stringify({
+                    "_ref": this.state.me._ref,
+                    "username": this.state.me.username,
+                    "password": values.password,
+                    "name": values.name,
+                    "surname": values.surname,
+                    "roles": []
+                })
+            })
+            /*
+            .then((res)=>{
+                console.log("THE RESPONSE------");
+                console.log(res);
+            })
+            */
+
+            .then(function (res) {
+                return res.json();
+            }).then(function (jsn) {
+                console.log("LO QUE LLEGA::");
+                console.log(jsn);
+                _this2.setState({
+                    me: jsn.businessUser
+                });
+            });
+        }
+    }, {
         key: 'render',
         value: function render() {
-            return _react2.default.createElement('div', null);
+            return _react2.default.createElement(
+                'div',
+                null,
+                _react2.default.createElement(
+                    'h1',
+                    null,
+                    'Welcome, ',
+                    this.state.me.name,
+                    ' ',
+                    this.state.me.surname
+                ),
+                _react2.default.createElement(
+                    'h3',
+                    null,
+                    'Logged in as ',
+                    this.state.me.username
+                ),
+                _react2.default.createElement(
+                    'h4',
+                    null,
+                    'Click "Submit" to modify your account information"'
+                ),
+                _react2.default.createElement(
+                    'ul',
+                    null,
+                    'You are a ',
+                    this.state.me.roles.join(", ")
+                ),
+                _react2.default.createElement(_Dialog.Dialog, {
+                    content: this.content,
+                    onSubmit: this.onSubmit.bind(this)
+                })
+            );
         }
     }]);
 
     return MainScreen;
 }(_react2.default.Component);
 
-},{"react":223,"react-dom":61,"whatwg-fetch":225}],230:[function(require,module,exports){
+},{"./table/Dialog":233,"react":223,"react-dom":61,"whatwg-fetch":225}],230:[function(require,module,exports){
 'use strict';
 
 var _reactDom = require('react-dom');
@@ -45808,7 +45919,9 @@ var Dialog = exports.Dialog = function (_React$Component) {
     }, {
         key: 'onSubmit',
         value: function onSubmit() {
-            this.exteriorOnSubmit(this.state.content);
+            if (this.exteriorOnSubmit) {
+                this.exteriorOnSubmit(this.state.content);
+            }
         }
 
         /*componentDidMount() {
@@ -45837,11 +45950,11 @@ var Dialog = exports.Dialog = function (_React$Component) {
                                     flexDirection: "row",
                                     justifyContent: "space-between"
                                 } },
-                            _react2.default.createElement(
+                            this.props.onReturn ? _react2.default.createElement(
                                 'button',
                                 { style: { align: "left" }, 'class': 'btn btn-default', onClick: this.props.onReturn },
                                 'Return'
-                            ),
+                            ) : "",
                             _react2.default.createElement(
                                 'button',
                                 { style: { align: "right" }, 'class': 'btn btn-primary', onClick: this.onSubmit },

@@ -28,8 +28,8 @@ export class CreationDialogOpener extends React.Component{
     openPopup(){
         this.props.goto(()=>
             <Dialog 
-                content={this.props.content} 
-                onSubmit={this.onSubmit.bind(this)} 
+                content={this.props.content}
+                onSubmit={this.onSubmit.bind(this)}
                 onReturn={this.onReturn.bind(this)}
             />
         )

@@ -54,6 +54,9 @@ export class App extends React.Component {
 
   }
   gotoPrevious() {
+    if(this.previous.length==0){
+      this.previous.push(this.gotoHome)
+    }
     this.setState({
       current: this.previous.pop()
     })
