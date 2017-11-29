@@ -36,7 +36,7 @@ export class Row extends React.Component{
     onUpdate(){
         let username=this.state.row.username;
         this.props.goto(()=><Dialog 
-            content={this.state.row} 
+            content={this.state.row}
             onSubmit={this.onSubmit.bind(this)} 
             onReturn={this.onReturn.bind(this)}    
         />)

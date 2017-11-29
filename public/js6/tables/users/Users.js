@@ -49,7 +49,17 @@ class Strategy{
               'Content-Type': 'application/json',
               'Authorization': 'api-key '+this.token
             },
-            body:JSON.stringify(content)
+            body:JSON.stringify({
+                _ref:row._ref,
+                type:content.type,
+                username:content.username,
+                firstName:content.firstName,
+                lastName:content.lastName,
+                country:content.country,
+                email:content.email,
+                birthdate:content.birthdate,
+                images:row.images
+            })
         })
     }
 
@@ -111,14 +121,13 @@ class Strategy{
 
     defaults(row){
         return {
-            type:"type",
-            username:"username",
-            password:"password",
-            firstName:"firstName",
-            lastName:"lastName",
-            country:"country",
-            email:"email",
-            birthdate:"birthdate"
+            type:row.type,
+            username:row.username,
+            firstName:row.name,
+            lastName:row.surname,
+            country:row.country,
+            email:row.email,
+            birthdate:row.birthdate
         };
     }
 

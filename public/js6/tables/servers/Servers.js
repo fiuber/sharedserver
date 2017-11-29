@@ -103,7 +103,7 @@ class Strategy{
 
     defaultCreationContent(){
         return {
-            name:"name",
+            name:"",
         };
     }
 

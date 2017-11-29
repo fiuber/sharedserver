@@ -31,18 +31,12 @@ class Strategy {
         console.log(row);
         console.log({
             username:row.username,
-            password:content.Password,
-            name:content.Name,
-            surname:content.Surname,
-            roles:row.roles.concat(content.roles),
+            password:content.password,
+            name:content.name,
+            surname:content.surname,
+            roles:content.roles,
             _ref:row._ref
         });
-        let newRoles=null;
-        if(content.Role==undefined || newRoles==null){
-            newRoles=[]
-        }else{
-            newRoles=content.Role;
-        }
         return fetch("/business-users/"+row.username,{
             method:"PUT",
             headers: {
@@ -51,10 +45,10 @@ class Strategy {
             },
             body:JSON.stringify({
                 username:row.username,
-                password:content.Password,
-                name:content.Name,
-                surname:content.Surname,
-                roles:row.roles.concat(newRoles),
+                password:content.password,
+                name:content.name,
+                surname:content.surname,
+                roles:content.roles,
                 _ref:row._ref
             })
         })
@@ -95,10 +89,10 @@ class Strategy {
 
     defaults(row){
         return {
-            Password: row.password,
-            Name: row.name,
-            Surname: row.surname,
-            Role: row.roles[0]
+            password: row.password,
+            name: row.name,
+            surname: row.surname,
+            roles: row.roles
         }
     }
 

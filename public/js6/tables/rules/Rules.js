@@ -98,17 +98,30 @@ class Strategy{
     }
 
     defaults(row){
+        console.log("CREATE DEFAULTS FROM")
+        console.log(row);
         return {
-          "language": "string",
-          "blob": "string",
-          "active": true
+          "language": row.language,
+          "blob": row.blob,
+          "active": row.active
         };
     }
 
     defaultCreationContent(){
         return {
-          "language": "string",
-          "blob": "string",
+          "language": "node-rules",
+          "blob": JSON.stringify({
+            "name": "name here",
+            "priority": 0,
+            "on" : true,
+            "condition": "function(R) {\n"+
+                "R.when(this.transactionTotal < 500);\n"+
+            "}",
+            "consequence": "function(R) {\n"+
+                "this.result = false;\n"+
+                "R.stop();//R.restart()//R.next()"+
+            "}"
+        },null,2),
           "active": true
         };
     }
