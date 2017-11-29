@@ -16,9 +16,9 @@ export class MainScreen extends React.Component {
             }
         }
         this.content={
-            "password": "pa$$word",
-            "name": "string",
-            "surname": "string",
+            "new password": "",
+            "new name": "",
+            "new surname": "",
         }
 
         fetch("/business-users/me",{
@@ -42,9 +42,9 @@ export class MainScreen extends React.Component {
         console.log({
             "_ref":this.state.me._ref,
             "username": this.state.me.username,
-            "password": values.password,
-            "name": values.name,
-            "surname": values.surname,
+            "password": values["new password"],
+            "name": values["new name"],
+            "surname": values["new surname"],
             "roles": []
         })
         return fetch("/business-users/me",{
@@ -56,9 +56,9 @@ export class MainScreen extends React.Component {
             body:JSON.stringify({
                 "_ref":this.state.me._ref,
                 "username": this.state.me.username,
-                "password": values.password,
-                "name": values.name,
-                "surname": values.surname,
+                "password": values["new password"],
+                "name": values["new name"],
+                "surname": values["new surname"],
                 "roles": []
             })
         })

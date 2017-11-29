@@ -105,11 +105,11 @@ class Strategy {
 
     defaultCreationContent(){
         return {
-            username:"username",
-            password:"password",
-            name:"name",
-            surname:"surname",
-            role:"user"
+            username:"",
+            password:"",
+            name:"",
+            surname:"",
+            role:""
         };
     }
 

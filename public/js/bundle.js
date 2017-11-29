@@ -45147,9 +45147,9 @@ var MainScreen = exports.MainScreen = function (_React$Component) {
             }
         };
         _this.content = {
-            "password": "pa$$word",
-            "name": "string",
-            "surname": "string"
+            "new password": "",
+            "new name": "",
+            "new surname": ""
         };
 
         fetch("/business-users/me", {
@@ -45178,9 +45178,9 @@ var MainScreen = exports.MainScreen = function (_React$Component) {
             console.log({
                 "_ref": this.state.me._ref,
                 "username": this.state.me.username,
-                "password": values.password,
-                "name": values.name,
-                "surname": values.surname,
+                "password": values["new password"],
+                "name": values["new name"],
+                "surname": values["new surname"],
                 "roles": []
             });
             return fetch("/business-users/me", {
@@ -45192,9 +45192,9 @@ var MainScreen = exports.MainScreen = function (_React$Component) {
                 body: JSON.stringify({
                     "_ref": this.state.me._ref,
                     "username": this.state.me.username,
-                    "password": values.password,
-                    "name": values.name,
-                    "surname": values.surname,
+                    "password": values["new password"],
+                    "name": values["new name"],
+                    "surname": values["new surname"],
                     "roles": []
                 })
             })
@@ -45240,12 +45240,8 @@ var MainScreen = exports.MainScreen = function (_React$Component) {
                     null,
                     'Click "Submit" to modify your account information"'
                 ),
-                _react2.default.createElement(
-                    'ul',
-                    null,
-                    'You are a ',
-                    this.state.me.roles.join(", ")
-                ),
+                'You are a ',
+                this.state.me.roles.join(", "),
                 _react2.default.createElement(_Dialog.Dialog, {
                     content: this.content,
                     onSubmit: this.onSubmit.bind(this)
@@ -45765,7 +45761,8 @@ var Dialog = exports.Dialog = function (_React$Component) {
             roles: roles,
             content: content,
             //renderedParts:this.renderContent(content),
-            toggleActive: false
+            toggleActive: false,
+            allFine: false
         };
         _this.state.renderedParts = _this.renderContent(content);
         return _this;
@@ -45776,6 +45773,12 @@ var Dialog = exports.Dialog = function (_React$Component) {
         value: function renderContent(o) {
             var _this2 = this;
 
+            this.setState({
+                allFine: Object.keys(o).every(function (key) {
+                    return _this2.correction(key) == null;
+                })
+            });
+
             //console.log(o);
             var keys = Object.keys(o);
             var parts = keys.map(function (key) {
@@ -45783,7 +45786,7 @@ var Dialog = exports.Dialog = function (_React$Component) {
                     case "ROLE":
                         return _react2.default.createElement(
                             'div',
-                            { 'class': 'form-group' },
+                            { 'class': 'form-group', key: key },
                             _react2.default.createElement(
                                 'label',
                                 { 'class': 'control-label col-sm-2' },
@@ -45796,28 +45799,35 @@ var Dialog = exports.Dialog = function (_React$Component) {
                                 _react2.default.createElement(
                                     'label',
                                     { 'class': 'checkbox-inline' },
-                                    _react2.default.createElement('input', { type: 'checkbox', name: key, value: 'admin', onClick: _this2.onChecked }),
-                                    'Admin'
+                                    _react2.default.createElement('input', { type: 'checkbox', name: key, value: 'admin', onClick: _this2.onChecked, checked: _this2.state.roles.has("admin") }),
+                                    'admin'
                                 ),
                                 _react2.default.createElement(
                                     'label',
                                     { 'class': 'checkbox-inline' },
-                                    _react2.default.createElement('input', { type: 'checkbox', name: key, value: 'manager', onClick: _this2.onChecked }),
-                                    'Manager'
+                                    _react2.default.createElement('input', { type: 'checkbox', name: key, value: 'manager', onClick: _this2.onChecked, checked: _this2.state.roles.has("manager") }),
+                                    'manager'
                                 ),
                                 _react2.default.createElement(
                                     'label',
                                     { 'class': 'checkbox-inline' },
-                                    _react2.default.createElement('input', { type: 'checkbox', name: key, value: 'user', onClick: _this2.onChecked }),
-                                    'User'
+                                    _react2.default.createElement('input', { type: 'checkbox', name: key, value: 'user', onClick: _this2.onChecked, checked: _this2.state.roles.has("user") }),
+                                    'user'
+                                ),
+                                _react2.default.createElement(
+                                    'div',
+                                    { 'class': 'checkbox' },
+                                    _this2.textCorrection(key)
                                 )
                             )
                         );
+                        //{this.state.roles.length == 0 ? "You must assign at least one role" : ""}
+
                         break;
                     case "ACTIVE":
                         return _react2.default.createElement(
                             'span',
-                            null,
+                            { key: key },
                             'Active:',
                             _react2.default.createElement('input', { type: 'checkbox', onClick: _this2.boolSlide, name: key, checked: _this2.state.toggleActive })
                         );
@@ -45826,7 +45836,7 @@ var Dialog = exports.Dialog = function (_React$Component) {
                     default:
                         return _react2.default.createElement(
                             'div',
-                            { 'class': 'form-group' },
+                            { 'class': 'form-group', key: key },
                             _react2.default.createElement(
                                 'label',
                                 { 'class': 'control-label col-sm-2' },
@@ -45842,15 +45852,50 @@ var Dialog = exports.Dialog = function (_React$Component) {
                                     placeholder: "Enter " + key,
                                     key: key,
                                     name: key,
-                                    type: key.toUpperCase() == "PASSWORD" ? key : "text",
+                                    type: key.toUpperCase().includes("PASSWORD") ? "password" : "text",
                                     onChange: _this2.onChange
-                                })
+                                }),
+                                _this2.textCorrection(key)
                             )
                         );
                 }
             });
             //console.log(parts);
             return parts;
+        }
+    }, {
+        key: 'correction',
+        value: function correction(fieldName) {
+            var currentValue = this.state.content[fieldName];
+            console.log("Me preguntan la correction de", fieldName, currentValue);
+            console.log(this.state);
+            if (!currentValue || currentValue == "" || currentValue.length == 0) {
+                if (fieldName.toLowerCase().includes("role")) {
+                    return "Choose at least one role";
+                }
+                return "This field is compulsory";
+            } else {
+                return null;
+            }
+        }
+    }, {
+        key: 'textCorrection',
+        value: function textCorrection(fieldName) {
+            var c = this.correction(fieldName);
+            if (c == null) {
+                c = _react2.default.createElement(
+                    'span',
+                    { className: 'goodCorrection' },
+                    'OK'
+                );
+            } else {
+                c = _react2.default.createElement(
+                    'span',
+                    { className: 'badCorrection' },
+                    c
+                );
+            }
+            return c;
         }
     }, {
         key: 'onChecked',
@@ -45931,6 +45976,7 @@ var Dialog = exports.Dialog = function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
+            var buttonClass = "btn btn-primary " + (this.state.allFine ? "" : "disabled");
             return _react2.default.createElement(
                 'div',
                 { 'class': 'dialogContainer', id: 'formNew', onSubmit: this.onSubmit },
@@ -45957,7 +46003,7 @@ var Dialog = exports.Dialog = function (_React$Component) {
                             ) : "",
                             _react2.default.createElement(
                                 'button',
-                                { style: { align: "right" }, 'class': 'btn btn-primary', onClick: this.onSubmit },
+                                { style: { align: "right" }, 'class': buttonClass, onClick: this.onSubmit },
                                 'Submit'
                             )
                         )
@@ -46621,11 +46667,11 @@ var Strategy = function () {
         key: 'defaultCreationContent',
         value: function defaultCreationContent() {
             return {
-                username: "username",
-                password: "password",
-                name: "name",
-                surname: "surname",
-                role: "user"
+                username: "",
+                password: "",
+                name: "",
+                surname: "",
+                role: ""
             };
         }
     }, {
@@ -48331,14 +48377,14 @@ var Strategy = function () {
         key: 'defaultCreationContent',
         value: function defaultCreationContent() {
             return {
-                type: "type",
-                username: "username",
-                password: "password",
-                firstName: "firstName",
-                lastName: "lastName",
-                country: "country",
-                email: "email",
-                birthdate: "birthdate"
+                type: "",
+                username: "",
+                password: "",
+                firstName: "",
+                lastName: "",
+                country: "",
+                email: "",
+                birthdate: ""
             };
         }
     }, {

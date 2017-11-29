@@ -58,6 +58,16 @@
     text-shadow: 0 1px 0 #000;  
 }
 
+.badCorrection {
+    color:red;
+    font-size: 8pt;
+}
+
+.goodCorrection {
+    color:gray;
+    font-size: 8pt;
+}
+
 #listContainer th:after {
     background: linear-gradient(rgba(255,255,255,0), rgba(255,255,255,.08));
     content: '';

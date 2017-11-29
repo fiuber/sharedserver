@@ -117,14 +117,14 @@ class Strategy{
 
     defaultCreationContent(){
         return {
-            type:"type",
-            username:"username",
-            password:"password",
-            firstName:"firstName",
-            lastName:"lastName",
-            country:"country",
-            email:"email",
-            birthdate:"birthdate"
+            type:"",
+            username:"",
+            password:"",
+            firstName:"",
+            lastName:"",
+            country:"",
+            email:"",
+            birthdate:""
         };
     }
 
