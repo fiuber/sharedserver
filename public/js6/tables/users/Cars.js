@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import "whatwg-fetch";
-import Popout from 'react-popout';
 import {CrudTable} from "../../table/CrudTable"
 
 class Strategy{

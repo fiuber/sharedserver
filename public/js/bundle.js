@@ -47325,11 +47325,13 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Strategy = function () {
-    function Strategy(token, securityLevel) {
+    function Strategy(token, securityLevel, goton, gotoPrevious) {
         _classCallCheck(this, Strategy);
 
         this.token = token;
         this.securityLevel = securityLevel;
+        this.goto = goton;
+        this.gotoPrevious = gotoPrevious;
     }
 
     _createClass(Strategy, [{
@@ -47407,7 +47409,12 @@ var Strategy = function () {
                 'Active: ',
                 row.active,
                 _react2.default.createElement('br', null),
-                this.securityLevel > 1 ? _react2.default.createElement(_ViewCommitsButton.ViewCommitsButton, { ruleId: row.id, token: this.token }) : ""
+                this.securityLevel > 1 ? _react2.default.createElement(_ViewCommitsButton.ViewCommitsButton, {
+                    ruleId: row.id,
+                    token: this.token,
+                    goto: this.goto,
+                    gotoPrevious: this.gotoPrevious
+                }) : ""
             );
         }
     }, {
@@ -47483,7 +47490,7 @@ var Rules = exports.Rules = function (_CrudTable) {
     function Rules(props) {
         _classCallCheck(this, Rules);
 
-        var strategy = new Strategy(props.token, props.securityLevel);
+        var strategy = new Strategy(props.token, props.securityLevel, props.goto, props.gotoPrevious);
         if (props.securityLevel == 1) {
             strategy.doCreate = null;
             strategy.doDelete = null;
@@ -47535,9 +47542,6 @@ var ViewCommitsButton = exports.ViewCommitsButton = function (_React$Component) 
 
         var _this = _possibleConstructorReturn(this, (ViewCommitsButton.__proto__ || Object.getPrototypeOf(ViewCommitsButton)).call(this, props));
 
-        _this.state = {
-            popup: _react2.default.createElement('span', null)
-        };
         _this.token = props.token;
         _this.ruleId = props.ruleId;
         return _this;
@@ -47547,32 +47551,34 @@ var ViewCommitsButton = exports.ViewCommitsButton = function (_React$Component) 
         key: 'render',
         value: function render() {
             return _react2.default.createElement(
-                'span',
-                null,
-                _react2.default.createElement(
-                    'button',
-                    { onClick: this.onClick.bind(this) },
-                    ' View commits'
-                ),
-                this.state.popup
+                'button',
+                {
+                    'class': 'btn btn-primary',
+                    onClick: this.onClick.bind(this) },
+                'View commits'
             );
         }
     }, {
         key: 'onClick',
         value: function onClick(event) {
-            function closePopup() {
-                this.setState({ popup: _react2.default.createElement('span', null) });
-            }
-            var popup = _react2.default.createElement(
-                _reactPopout2.default,
-                { title: 'Window title', onClosing: closePopup.bind(this) },
-                _react2.default.createElement('link', { rel: 'stylesheet', href: 'style.css' }),
-                _react2.default.createElement('link', { rel: 'stylesheet', href: 'resources/css/bootstrap.min.css' }),
-                _react2.default.createElement('script', { src: 'https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js' }),
-                _react2.default.createElement('script', { src: 'resources/js/bootstrap.min.js' }),
-                _react2.default.createElement(_Commits.Commits, { ruleId: this.props.ruleId, token: this.props.token })
-            );
-            this.setState({ popup: popup });
+            var _this2 = this;
+
+            this.props.goto(function () {
+                return _react2.default.createElement(
+                    'span',
+                    null,
+                    _react2.default.createElement('link', { rel: 'stylesheet', href: 'style.css' }),
+                    _react2.default.createElement('link', { rel: 'stylesheet', href: 'resources/css/bootstrap.min.css' }),
+                    _react2.default.createElement('script', { src: 'https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js' }),
+                    _react2.default.createElement('script', { src: 'resources/js/bootstrap.min.js' }),
+                    _react2.default.createElement(_Commits.Commits, {
+                        ruleId: _this2.props.ruleId,
+                        token: _this2.props.token,
+                        goto: _this2.props.goto,
+                        gotoPrevious: _this2.props.gotoPrevious
+                    })
+                );
+            });
         }
     }]);
 
@@ -47616,12 +47622,14 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var Strategy = function () {
-    function Strategy(token, username, securityLevel) {
+    function Strategy(token, username, securityLevel, goton, gotoPrevious) {
         _classCallCheck(this, Strategy);
 
         this.token = token;
         this.username = username;
         this.securityLevel = securityLevel;
+        this.goto = goton;
+        this.gotoPrevious = gotoPrevious;
     }
 
     _createClass(Strategy, [{
@@ -47699,7 +47707,12 @@ var Strategy = function () {
                 'LastConnection: ',
                 new Date(row.lastConnection).toString(),
                 _react2.default.createElement('br', null),
-                this.securityLevel > 1 ? _react2.default.createElement(_TokenCreatorButton.TokenCreatorButton, { token: this.token, id: row.id }) : ""
+                this.securityLevel > 1 ? _react2.default.createElement(_TokenCreatorButton.TokenCreatorButton, {
+                    token: this.token,
+                    id: row.id,
+                    goto: this.goto,
+                    gotoPrevious: this.gotoPrevious
+                }) : ""
             );
         }
     }, {
@@ -47772,7 +47785,7 @@ var Servers = exports.Servers = function (_CrudTable) {
     function Servers(props) {
         _classCallCheck(this, Servers);
 
-        var strategy = new Strategy(props.token, props.username, props.securityLevel);
+        var strategy = new Strategy(props.token, props.username, props.securityLevel, props.goto, props.gotoPrevious);
         if (props.securityLevel == 1) {
             strategy.doCreate = null;
             strategy.doDelete = null;
@@ -47826,9 +47839,6 @@ var TokenCreatorButton = exports.TokenCreatorButton = function (_React$Component
 
         _this.token = props.token;
         _this.id = props.id;
-        _this.state = {
-            popup: _react2.default.createElement('span', null)
-        };
         return _this;
     }
 
@@ -47846,48 +47856,52 @@ var TokenCreatorButton = exports.TokenCreatorButton = function (_React$Component
             }).then(function (res) {
                 return res.json();
             }).then(function (json) {
-                function closePopup() {
-                    this.setState({ popup: _react2.default.createElement('span', null) });
-                }
-                console.log("ESTE ES JASON");
-                console.log(json);
-                var popup = _react2.default.createElement(
-                    _reactPopout2.default,
-                    { title: 'Token Creator', url: window.location.origin + "/dialog.html", onClosing: closePopup.bind(_this2) },
-                    _react2.default.createElement(
-                        'h1',
-                        { align: 'center' },
-                        ' New Token Created'
-                    ),
-                    _react2.default.createElement(
-                        'p',
+                console.log("LAS PROPS SON");
+                console.log(_this2.props);
+                var gotoPrevious = _this2.props.gotoPrevious;
+                _this2.props.goto(function () {
+                    return _react2.default.createElement(
+                        'span',
                         null,
-                        'For server ',
                         _react2.default.createElement(
-                            'b',
-                            null,
-                            json.server.server.name,
-                            '.'
+                            'h1',
+                            { align: 'center' },
+                            ' New Token Created'
                         ),
-                        _react2.default.createElement('br', null),
-                        'The token is valid until ',
                         _react2.default.createElement(
-                            'b',
+                            'p',
                             null,
-                            new Date(json.server.token.expiresAt).toString(),
-                            '.'
+                            'For server ',
+                            _react2.default.createElement(
+                                'b',
+                                null,
+                                json.server.server.name,
+                                '.'
+                            ),
+                            _react2.default.createElement('br', null),
+                            'The token is valid until ',
+                            _react2.default.createElement(
+                                'b',
+                                null,
+                                new Date(json.server.token.expiresAt).toString(),
+                                '.'
+                            ),
+                            _react2.default.createElement('br', null),
+                            'The token is ',
+                            _react2.default.createElement(
+                                'b',
+                                null,
+                                json.server.token.token,
+                                '.'
+                            )
                         ),
-                        _react2.default.createElement('br', null),
-                        'The token is ',
                         _react2.default.createElement(
-                            'b',
-                            null,
-                            json.server.token.token,
-                            '.'
+                            'button',
+                            { style: { align: "left" }, 'class': 'btn btn-default', onClick: gotoPrevious },
+                            'Return'
                         )
-                    )
-                );
-                _this2.setState({ popup: popup });
+                    );
+                });
             });
         }
     }, {
@@ -47900,8 +47914,7 @@ var TokenCreatorButton = exports.TokenCreatorButton = function (_React$Component
                     'button',
                     { 'class': 'btn btn-primary', onClick: this.onClick.bind(this) },
                     ' Update Token '
-                ),
-                this.state.popup
+                )
             );
         }
     }]);
@@ -47976,9 +47989,6 @@ var CarEditorButton = exports.CarEditorButton = function (_React$Component) {
 
         _this.token = props.token;
         _this.id = props.id;
-        _this.state = {
-            popup: _react2.default.createElement('span', null)
-        };
         return _this;
     }
 
@@ -47996,35 +48006,35 @@ var CarEditorButton = exports.CarEditorButton = function (_React$Component) {
             }).then(function (res) {
                 return res.json();
             }).then(function (json) {
-                function closePopup() {
-                    this.setState({ popup: _react2.default.createElement('span', null) });
-                }
-                console.log("ESTE ES JASON");
-                console.log(json);
-                var popup = _react2.default.createElement(
-                    _reactPopout2.default,
-                    { title: 'Window title', onClosing: closePopup.bind(_this2) },
-                    _react2.default.createElement('link', { rel: 'stylesheet', href: 'style.css' }),
-                    _react2.default.createElement('link', { rel: 'stylesheet', href: 'resources/css/bootstrap.min.css' }),
-                    _react2.default.createElement('script', { src: 'https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js' }),
-                    _react2.default.createElement('script', { src: 'resources/js/bootstrap.min.js' }),
-                    _react2.default.createElement(_Cars.Cars, { token: _this2.token, userId: _this2.id, securityLevel: _this2.props.securityLevel })
-                );
-                _this2.setState({ popup: popup });
+                _this2.props.goto(function () {
+                    return _react2.default.createElement(
+                        'span',
+                        null,
+                        _react2.default.createElement('link', { rel: 'stylesheet', href: 'style.css' }),
+                        _react2.default.createElement('link', { rel: 'stylesheet', href: 'resources/css/bootstrap.min.css' }),
+                        _react2.default.createElement('script', { src: 'https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js' }),
+                        _react2.default.createElement('script', { src: 'resources/js/bootstrap.min.js' }),
+                        _react2.default.createElement(_Cars.Cars, {
+                            token: _this2.token,
+                            userId: _this2.id,
+                            securityLevel: _this2.props.securityLevel,
+                            goto: _this2.props.goto,
+                            gotoPrevious: _this2.props.gotoPrevious
+                        })
+                    );
+                });
             });
         }
     }, {
         key: 'render',
         value: function render() {
             return _react2.default.createElement(
-                'span',
-                null,
-                _react2.default.createElement(
-                    'button',
-                    { onClick: this.onClick.bind(this) },
-                    ' Show cars '
-                ),
-                this.state.popup
+                'button',
+                {
+                    'class': 'btn btn-primary',
+                    onClick: this.onClick.bind(this)
+                },
+                'Show cars'
             );
         }
     }]);
@@ -48243,11 +48253,13 @@ function _classCallCheck(instance, Constructor) { if (!(instance instanceof Cons
 //import {TokenCreatorButton} from "./TokenCreatorButton"
 
 var Strategy = function () {
-    function Strategy(token, securityLevel) {
+    function Strategy(token, securityLevel, goton, gotoPrevious) {
         _classCallCheck(this, Strategy);
 
         this.token = token;
         this.securityLevel = securityLevel;
+        this.goto = goton;
+        this.gotoPrevious = gotoPrevious;
     }
 
     _createClass(Strategy, [{
@@ -48341,7 +48353,13 @@ var Strategy = function () {
                 'Image: ',
                 row.images[0],
                 _react2.default.createElement('br', null),
-                _react2.default.createElement(_CarEditorButton.CarEditorButton, { token: this.token, id: row.id, securityLevel: this.securityLevel })
+                _react2.default.createElement(_CarEditorButton.CarEditorButton, {
+                    token: this.token,
+                    id: row.id,
+                    securityLevel: this.securityLevel,
+                    goto: this.goto,
+                    gotoPrevious: this.gotoPrevious
+                })
             );
         }
     }, {
@@ -48439,7 +48457,7 @@ var Users = exports.Users = function (_CrudTable) {
     function Users(props) {
         _classCallCheck(this, Users);
 
-        var strategy = new Strategy(props.token, props.securityLevel);
+        var strategy = new Strategy(props.token, props.securityLevel, props.goto, props.gotoPrevious);
         if (props.securityLevel == 1) {
             strategy.doCreate = null;
             strategy.doDelete = null;

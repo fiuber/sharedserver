@@ -2,15 +2,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import "whatwg-fetch";
-import Popout from 'react-popout';
 import {CrudTable} from "../../table/CrudTable";
 import {ViewCommitsButton} from "./ViewCommitsButton"
 
 
 class Strategy{
-    constructor(token,securityLevel){
+    constructor(token,securityLevel,goton,gotoPrevious){
         this.token=token;
         this.securityLevel=securityLevel;
+        this.goto=goton;
+        this.gotoPrevious=gotoPrevious;
     }
     getAll(query){
         console.log("Iam getting all the things")
@@ -77,7 +78,12 @@ class Strategy{
             Active: {row.active}
             <br/>
 
-            {(this.securityLevel>1)?<ViewCommitsButton ruleId={row.id} token={this.token}/>:""}
+            {(this.securityLevel>1)?<ViewCommitsButton 
+                ruleId={row.id} 
+                token={this.token}
+                goto={this.goto}
+                gotoPrevious={this.gotoPrevious}
+            />:""}
             
         </span>);
         
@@ -137,7 +143,7 @@ class Strategy{
 
 export class Rules extends CrudTable{
     constructor(props){
-        let strategy=new Strategy(props.token,props.securityLevel);
+        let strategy=new Strategy(props.token,props.securityLevel,props.goto,props.gotoPrevious);
         if(props.securityLevel==1){
             strategy.doCreate=null;
             strategy.doDelete=null;

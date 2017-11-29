@@ -1,16 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import "whatwg-fetch";
-import Popout from 'react-popout';
 import {CrudTable} from "../../table/CrudTable";
 
 import {TokenCreatorButton} from "./TokenCreatorButton"
 
 class Strategy{
-    constructor(token, username,securityLevel){
+    constructor(token, username,securityLevel,goton,gotoPrevious){
         this.token=token;
         this.username=username;
         this.securityLevel=securityLevel;
+        this.goto=goton;
+        this.gotoPrevious=gotoPrevious;
     }
     getAll(query){
         return fetch("/servers"+query,{
@@ -75,7 +76,12 @@ class Strategy{
                 style={{color: row.lastConnection < new Date().getTime() - 3600000/*1hora*/ ?  "red" : "green", padding: "2px"}}></span>
             LastConnection: {new Date(row.lastConnection).toString()}
             <br/>
-            {(this.securityLevel>1)?<TokenCreatorButton token={this.token} id={row.id} />:""}
+            {(this.securityLevel>1)?<TokenCreatorButton 
+                token={this.token}
+                id={row.id}
+                goto={this.goto}
+                gotoPrevious={this.gotoPrevious}
+            />:""}
             
         </span>);
     }
@@ -135,7 +141,7 @@ class Strategy{
 
 export class Servers extends CrudTable{
     constructor(props){
-        let strategy=new Strategy(props.token, props.username,props.securityLevel);
+        let strategy=new Strategy(props.token, props.username,props.securityLevel,props.goto,props.gotoPrevious);
         if(props.securityLevel==1){
             strategy.doCreate=null;
             strategy.doDelete=null;

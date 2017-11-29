@@ -3,15 +3,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import "whatwg-fetch";
-import Popout from 'react-popout';
 import {CrudTable} from "../../table/CrudTable";
 import {CarEditorButton} from "./CarEditorButton";
 //import {TokenCreatorButton} from "./TokenCreatorButton"
 
 class Strategy{
-    constructor(token, securityLevel){
+    constructor(token, securityLevel,goton,gotoPrevious){
         this.token=token;
         this.securityLevel=securityLevel;
+        this.goto=goton;
+        this.gotoPrevious=gotoPrevious;
     }
     getAll(searchQuery){
         console.log("BUSCO:"+"/users"+searchQuery)
@@ -87,7 +88,13 @@ class Strategy{
             <br/>
             Image: {row.images[0]}
             <br/>
-            <CarEditorButton token={this.token} id={row.id} securityLevel={this.securityLevel}/>
+            <CarEditorButton 
+                token={this.token}
+                id={row.id}
+                securityLevel={this.securityLevel}
+                goto={this.goto}
+                gotoPrevious={this.gotoPrevious}
+            />
             
             
         </span>);
@@ -181,7 +188,7 @@ class Strategy{
 
 export class Users extends CrudTable{
     constructor(props){
-        let strategy=new Strategy(props.token, props.securityLevel);
+        let strategy=new Strategy(props.token, props.securityLevel,props.goto,props.gotoPrevious);
         if(props.securityLevel==1){
             strategy.doCreate=null;
             strategy.doDelete=null;

@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import "whatwg-fetch";
-import Popout from 'react-popout'
 import {Dialog} from "./Dialog"
 
 export class Row extends React.Component{
