@@ -1,0 +1,38 @@
+[
+{
+    "condition": "function(R){R.when(this.cost<50 && this.calcPassenger)}",
+    "consequence":"function(R){this.cost=50;R.next()}"
+}
+,
+{
+    "priority":1000,
+    "condition":"function(R){R.when(!this.distanceOk && this.calcPassenger)}",
+    "consequence":"function(R){this.distanceOk=true;this.cost=this.distance*15/1000;R.next()}"
+}
+,
+{
+    "condition":"function(R){R.when(this.calcPassenger && new Date(this.date).getDay()==3 }",
+    "consequence":"function(R){this.cost=this.cost*0.85;R.next()}"
+}
+,
+{
+    "condition":"function(R){R.when(this.calcPassenger && this.passenger.tripsToday==0 }",
+    "consequence":"function(R){this.cost=Math.max(this.cost-100,0);R.next()}"
+}
+,
+{
+    "condition":"function(R){R.when(this.calcPassenger && this.passenger.email.includes(\"@llevame.com\") }",
+    "consequence":"function(R){this.cost=0;R.next()}"
+}
+,
+{
+    "condition":"function(R){R.when(this.calcDriver && this.cost<30}",
+    "consequence":"function(R){this.cost=30;R.next()}"
+}
+,
+{
+    "priority":1000,
+    "condition":"function(R){R.when(!this.distanceOk && this.calcDriver)}",
+    "consequence":"function(R){this.distanceOk=true;this.cost=this.distance*5/1000;R.next()}"
+}
+]
