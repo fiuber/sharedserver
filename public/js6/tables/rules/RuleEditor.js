@@ -9,7 +9,8 @@ export class RuleEditor extends React.Component {
         this.sentEditor=null;
         this.receivedEditor=null;
         this.state={
-            selectedRules:[]
+            selectedRules:[],
+            goodSyntax:false
         }
     }
     onClick(event){
@@ -46,7 +47,9 @@ export class RuleEditor extends React.Component {
     render(){
         console.log("EN RENDER")
         console.log(this.state.selectedRules.length);
-        let buttonClass="btn btn-primary "+((this.state.selectedRules.length>0)?"":"disabled");
+        let btnEnabled=(this.state.selectedRules.length>0 && this.state.goodSyntax);
+        
+        let buttonClass="btn btn-primary "+(btnEnabled?"":"disabled");
 
         let ruleEditor=<div style={{
             display:"flex",
@@ -140,7 +143,7 @@ export class RuleEditor extends React.Component {
                         </div>
                     </div>
                 </div>
-            <button class={buttonClass} onClick={this.onClick.bind(this)}>Run selected rules</button>
+            <button class={buttonClass} onClick={btnEnabled?this.onClick.bind(this):()=>{}}>Run selected rules</button>
 
             <h3>Fact received</h3>
             <div id="received" style={{height:"300px",margin:"10px",width:"100%"}}>
@@ -148,7 +151,7 @@ export class RuleEditor extends React.Component {
             </div>
 
 
-            <div class="panel panel-default" style={{width:"100%"}}>
+                <div class="panel panel-default" style={{width:"100%"}}>
                     <div class="panel-heading">
                         <h4 class="panel-title">
                             <a data-toggle="collapse" href="#collapse1">Rule reference</a>
@@ -197,6 +200,11 @@ export class RuleEditor extends React.Component {
             this.sentEditor = ace.edit("sent");
             this.sentEditor.setTheme("ace/theme/clouds");
             this.sentEditor.getSession().setMode("ace/mode/json");
+            this.sentEditor.getSession().on("changeAnnotation",()=>{
+                this.setState({
+                    goodSyntax:this.sentEditor.getSession().getAnnotations().length==0
+                })
+            })
     
             this.receivedEditor = ace.edit("received");
             this.receivedEditor.setTheme("ace/theme/clouds");

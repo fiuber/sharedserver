@@ -26964,6 +26964,73 @@ function _possibleConstructorReturn(self, call) { if (!self) { throw new Referen
 
 function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
+var thisDoc = JSON.stringify({ id: 'string',
+    applicationOwner: 1,
+    driver: { id: 1,
+        _ref: '229.06346204048654',
+        applicationOwner: '1',
+        password: '5159',
+        type: 'passenger',
+        username: 'soyyo5159',
+        name: 'José',
+        surname: 'Ignacio',
+        country: 'Argentina',
+        email: 'soyyo5159@hotmail.com',
+        birthdate: 'oneday',
+        fbUserId: null,
+        fbAuthToken: null,
+        balance: [],
+        cars: [],
+        images: ['muy serio.png', 'playa.png', 'serio.png'],
+        tripsThisMonth: 0,
+        tripsToday: 0,
+        antiqueness: 393339611,
+        tripsLastHour: 0,
+        tripsLast30m: 0,
+        tripsLast10m: 0 },
+    passenger: { id: 2,
+        _ref: '427.3095411010006',
+        applicationOwner: '1',
+        password: null,
+        type: 'passenger',
+        username: 'fayo5159',
+        name: 'Facé',
+        surname: 'Igfacio',
+        country: 'Argentina',
+        email: 'soyyo5159@hotmail.com',
+        birthdate: 'oneday',
+        fbUserId: 'face',
+        fbAuthToken: 'face',
+        balance: [],
+        cars: [],
+        images: ['muy serio.png', 'playa.png', 'serio.png'],
+        tripsThisMonth: 0,
+        tripsToday: 0,
+        antiqueness: 393339684,
+        tripsLastHour: 0,
+        tripsLast30m: 0,
+        tripsLast10m: 0 },
+    start: { timestamp: 4578999874,
+        address: { street: 'las heras', location: [Object] } },
+    end: { timestamp: 4865454687,
+        address: { street: 'zeballos', location: [Object] } },
+    totalTime: 2400,
+    waitTime: 300,
+    travelTime: 2880,
+    distance: 1200,
+    route: [],
+    cost: 1000,
+    date: '2017-11-04T13:15:39.727Z',
+    result: true }, null, 2);
+
+var ruleDoc = JSON.stringify({
+    "name": "transaction minimum",
+    "priority": 3,
+    "on": true,
+    "condition": "function(R) {" + "R.when(this.transactionTotal < 500);" + "}",
+    "consequence": "function(R) {" + "this.result = false;" + "R.stop();//R.restart()//R.next()" + "}"
+}, null, 2);
+
 var DialogField = exports.DialogField = function (_React$Component) {
     _inherits(DialogField, _React$Component);
 
@@ -26982,6 +27049,59 @@ var DialogField = exports.DialogField = function (_React$Component) {
     }
 
     _createClass(DialogField, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            var _this2 = this;
+
+            if (this.props.name == "blob") {
+                var editor = ace.edit("code");
+                editor.setTheme("ace/theme/clouds");
+                editor.getSession().setMode("ace/mode/json");
+
+                var sendValue = function sendValue() {
+                    var value = editor.getValue();
+                    _this2.props.onGoodUpdate(_this2.props.name, value);
+                    _this2.setState({
+                        value: value
+                    });
+                };
+                var sendNothing = function sendNothing() {
+                    var value = "";
+                    _this2.props.onGoodUpdate(_this2.props.name, value);
+                    _this2.setState({
+                        value: value
+                    });
+                };
+
+                var error = false;
+                editor.getSession().on("changeAnnotation", function () {
+                    var annotations = editor.getSession().getAnnotations();
+                    error = annotations.length > 0;
+                    if (!error) {
+                        sendValue();
+                    } else {
+                        sendNothing();
+                    }
+                });
+                editor.getSession().on("change", function (e) {
+                    if (!error) {
+                        sendValue();
+                    } else {
+                        sendNothing();
+                    }
+                });
+                var thisReference = ace.edit("thisReference");
+                thisReference.setTheme("ace/theme/clouds");
+                thisReference.getSession().setMode("ace/mode/json");
+                thisReference.setReadOnly(true);
+
+                var ruleReference = ace.edit("ruleReference");
+                ruleReference.setTheme("ace/theme/clouds");
+                ruleReference.getSession().setMode("ace/mode/json");
+                ruleReference.setReadOnly(true);
+            }
+        }
+    }, {
         key: 'render',
         value: function render() {
             var name = this.props.name;
@@ -27028,12 +27148,111 @@ var DialogField = exports.DialogField = function (_React$Component) {
                     break;
                 case "ACTIVE":
                     return _react2.default.createElement(
-                        'span',
+                        'div',
                         { key: name },
                         'Active:',
                         _react2.default.createElement('input', { type: 'checkbox', onClick: this.boolSlide, name: name, checked: this.state.value })
                     );
                     break;
+                case "BLOB":
+
+                    return _react2.default.createElement(
+                        'div',
+                        { style: {
+                                display: "flex",
+                                flexDirection: "row",
+                                justifyContent: "space-evenly"
+                            } },
+                        _react2.default.createElement(
+                            'div',
+                            { style: {
+                                    display: "flex",
+                                    flexDirection: "column",
+                                    width: "45%"
+                                } },
+                            _react2.default.createElement(
+                                'div',
+                                { id: 'code', style: { height: "300px", margin: "10px" } },
+                                this.props.default
+                            ),
+                            _react2.default.createElement(
+                                'div',
+                                null,
+                                this.textCorrection(name)
+                            )
+                        ),
+                        _react2.default.createElement(
+                            'div',
+                            { id: 'help', style: { margin: "10px", width: "45%" } },
+                            _react2.default.createElement(
+                                'div',
+                                { 'class': 'panel panel-default', style: { width: "100%" } },
+                                _react2.default.createElement(
+                                    'div',
+                                    { 'class': 'panel-heading' },
+                                    _react2.default.createElement(
+                                        'h4',
+                                        { 'class': 'panel-title' },
+                                        _react2.default.createElement(
+                                            'a',
+                                            { 'data-toggle': 'collapse', href: '#collapse1' },
+                                            'Rule reference'
+                                        )
+                                    )
+                                ),
+                                _react2.default.createElement(
+                                    'div',
+                                    { id: 'collapse1', 'class': 'panel-collapse collapse' },
+                                    _react2.default.createElement(
+                                        'div',
+                                        { 'class': 'panel-body' },
+                                        _react2.default.createElement(
+                                            'div',
+                                            { id: 'ruleReference', style: {
+                                                    width: "100%",
+                                                    height: "180px"
+                                                } },
+                                            ruleDoc
+                                        )
+                                    )
+                                )
+                            ),
+                            _react2.default.createElement(
+                                'div',
+                                { 'class': 'panel panel-default' },
+                                _react2.default.createElement(
+                                    'div',
+                                    { 'class': 'panel-heading' },
+                                    _react2.default.createElement(
+                                        'h4',
+                                        { 'class': 'panel-title' },
+                                        _react2.default.createElement(
+                                            'a',
+                                            { 'data-toggle': 'collapse', href: '#collapse2' },
+                                            '"this" object reference'
+                                        )
+                                    )
+                                ),
+                                _react2.default.createElement(
+                                    'div',
+                                    { id: 'collapse2', 'class': 'panel-collapse collapse' },
+                                    _react2.default.createElement(
+                                        'div',
+                                        { 'class': 'panel-body' },
+                                        _react2.default.createElement(
+                                            'div',
+                                            { id: 'thisReference', style: {
+                                                    width: "100%",
+                                                    height: "400px"
+                                                } },
+                                            thisDoc
+                                        )
+                                    )
+                                )
+                            )
+                        )
+                    );
+
                 default:
                     return _react2.default.createElement(
                         'div',
@@ -28109,7 +28328,8 @@ var RuleEditor = exports.RuleEditor = function (_React$Component) {
         _this.sentEditor = null;
         _this.receivedEditor = null;
         _this.state = {
-            selectedRules: []
+            selectedRules: [],
+            goodSyntax: false
         };
         return _this;
     }
@@ -28153,7 +28373,9 @@ var RuleEditor = exports.RuleEditor = function (_React$Component) {
         value: function render() {
             console.log("EN RENDER");
             console.log(this.state.selectedRules.length);
-            var buttonClass = "btn btn-primary " + (this.state.selectedRules.length > 0 ? "" : "disabled");
+            var btnEnabled = this.state.selectedRules.length > 0 && this.state.goodSyntax;
+
+            var buttonClass = "btn btn-primary " + (btnEnabled ? "" : "disabled");
 
             var ruleEditor = _react2.default.createElement(
                 'div',
@@ -28267,7 +28489,7 @@ var RuleEditor = exports.RuleEditor = function (_React$Component) {
                 ),
                 _react2.default.createElement(
                     'button',
-                    { 'class': buttonClass, onClick: this.onClick.bind(this) },
+                    { 'class': buttonClass, onClick: btnEnabled ? this.onClick.bind(this) : function () {} },
                     'Run selected rules'
                 ),
                 _react2.default.createElement(
@@ -28337,11 +28559,17 @@ var RuleEditor = exports.RuleEditor = function (_React$Component) {
     }, {
         key: 'componentDidMount',
         value: function componentDidMount() {
+            var _this3 = this;
 
             if (this.props.securityLevel == 3) {
                 this.sentEditor = ace.edit("sent");
                 this.sentEditor.setTheme("ace/theme/clouds");
                 this.sentEditor.getSession().setMode("ace/mode/json");
+                this.sentEditor.getSession().on("changeAnnotation", function () {
+                    _this3.setState({
+                        goodSyntax: _this3.sentEditor.getSession().getAnnotations().length == 0
+                    });
+                });
 
                 this.receivedEditor = ace.edit("received");
                 this.receivedEditor.setTheme("ace/theme/clouds");
@@ -28529,11 +28757,11 @@ var Strategy = function () {
             return {
                 "language": "node-rules",
                 "blob": JSON.stringify({
-                    "name": "transaction minimum",
-                    "priority": 3,
+                    "name": "name here",
+                    "priority": 0,
                     "on": true,
-                    "condition": "function(R) {" + "R.when(this.transactionTotal < 500);" + "}",
-                    "consequence": "function(R) {" + "this.result = false;" + "R.stop();//R.restart()//R.next()" + "}"
+                    "condition": "function(R) {\n" + "R.when(this.transactionTotal < 500);\n" + "}",
+                    "consequence": "function(R) {\n" + "this.result = false;\n" + "R.stop();//R.restart()//R.next()" + "}"
                 }, null, 2),
                 "active": true
             };
