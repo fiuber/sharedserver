@@ -61,7 +61,7 @@ export class RuleEditor extends React.Component {
         }}>
             <h3>Fact to be sent</h3>
             <div id="sent" style={{height:"300px",margin:"10px",width:"100%"}}>
-                asdddd
+                {"{}"}
             </div>
 
 

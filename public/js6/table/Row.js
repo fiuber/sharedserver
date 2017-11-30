@@ -55,13 +55,13 @@ export class Row extends React.Component{
         let renderedRowData=<span></span>;
         let row=this.state.row;
         if(this.state.expanded){
-            renderedRowData=<span><a onClick={this.onClose}>(-)</a>{this.renderOpened()}</span>;
+            renderedRowData=<span><button class="btn btn-primary" onClick={this.onClose}><span align="center" class="glyphicon glyphicon-minus"></span></button>{this.renderOpened()}</span>;
         }else{
-            renderedRowData=<span><a onClick={this.onOpen }>(+)</a>{this.renderClosed()}</span>;
+            renderedRowData=<span><button class="btn btn-primary" onClick={this.onOpen }><span align="center" class="glyphicon glyphicon-plus"></span></button>{this.renderClosed()}</span>;
         }
 
-        let updateCell=<td><a onClick={this.onUpdate}><span align="center" class="glyphicon glyphicon-edit"></span></a></td>;
-        let removeCell=<td><a onClick={this.removeCallback}><span align="center" class="glyphicon glyphicon-remove"></span></a></td>;
+        let updateCell=<td><button class="btn btn-primary" onClick={this.onUpdate}><span align="center" class="glyphicon glyphicon-edit"></span></button></td>;
+        let removeCell=<td><button class="btn btn-primary" onClick={this.removeCallback}><span align="center" class="glyphicon glyphicon-remove"></span></button></td>;
         let selectCell=()=><td><input type="checkbox" checked={this.props.checked} onChange={this.props.onChange}/></td>
 
         return <tr>

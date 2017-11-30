@@ -163,22 +163,22 @@ export class App extends React.Component {
             </div>
             <div class="collapse navbar-collapse" id="myNavbar">
               <ul class="nav navbar-nav">
-                <li class={this.state.currentTab == 1 ? 'active' : ''}><a onClick={this.gotoHome}>Home</a></li>
+                <li class={this.state.currentTab == 1 ? 'active' : ''}><a href="#" class="nav-link" onClick={this.gotoHome}>Home</a></li>
                 <li style={{ display: this.state.securityLevel >= 3 ? '' : 'none' }}
-                  class={this.state.currentTab == 2 ? 'active' : ''}><a onClick={this.gotoBusinessUsers}>Business Users</a></li>
+                  class={this.state.currentTab == 2 ? 'active' : ''}><a href="#" class="nav-link" onClick={this.gotoBusinessUsers}>Business Users</a></li>
                 <li style={{ display: this.state.securityLevel >= 1 ? '' : 'none' }}
-                  class={this.state.currentTab == 3 ? 'active' : ''}><a onClick={this.gotoServers}>Servers</a></li>
+                  class={this.state.currentTab == 3 ? 'active' : ''}><a href="#" class="nav-link" onClick={this.gotoServers}>Servers</a></li>
                 <li style={{ display: this.state.securityLevel >= 1 ? '' : 'none' }}
-                  class={this.state.currentTab == 4 ? 'active' : ''}><a onClick={this.gotoUsers}>Users</a></li>
+                  class={this.state.currentTab == 4 ? 'active' : ''}><a href="#" class="nav-link" onClick={this.gotoUsers}>Users</a></li>
                 <li style={{ display: this.state.securityLevel >= 1 ? '' : 'none' }}
-                  class={this.state.currentTab == 5 ? 'active' : ''}><a onClick={this.gotoTrips}>Trips</a></li>
+                  class={this.state.currentTab == 5 ? 'active' : ''}><a href="#" class="nav-link" onClick={this.gotoTrips}>Trips</a></li>
                 <li style={{ display: this.state.securityLevel >= 1 ? '' : 'none' }}
-                  class={this.state.currentTab == 6 ? 'active' : ''}><a onClick={this.gotoRules}>Rules</a></li>
+                  class={this.state.currentTab == 6 ? 'active' : ''}><a href="#" class="nav-link" onClick={this.gotoRules}>Rules</a></li>
                 <li style={{ display: this.state.securityLevel >= 1 ? '' : 'none' }}
-                  class={this.state.currentTab == 7 ? 'active' : ''}><a onClick={this.gotoHeatmap}>Heatmap</a></li>
+                  class={this.state.currentTab == 7 ? 'active' : ''}><a href="#" class="nav-link" onClick={this.gotoHeatmap}>Heatmap</a></li>
               </ul>
               <ul class="nav navbar-nav navbar-right">
-                <li><a onClick={this.gotoLogin}><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
+                <li><a class="nav-link" href="#" onClick={this.gotoLogin}><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
               </ul>
             </div>
           </div>

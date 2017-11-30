@@ -25664,7 +25664,7 @@ var App = exports.App = function (_React$Component) {
                   { 'class': this.state.currentTab == 1 ? 'active' : '' },
                   _react2.default.createElement(
                     'a',
-                    { onClick: this.gotoHome },
+                    { href: '#', 'class': 'nav-link', onClick: this.gotoHome },
                     'Home'
                   )
                 ),
@@ -25674,7 +25674,7 @@ var App = exports.App = function (_React$Component) {
                     'class': this.state.currentTab == 2 ? 'active' : '' },
                   _react2.default.createElement(
                     'a',
-                    { onClick: this.gotoBusinessUsers },
+                    { href: '#', 'class': 'nav-link', onClick: this.gotoBusinessUsers },
                     'Business Users'
                   )
                 ),
@@ -25684,7 +25684,7 @@ var App = exports.App = function (_React$Component) {
                     'class': this.state.currentTab == 3 ? 'active' : '' },
                   _react2.default.createElement(
                     'a',
-                    { onClick: this.gotoServers },
+                    { href: '#', 'class': 'nav-link', onClick: this.gotoServers },
                     'Servers'
                   )
                 ),
@@ -25694,7 +25694,7 @@ var App = exports.App = function (_React$Component) {
                     'class': this.state.currentTab == 4 ? 'active' : '' },
                   _react2.default.createElement(
                     'a',
-                    { onClick: this.gotoUsers },
+                    { href: '#', 'class': 'nav-link', onClick: this.gotoUsers },
                     'Users'
                   )
                 ),
@@ -25704,7 +25704,7 @@ var App = exports.App = function (_React$Component) {
                     'class': this.state.currentTab == 5 ? 'active' : '' },
                   _react2.default.createElement(
                     'a',
-                    { onClick: this.gotoTrips },
+                    { href: '#', 'class': 'nav-link', onClick: this.gotoTrips },
                     'Trips'
                   )
                 ),
@@ -25714,7 +25714,7 @@ var App = exports.App = function (_React$Component) {
                     'class': this.state.currentTab == 6 ? 'active' : '' },
                   _react2.default.createElement(
                     'a',
-                    { onClick: this.gotoRules },
+                    { href: '#', 'class': 'nav-link', onClick: this.gotoRules },
                     'Rules'
                   )
                 ),
@@ -25724,7 +25724,7 @@ var App = exports.App = function (_React$Component) {
                     'class': this.state.currentTab == 7 ? 'active' : '' },
                   _react2.default.createElement(
                     'a',
-                    { onClick: this.gotoHeatmap },
+                    { href: '#', 'class': 'nav-link', onClick: this.gotoHeatmap },
                     'Heatmap'
                   )
                 )
@@ -25737,7 +25737,7 @@ var App = exports.App = function (_React$Component) {
                   null,
                   _react2.default.createElement(
                     'a',
-                    { onClick: this.gotoLogin },
+                    { 'class': 'nav-link', href: '#', onClick: this.gotoLogin },
                     _react2.default.createElement('span', { 'class': 'glyphicon glyphicon-log-out' }),
                     ' Logout'
                   )
@@ -27760,9 +27760,9 @@ var Row = exports.Row = function (_React$Component) {
                     'span',
                     null,
                     _react2.default.createElement(
-                        'a',
-                        { onClick: this.onClose },
-                        '(-)'
+                        'button',
+                        { 'class': 'btn btn-primary', onClick: this.onClose },
+                        _react2.default.createElement('span', { align: 'center', 'class': 'glyphicon glyphicon-minus' })
                     ),
                     this.renderOpened()
                 );
@@ -27771,9 +27771,9 @@ var Row = exports.Row = function (_React$Component) {
                     'span',
                     null,
                     _react2.default.createElement(
-                        'a',
-                        { onClick: this.onOpen },
-                        '(+)'
+                        'button',
+                        { 'class': 'btn btn-primary', onClick: this.onOpen },
+                        _react2.default.createElement('span', { align: 'center', 'class': 'glyphicon glyphicon-plus' })
                     ),
                     this.renderClosed()
                 );
@@ -27783,8 +27783,8 @@ var Row = exports.Row = function (_React$Component) {
                 'td',
                 null,
                 _react2.default.createElement(
-                    'a',
-                    { onClick: this.onUpdate },
+                    'button',
+                    { 'class': 'btn btn-primary', onClick: this.onUpdate },
                     _react2.default.createElement('span', { align: 'center', 'class': 'glyphicon glyphicon-edit' })
                 )
             );
@@ -27792,8 +27792,8 @@ var Row = exports.Row = function (_React$Component) {
                 'td',
                 null,
                 _react2.default.createElement(
-                    'a',
-                    { onClick: this.removeCallback },
+                    'button',
+                    { 'class': 'btn btn-primary', onClick: this.removeCallback },
                     _react2.default.createElement('span', { align: 'center', 'class': 'glyphicon glyphicon-remove' })
                 )
             );
@@ -28395,7 +28395,7 @@ var RuleEditor = exports.RuleEditor = function (_React$Component) {
                 _react2.default.createElement(
                     'div',
                     { id: 'sent', style: { height: "300px", margin: "10px", width: "100%" } },
-                    'asdddd'
+                    "{}"
                 ),
                 _react2.default.createElement(
                     'div',
