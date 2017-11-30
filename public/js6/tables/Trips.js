@@ -2,8 +2,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import "whatwg-fetch";
-import Popout from 'react-popout';
-import {CrudTable} from "./CrudTable";
+import {CrudTable} from "../table/CrudTable";
 
 class Strategy{
     constructor(token){
@@ -32,14 +31,6 @@ class Strategy{
         });
     }
 
-    doUpdate(row,content){
-        return Promise.resolve("Cant")
-    }
-
-    doDelete(row){
-        return Promise.resolve("Cant")
-    }
-
     
 
     renderOpened(row){
@@ -53,11 +44,10 @@ class Strategy{
             <br/>
             Passenger: {row.passenger}
             <br/>
-            Cost: {row.cost}
+            Cost: {row.cost.value} {row.cost.currency}
             <br/>
             
         </span>);
-        
     }
 
     renderClosed(row){
@@ -68,21 +58,6 @@ class Strategy{
         return row.id+row.applicationOwner+row.driver+row.passenger+row.cost;
     }
 
-    defaults(row){
-        return {
-            username:"CANT UPDATE"
-        }
-    }
-
-    defaultCreationContent(){
-        return {
-            type:"CANT CREATE"
-        };
-    }
-
-    doCreate(content){
-        return Promise.resolve(1);
-    }
 
     getFilters(){
         return [

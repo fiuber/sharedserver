@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import "whatwg-fetch";
-import Popout from 'react-popout';
-import {CrudTable} from "./CrudTable";
+import {CrudTable} from "../table/CrudTable";
 
 class Strategy {
     constructor(token){
@@ -27,6 +26,17 @@ class Strategy {
     }
 
     doUpdate(row,content){
+        console.log("ACTUALIZO BUSINESS USERS")
+        console.log(content);
+        console.log(row);
+        console.log({
+            username:row.username,
+            password:content.password,
+            name:content.name,
+            surname:content.surname,
+            roles:content.roles,
+            _ref:row._ref
+        });
         return fetch("/business-users/"+row.username,{
             method:"PUT",
             headers: {
@@ -38,7 +48,8 @@ class Strategy {
                 password:content.password,
                 name:content.name,
                 surname:content.surname,
-                roles:[content.role]
+                roles:content.roles,
+                _ref:row._ref
             })
         })
     }
@@ -78,20 +89,20 @@ class Strategy {
 
     defaults(row){
         return {
-            Password: row.password,
-            Name: row.name,
-            Surname: row.surname,
-            Role: row.roles[0]
+            password: row.password,
+            name: row.name,
+            surname: row.surname,
+            roles: row.roles
         }
     }
 
     defaultCreationContent(){
         return {
-            username:"username",
-            password:"password",
-            name:"name",
-            surname:"surname",
-            role:"user"
+            username:"",
+            password:"",
+            name:"",
+            surname:"",
+            role:""
         };
     }
 
@@ -129,6 +140,7 @@ export class BusinessUsers extends CrudTable{
     
         constructor(props){
             let strategy=new Strategy(props.token);
+
             super(props,strategy);
         }
         

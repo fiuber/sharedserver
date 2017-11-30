@@ -230,17 +230,31 @@ exports.addCar=function(body,userId){
 }
 exports.addCar.shape=carShape;
 
-exports.getCars=function(userId){
+exports.getCars=function(userId,nonexistent,badRevision,me,query){
+    if(!query){
+        query={};
+    }
+    query.owner_eq=userId;
     
     
-    return cars.read({owner:userId}).then((myCars)=>{
+    return cars.readQuery(query).then((myCars)=>{
         let withProperties=myCars.map((car)=>{
             return carProperties.read({id:car.id}).then((properties)=>{
                 car.properties=properties;
                 return car;
             })
         })
-        return Promise.all(withProperties);
+
+        return cars.count(query).then((q)=>{
+            return Promise.all(withProperties).then((list)=>{
+                return {
+                    cars:list,
+                    quantity:q
+                }
+
+            })
+            
+        })
     })
 }
 exports.getCars.shape={};

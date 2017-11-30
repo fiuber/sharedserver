@@ -14,7 +14,7 @@ function satisfiesShape(o,shape){
             }else if(shape.length==0){
                 return true;
             }else{
-                return !o.some((e)=>!satisfiesShape(e,shape[0]));
+                return !o.some((e)=>!satisfiesShape(e,shape[0]).valueOf());
             }
         }else{
             return false;
@@ -22,12 +22,13 @@ function satisfiesShape(o,shape){
     }
 
     for(let k in shape){
-        if(k in o && (shape[k] instanceof Object) && !satisfiesShape(o[k], shape[k]) ){
+        if(k in o && (shape[k] instanceof Object) && !satisfiesShape(o[k], shape[k]).valueOf() ){
              return false;
         }
         if(! (k in o)){
-            console.log("the key "+k+" is not present in "+util.inspect(o,false,null))
-            return false;
+            let ret=new Boolean(false);
+            ret.message="the key "+k+" is not present in "+util.inspect(o,false,null);
+            return ret;
         }
 
     }

@@ -189,6 +189,124 @@ describe("using /trips",function(){
 
     ]
 
+    
+    let troubleTripId="";
+
+    it("add the troubleTrip",()=>{
+        let troubleTrip={
+            "paymethod":{
+               "paymethod":"card",
+               "parameters":{
+                  "expiration_month":"1",
+                  "ccvv":"87564564-5656",
+                  "type":"ARS",
+                  "number":"123456789",
+                  "expiration_year":"2"
+               }
+            },
+            "trip":{
+               "passenger":"5",
+               "driver":"6",
+               "cost":{"currency": "ARS", "value": 0},
+               "totalTime":5362.041787862778,
+               "applicationOwner":"",
+               "id":"",
+               "distance":45165008056828.71,
+               "end":{
+                  "timestamp":1511723168.054185,
+                  "address":{
+                     "location":{
+                        "lat":42.460387,
+                        "lon":-71.3489306
+                     }
+                  }
+               },
+               "route":[
+                  {
+                     "timestamp":1511717865.774226,
+                     "location":{
+                        "lat":10,
+                        "lon":20
+                     }
+                  },
+                  {
+                     "timestamp":1511717889.940686,
+                     "location":{
+                        "lat":10,
+                        "lon":20
+                     }
+                  },
+                  {
+                     "timestamp":1511717960.605871,
+                     "location":{
+                        "lat":42.3598335,
+                        "lon":-71.0598776
+                     }
+                  },
+                  {
+                     "timestamp":1511717983.571844,
+                     "location":{
+                        "lat":42.3598335,
+                        "lon":-71.0598776
+                     }
+                  },
+                  {
+                     "timestamp":1511718012.119315,
+                     "location":{
+                        "lat":42.3598335,
+                        "lon":-71.0598776
+                     }
+                  },
+                  {
+                     "timestamp":1511718057.095626,
+                     "location":{
+                        "lat":42.3598335,
+                        "lon":-71.0598776
+                     }
+                  },
+                  {
+                     "timestamp":1511723167.716334,
+                     "location":{
+                        "lat":42.460387,
+                        "lon":-71.3489306
+                     }
+                  }
+               ],
+               "travelTime":5110.958556890488,
+               "waitTime":251.08323097229004,
+               "start":{
+                  "timestamp":1511717806.012397,
+                  "address":{
+                     "location":{
+                        "lat":42.3598335,
+                        "lon":-71.0598776
+                     }
+                  }
+               }
+            }
+         }
+
+        troubleTrip.trip.passenger=soyyo5159.id;
+        troubleTrip.trip.driver=fayo5159.id;
+
+        return agent
+        .post("/trips")
+        .set("authorization", authValue)
+        .send(troubleTrip)
+        .expect((res)=>{
+            troubleTripId=res.body.trip.id;
+            /*
+            trip=res.body.trip;
+            assert.equal(trip.start.address.location.lat,-34.637818);
+            assert.equal(trip.passenger,fayo5159.id);
+            assert.equal(trip.cost.currency,"ARS");
+            assert.equal(trip.cost.value,1000,"the rule was used");
+            */
+        }).expect(201) 
+    })
+
+
+
 
     it("add a trip",()=>{
         return agent
@@ -241,7 +359,7 @@ describe("using /trips",function(){
         .then((e)=>{
             console.log("-------------------------")
             console.log(e.body);
-            assert.lengthOf(e.body.trips,1)
+            assert.lengthOf(e.body.trips,2)
         })
     })
 

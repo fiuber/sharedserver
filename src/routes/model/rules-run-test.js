@@ -74,8 +74,15 @@ describe("Rules are run",()=>{
                 transactionTotal:100
             })
         }],law.lastCommit.ruleId,{}).then((result)=>{
-            assert.isFalse(JSON.parse(result.result).result);
-            assert.isUndefined(JSON.parse(result.result).discount)
+            console.log("-----------------")
+            console.log("-----------------")
+            console.log("-----------------")
+            console.log(result);
+            console.log("-----------------")
+            console.log("-----------------")
+            console.log("-----------------")
+            assert.isFalse(JSON.parse(result[0].result).result);
+            assert.isUndefined(JSON.parse(result[0].result).discount)
         });
     }).timeout(5000);
 
@@ -90,8 +97,15 @@ describe("Rules are run",()=>{
             }]
         
         },{}).then((result)=>{
-            assert.isFalse(JSON.parse(result.result).result);
-            assert.isTrue(JSON.parse(result.result).discount);
+            console.log("-----------------")
+            console.log("-----------------")
+            console.log("-----------------")
+            console.log(result);
+            console.log("-----------------")
+            console.log("-----------------")
+            console.log("-----------------")
+            assert.isFalse(JSON.parse(result[0].result).result);
+            assert.isTrue(JSON.parse(result[0].result).discount);
         });
     }).timeout(5000);
 })

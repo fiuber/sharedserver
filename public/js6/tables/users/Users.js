@@ -3,15 +3,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import "whatwg-fetch";
-import Popout from 'react-popout';
-import {CrudTable} from "./CrudTable";
+import {CrudTable} from "../../table/CrudTable";
 import {CarEditorButton} from "./CarEditorButton";
 //import {TokenCreatorButton} from "./TokenCreatorButton"
 
 class Strategy{
-    constructor(token, securityLevel){
+    constructor(token, securityLevel,goton,gotoPrevious){
         this.token=token;
         this.securityLevel=securityLevel;
+        this.goto=goton;
+        this.gotoPrevious=gotoPrevious;
     }
     getAll(searchQuery){
         console.log("BUSCO:"+"/users"+searchQuery)
@@ -24,17 +25,24 @@ class Strategy{
         })
         .then((res)=>res.json())
         .then((jsn)=>{
+            console.log("USERS")
+            console.log(jsn);
             this.totalRecords=jsn.metadata.total;
             console.log("LOS USERS:")
             console.log(jsn.users)
 
             let ret=jsn.users;
             ret.totalRecords=jsn.metadata.total;
+            console.log("USERS QUE VIENEN:")
+            console.log(ret);
             return ret;
         });
     }
 
     doUpdate(row,content){
+        console.log("ACTUALIZO USERES")
+        console.log(content);
+        console.log(row);
         return fetch("/users/"+row.id,{
             method:"PUT",
             headers: {
@@ -42,22 +50,15 @@ class Strategy{
               'Authorization': 'api-key '+this.token
             },
             body:JSON.stringify({
-                "_ref": "string",
-                "type": "string",
-                "username": "string",
-                "password": "string",
-                "fb": {
-                  "userId": "string",
-                  "authToken": "string"
-                },
-                "firstName": "string",
-                "lastName": "string",
-                "country": "string",
-                "email": "string",
-                "birthdate": "string",
-                "images": [
-                  "string"
-                ]
+                _ref:row._ref,
+                type:content.type,
+                username:content.username,
+                firstName:content.firstName,
+                lastName:content.lastName,
+                country:content.country,
+                email:content.email,
+                birthdate:content.birthdate,
+                images:row.images
             })
         })
     }
@@ -97,7 +98,13 @@ class Strategy{
             <br/>
             Image: {row.images[0]}
             <br/>
-            <CarEditorButton token={this.token} id={row.id}/>
+            <CarEditorButton 
+                token={this.token}
+                id={row.id}
+                securityLevel={this.securityLevel}
+                goto={this.goto}
+                gotoPrevious={this.gotoPrevious}
+            />
             
             
         </span>);
@@ -114,27 +121,26 @@ class Strategy{
 
     defaults(row){
         return {
-            type:"type",
-            username:"username",
-            password:"password",
-            firstName:"firstName",
-            lastName:"lastName",
-            country:"country",
-            email:"email",
-            birthdate:"birthdate"
+            type:row.type,
+            username:row.username,
+            firstName:row.name,
+            lastName:row.surname,
+            country:row.country,
+            email:row.email,
+            birthdate:row.birthdate
         };
     }
 
     defaultCreationContent(){
         return {
-            type:"type",
-            username:"username",
-            password:"password",
-            firstName:"firstName",
-            lastName:"lastName",
-            country:"country",
-            email:"email",
-            birthdate:"birthdate"
+            type:"",
+            username:"",
+            password:"",
+            firstName:"",
+            lastName:"",
+            country:"",
+            email:"",
+            birthdate:""
         };
     }
 
@@ -191,7 +197,13 @@ class Strategy{
 
 export class Users extends CrudTable{
     constructor(props){
-        let strategy=new Strategy(props.token, props.securityLevel);
+        let strategy=new Strategy(props.token, props.securityLevel,props.goto,props.gotoPrevious);
+        if(props.securityLevel==1){
+            strategy.doCreate=null;
+            strategy.doDelete=null;
+            strategy.doUpdate=null;
+
+        }
         super(props,strategy);
     }
 }

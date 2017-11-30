@@ -42,7 +42,7 @@ router.post("/servers",manager, servers.add);
 router.put("/servers/:serverId",manager, servers.update);
 router.post("/servers/:serverId",manager, servers.updateToken);
 router.delete("/servers/:serverId",manager, servers.delete);
-router.get("/servers",manager, servers.list);
+router.get("/servers",user, servers.list);
 router.get("/servers/:serverId",manager, servers.get);
 
 //business-users
@@ -57,7 +57,7 @@ router.put("/business-users/me", user, businessUsers.updateMe);
 
 router.get("/business-users", admin, businessUsers.list);
 router.post("/business-users", admin, businessUsers.add);
-router.get("/business-users/:userId", user, businessUsers.get);
+router.get("/business-users/:userId", user, businessUsers.get);//-----------!!!!------------//
 router.delete("/business-users/:userId", admin, businessUsers.delete);
 router.put("/business-users/:userId", admin, businessUsers.update);
 
@@ -85,7 +85,7 @@ router.put("/users/:userId/cars/:carId",appOrManager,users.updateCar)
 const rulesTranslator=require("./modelTranslate/rules.js");
 const rulesTranslated=require("./modelTranslate")(rulesModel,rulesTranslator);
 const rules=expressify.all(rulesTranslated,{"version":"1"});
-router.get("/rules",manager,rules.getRules);
+router.get("/rules",user,rules.getRules);
 router.post("/rules",manager,rules.addRule);
 
 router.get("/rules/:ruleId",manager,rules.getRule);

@@ -1,8 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import "whatwg-fetch";
-import Popout from 'react-popout';
-import {CrudTable} from "./CrudTable"
+import {CrudTable} from "../../table/CrudTable"
 
 class Strategy{
     constructor(token,userId){
@@ -20,15 +19,13 @@ class Strategy{
         })
         .then((res)=>res.json())
         .then((jsn)=>{
+            console.log("CARS")
+            console.log(jsn);
             this.totalRecords=jsn.metadata.total;
             let ret=jsn.cars;
             ret.totalRecords=jsn.metadata.total;
             return ret;
         });
-    }
-
-    doUpdate(row,content){
-        return Promise.resolve("CANT UPDATE")
     }
 
     doDelete(row){
@@ -65,22 +62,6 @@ class Strategy{
         return row.id+row.owner+row.properties.join("");
     }
 
-    defaults(row){
-        return {
-            name:"CANT UPDATE",
-        }
-    }
-
-    defaultCreationContent(){
-        return {
-            name:"CANT CREATE",
-        };
-    }
-
-    doCreate(content){
-        return Promise.resolve("yesss");
-    }
-
     getFilters(){
         return []
     }
@@ -94,6 +75,9 @@ class Strategy{
 export class Cars extends CrudTable{
     constructor(props){
         let strategy=new Strategy(props.token,props.userId);
+        if(props.securityLevel==1){
+            strategy.doDelete=null;
+        }
         super(props,strategy);
     }
 }

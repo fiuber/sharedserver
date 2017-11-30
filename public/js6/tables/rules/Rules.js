@@ -2,12 +2,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import "whatwg-fetch";
-import Popout from 'react-popout';
-import {CrudTable} from "./CrudTable";
+import {CrudTable} from "../../table/CrudTable";
+import {ViewCommitsButton} from "./ViewCommitsButton"
+
 
 class Strategy{
-    constructor(token){
+    constructor(token,securityLevel,goton,gotoPrevious){
         this.token=token;
+        this.securityLevel=securityLevel;
+        this.goto=goton;
+        this.gotoPrevious=gotoPrevious;
     }
     getAll(query){
         console.log("Iam getting all the things")
@@ -21,6 +25,8 @@ class Strategy{
         })
         .then((res)=>res.json())
         .then((jsn)=>{
+            console.log("RULESSSSS:")
+            console.log(jsn)
             this.totalRecords=jsn.metadata.total;
             console.log("LOS rules:")
             console.log(jsn.rules)
@@ -71,6 +77,13 @@ class Strategy{
             <br/>
             Active: {row.active}
             <br/>
+
+            {(this.securityLevel>1)?<ViewCommitsButton 
+                ruleId={row.id} 
+                token={this.token}
+                goto={this.goto}
+                gotoPrevious={this.gotoPrevious}
+            />:""}
             
         </span>);
         
@@ -81,21 +94,34 @@ class Strategy{
     }
 
     createKey(row){
-        return row.id+row.language+row.blob+row.active;
+        return row.id;
     }
 
     defaults(row){
+        console.log("CREATE DEFAULTS FROM")
+        console.log(row);
         return {
-          "language": "string",
-          "blob": "string",
-          "active": true
+          "language": row.language,
+          "blob": row.blob,
+          "active": row.active
         };
     }
 
     defaultCreationContent(){
         return {
-          "language": "string",
-          "blob": "string",
+          "language": "node-rules",
+          "blob": JSON.stringify({
+            "name": "name here",
+            "priority": 0,
+            "on" : true,
+            "condition": "function(R) {\n"+
+                "R.when(this.transactionTotal < 500);\n"+
+            "}",
+            "consequence": "function(R) {\n"+
+                "this.result = false;\n"+
+                "R.stop();//R.restart()//R.next()"+
+            "}"
+        },null,2),
           "active": true
         };
     }
@@ -130,7 +156,16 @@ class Strategy{
 
 export class Rules extends CrudTable{
     constructor(props){
-        let strategy=new Strategy(props.token);
-        super(props,strategy);
+        let strategy=new Strategy(props.token,props.securityLevel,props.goto,props.gotoPrevious);
+        if(props.securityLevel==1){
+            strategy.doCreate=null;
+            strategy.doDelete=null;
+            strategy.doUpdate=null;
+        }
+        super(props,strategy,props.selectionCallback);
+
     }
+
+
+    
 }

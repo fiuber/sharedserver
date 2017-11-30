@@ -153,13 +153,16 @@ function updateUser(body,username,changeRoles,nonexistent){
         }
     })
 }
+
 exports.update=function(body,username,nonexistent){
     return updateUser(body,username,true,nonexistent);
 }
+exports.update.shape=userShape;
 
 exports.updateMe=function(body,nonexistent,badRevision,me){
     return updateUser(body,me.username,false,nonexistent)
 }
+exports.updateMe.shape=userShape;
 
 //testeado
 exports.exists=function(username,password){

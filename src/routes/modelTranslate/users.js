@@ -14,7 +14,10 @@ function car(string,number,array,from){
 function carList(string,number,array,from){
     const carShape=car(string,number,array,from).car;
     return {
-        cars:array(carShape)
+        cars:from("cars",array(carShape)),
+        metadata:{
+            total:number("quantity")
+        }
     }
 }
 
@@ -27,7 +30,7 @@ function user(string,number,array,from){
             applicationOwner:string("applicationOwner"),
             type:string("type"),
 
-            cars:from("cars",array(carShape)),
+            cars:from("cars",from("cars",array(carShape))),
 
             username:string("username"),
 
@@ -45,7 +48,6 @@ function user(string,number,array,from){
         }
     }
 }
-//VAN 30 MINS
 function userList(string,number,array,from){
     const userShape=user(string,number,array,from).user;
     return {

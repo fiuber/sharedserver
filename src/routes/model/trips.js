@@ -116,6 +116,19 @@ exports.addTripWithPayer=function(body,nonexistent,badRevision,me){
         //si no hay éxito, PAY TIRA ERROR, 500 Y NOS VAMOS
         
         return trips.create(trip).then((createdTrip)=>{
+            console.log("--------------------------------")
+            console.log("--------------------------------")
+            console.log("--------------------------------")
+            console.log("--------------------------------")
+            console.log("--------------------------------")
+
+            console.log(body.trip);
+
+            console.log("--------------------------------")
+            console.log("--------------------------------")
+            console.log("--------------------------------")
+            
+
             return transactionsModel.addDebt({//PONGO LA DEUDA
                 id:"asd",
                 trip:createdTrip.id,

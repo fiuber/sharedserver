@@ -27,7 +27,7 @@ function apify(shape,fun){
         }
 
         var shapeOk=satisfiesShape(req_body,shape);
-        if(shapeOk){
+        if(shapeOk.valueOf()){
             let inexistent={"inexistent":true};
             let badRevision={"bad revision":true};
             /*
@@ -71,7 +71,7 @@ function apify(shape,fun){
                 send(ERROR,e.stack);
             });
         }else{
-            send(BAD_REQUEST,"Bad body. Send "+ util.inspect(shape,false,null));
+            send(BAD_REQUEST,"Bad body. Send "+ util.inspect(shape,false,null)+"\nmessage:"+shapeOk.message);
         }
     }
 }
